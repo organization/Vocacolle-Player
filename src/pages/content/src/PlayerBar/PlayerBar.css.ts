@@ -80,12 +80,23 @@ export const progressStyle = style({
   width: '100%',
   height: '100%',
 
-  background: `linear-gradient(to right, rgba(241, 106, 3, 0.2) 80%, rgba(241, 106, 3, 0.5))`,
-
-  transform: `scaleX(${progressVar})`,
   transformOrigin: '0% 50%',
   pointerEvents: 'none',
   transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+  overflow: 'hidden',
+  borderRadius: '0.8rem',
+
+  '::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'linear-gradient(to right, rgba(241, 106, 3, 0.2) calc(100% - 3.2rem), rgba(241, 106, 3, 0.5) 100%)',
+    transform: `translateX(calc(-100% + ${progressVar} * 100%))`,
+    transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+  }
 });
 
 export const containerStyle = style({

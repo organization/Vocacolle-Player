@@ -1,11 +1,11 @@
-import { Event } from "@pages/content/event";
+import { Event } from '@pages/content/event';
 
 const EventList = Object.values(Event);
 export const initEmbed = () => {
-  window.addEventListener("message", (event) => {
+  window.addEventListener('message', (event) => {
     if (!event.data) return;
-    if (typeof event.data !== "object") return;
-    if (!("type" in event.data && EventList.includes(event.data.type))) return;
+    if (typeof event.data !== 'object') return;
+    if (!('type' in event.data && EventList.includes(event.data.type))) return;
 
     switch (event.data.type) {
       case Event.play: {
@@ -15,9 +15,9 @@ export const initEmbed = () => {
           if (count > 100) clearInterval(interval);
 
           const button =
-            document.querySelector<HTMLButtonElement>("button.f1iasax4");
+            document.querySelector<HTMLButtonElement>('button.f1iasax4');
           const playButton =
-            document.querySelector<HTMLButtonElement>("button.f1e4uk3h");
+            document.querySelector<HTMLButtonElement>('button.f1e4uk3h');
 
           if (playButton) {
             clearInterval(interval);
@@ -25,7 +25,7 @@ export const initEmbed = () => {
           }
           if (button) {
             clearInterval(interval);
-            if (button.getAttribute("data-title") !== "再生") return;
+            if (button.getAttribute('data-title') !== '再生') return;
 
             button.click();
           }
@@ -34,20 +34,39 @@ export const initEmbed = () => {
       }
       case Event.pause: {
         const button =
-          document.querySelector<HTMLButtonElement>("button.f1iasax4");
+          document.querySelector<HTMLButtonElement>('button.f1iasax4');
         if (!button) return;
-        if (button.getAttribute("data-title") !== "一時停止") return;
+        if (button.getAttribute('data-title') !== '一時停止') return;
 
         button.click();
         return;
       }
-      case Event.volume:
-        console.log("volume event!");
+      case Event.volume: {
+        const video = document.querySelector<HTMLVideoElement>('video');
+        if (!video) return;
+
+        video.volume = event.data.volume;
+        return;
+      }
+      case Event.progress: {
+        const seekbar = document.querySelector<HTMLDivElement>('.f26lxvz');
+        if (!seekbar) return;
+
+        const script = document.createElement('script');
+        script.src = chrome.runtime.getURL('/src/pages/progress/index.js');
+        document.body.appendChild(script);
+        window.dispatchEvent(
+          new CustomEvent(Event.progress, { detail: event.data.progress })
+        );
+        script.remove();
+
+        return;
+      }
     }
   });
 
-  const progress = document.querySelector<HTMLDivElement>(".fjpurxp");
-  const progressBar = document.querySelector<HTMLDivElement>(".f1k8leow");
+  const progress = document.querySelector<HTMLDivElement>('.fjpurxp');
+  const progressBar = document.querySelector<HTMLDivElement>('.f1k8leow');
 
   const interval = setInterval(() => {
     if (!progress || !progressBar) return;
@@ -59,6 +78,6 @@ export const initEmbed = () => {
 
     const percentage = value / max;
 
-    window.parent.postMessage({ type: Event.progress, percentage }, "*");
+    window.parent.postMessage({ type: Event.progress, percentage }, '*');
   }, 100);
 };
