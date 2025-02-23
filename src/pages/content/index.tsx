@@ -6,17 +6,19 @@ import { runOnPage } from '@pages/content/utils';
 import { initEmbed } from '@pages/content/embed';
 
 const init = () => {
-  if (location.href.includes("nicovideo.jp")) {
+  if (location.href.includes('nicovideo.jp')) {
     initEmbed();
     return;
   }
-  
+
   const replaceVideoLink = () => {
     let count = 0;
 
     const interval = setInterval(() => {
       count += 1;
-      const items = document.querySelectorAll<HTMLDivElement>('#__next main > :not(nav) .css-0:has(a)');
+      const items = document.querySelectorAll<HTMLDivElement>(
+        '#__next main > :not(nav) .css-0:has(a)'
+      );
       if (items.length > 0) clearInterval(interval);
       if (count > 100) clearInterval(interval);
 
@@ -43,10 +45,12 @@ const init = () => {
   });
 
   render(
-    () => <PlayerProvider>
-      <PlayerBar />
-    </PlayerProvider>,
-    document.body!,
+    () => (
+      <PlayerProvider>
+        <PlayerBar />
+      </PlayerProvider>
+    ),
+    document.body!
   );
 };
 init();

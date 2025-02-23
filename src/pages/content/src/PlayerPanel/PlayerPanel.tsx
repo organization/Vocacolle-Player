@@ -5,24 +5,32 @@ import {
   playlistAnimationStyle,
   playlistStyle,
   selectedItemStyle,
-  videoStyle,
   videoAnimationStyle,
-} from "./PlayerPanel.css";
+  videoStyle,
+} from './PlayerPanel.css';
 import { createEffect, For, on, Show } from 'solid-js';
 import {
   currentVideo,
   playlist,
   setPlaylist,
-} from "@pages/content/store/playlist";
-import { PlayInfo } from "@pages/content/src";
-import { player } from "@pages/content/store/player";
+} from '@pages/content/store/playlist';
+import { PlayInfo } from '@pages/content/src';
+import { player } from '@pages/content/store/player';
 
 export const PlayerPanel = () => {
   const elements: HTMLElement[] = [];
 
-  createEffect(on(() => playlist.currentIndex, (index) => {
-    elements[index]?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }));
+  createEffect(
+    on(
+      () => playlist.currentIndex,
+      (index) => {
+        elements[index]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }
+    )
+  );
 
   return (
     <div class={fixedStyle}>
@@ -31,12 +39,12 @@ export const PlayerPanel = () => {
           <div
             classList={{
               [videoStyle]: true,
-              [videoAnimationStyle.enter]: player.mode === "full",
-              [videoAnimationStyle.exit]: player.mode === "bar",
+              [videoAnimationStyle.enter]: player.mode === 'full',
+              [videoAnimationStyle.exit]: player.mode === 'bar',
             }}
           >
             <iframe
-              id={"vcp-iframe"}
+              id={'vcp-iframe'}
               src={`https://embed.nicovideo.jp/watch/${
                 video().id
               }?persistence=1&oldScript=1&referer=&from=0&allowProgrammaticFullScreen=1`}
@@ -48,19 +56,19 @@ export const PlayerPanel = () => {
       <div
         classList={{
           [playlistStyle]: true,
-          [playlistAnimationStyle.enter]: player.mode === "full",
-          [playlistAnimationStyle.exit]: player.mode === "bar",
+          [playlistAnimationStyle.enter]: player.mode === 'full',
+          [playlistAnimationStyle.exit]: player.mode === 'bar',
         }}
       >
         <For each={playlist.playlist}>
           {(video, index) => (
             <div
-              ref={(el) => elements[index()] = el}
+              ref={(el) => (elements[index()] = el)}
               classList={{
                 [itemStyle]: true,
                 [selectedItemStyle]: playlist.currentIndex === index(),
               }}
-              onClick={() => setPlaylist("currentIndex", index())}
+              onClick={() => setPlaylist('currentIndex', index())}
             >
               <PlayInfo
                 ranking={index() + 1}

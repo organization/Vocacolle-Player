@@ -27,7 +27,7 @@ const videoShow = keyframes({
   to: {
     opacity: 1,
     scale: 1,
-  }
+  },
 });
 const videoHide = keyframes({
   from: {
@@ -37,7 +37,7 @@ const videoHide = keyframes({
   to: {
     opacity: 0,
     scale: 0.2,
-  }
+  },
 });
 
 export const videoAnimationStyle = styleVariants({
@@ -110,7 +110,7 @@ const playlistShow = keyframes({
   to: {
     opacity: 1,
     height: '100%',
-  }
+  },
 });
 const playlistHide = keyframes({
   from: {
@@ -120,7 +120,7 @@ const playlistHide = keyframes({
   to: {
     opacity: 0,
     height: '0',
-  }
+  },
 });
 export const playlistAnimationStyle = styleVariants({
   enter: {

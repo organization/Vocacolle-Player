@@ -1,15 +1,15 @@
 (() => {
-  const seekbar = document.querySelector<HTMLDivElement>(".f26lxvz");
+  const seekbar = document.querySelector<HTMLDivElement>('.f26lxvz');
   if (!seekbar) return;
 
   const names = Object.getOwnPropertyNames(seekbar);
   const property = names.find((name) =>
-    name.startsWith("__reactInternalInstance")
+    name.startsWith('__reactInternalInstance')
   );
   if (!property) return;
 
   window.addEventListener(
-    "vcp:progress",
+    'vcp:progress',
     (event: CustomEvent) => {
       const progress = event.detail;
 
@@ -17,7 +17,7 @@
         ?.onTouchStart;
       const end = (seekbar as any)[property]?._currentElement?.props
         ?.onTouchEnd;
-      const startEvent = new TouchEvent("touchstart", {
+      const startEvent = new TouchEvent('touchstart', {
         bubbles: true,
         cancelable: true,
         touches: [
@@ -29,7 +29,7 @@
           }),
         ],
       });
-      const endEvent = new TouchEvent("touchend", {
+      const endEvent = new TouchEvent('touchend', {
         bubbles: true,
         cancelable: true,
         touches: [

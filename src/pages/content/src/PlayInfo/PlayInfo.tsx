@@ -1,17 +1,18 @@
 import {
   artistStyle,
   containerStyle,
-  imageStyle, rankingStyle,
+  imageStyle,
+  rankingStyle,
   textContainerStyle,
   titleStyle,
-} from '@pages/content/src/PlayInfo/PlayInfo.css';
+} from './PlayInfo.css';
 
 export type PlayInfoProps = {
   ranking: number;
   title: string;
   artist: string;
   album: string;
-}
+};
 export const PlayInfo = (props: PlayInfoProps) => {
   return (
     <div class={containerStyle}>
@@ -22,7 +23,8 @@ export const PlayInfo = (props: PlayInfoProps) => {
           [rankingStyle['3']]: props.ranking === 3,
           [rankingStyle['in10']]: props.ranking > 3 && props.ranking <= 10,
           [rankingStyle['in100']]: props.ranking > 10,
-        }}>
+        }}
+      >
         #{props.ranking}
       </div>
       <img class={imageStyle} src={props.album} alt="album" />
@@ -31,5 +33,5 @@ export const PlayInfo = (props: PlayInfoProps) => {
         <div class={artistStyle}>{props.artist}</div>
       </div>
     </div>
-  )
+  );
 };

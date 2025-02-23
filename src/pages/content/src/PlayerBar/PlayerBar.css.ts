@@ -1,4 +1,9 @@
-import { createVar, keyframes, style, styleVariants } from '@vanilla-extract/css';
+import {
+  createVar,
+  keyframes,
+  style,
+  styleVariants,
+} from '@vanilla-extract/css';
 import { Colors } from '@pages/content/theme';
 
 export const fixedStyle = style({
@@ -46,7 +51,7 @@ const showAnimation = keyframes({
   to: {
     opacity: 1,
     transform: 'translateY(0)',
-  }
+  },
 });
 const hideAnimation = keyframes({
   from: {
@@ -56,7 +61,7 @@ const hideAnimation = keyframes({
   to: {
     opacity: 0,
     transform: 'translateY(100%)',
-  }
+  },
 });
 export const wrapperAnimationStyle = styleVariants({
   enter: {
@@ -93,10 +98,11 @@ export const progressStyle = style({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'linear-gradient(to right, rgba(241, 106, 3, 0.2) calc(100% - 3.2rem), rgba(241, 106, 3, 0.5) 100%)',
+    background:
+      'linear-gradient(to right, rgba(241, 106, 3, 0.2) calc(100% - 3.2rem), rgba(241, 106, 3, 0.5) 100%)',
     transform: `translateX(calc(-100% + ${progressVar} * 100%))`,
     transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-  }
+  },
 });
 
 export const containerStyle = style({
@@ -104,13 +110,16 @@ export const containerStyle = style({
   gap: '0.4rem',
 });
 
-export const centerContainerStyle = style([containerStyle, {
-  position: 'absolute',
-  left: '50%',
-  top: '50%',
+export const centerContainerStyle = style([
+  containerStyle,
+  {
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
 
-  transform: 'translate(-50%, -50%)',
-}]);
+    transform: 'translate(-50%, -50%)',
+  },
+]);
 
 export const iconButtonStyle = style({
   display: 'flex',
@@ -134,7 +143,7 @@ export const iconButtonStyle = style({
     opacity: 0.5,
     cursor: 'default',
     backgroundColor: 'transparent !important',
-  }
+  },
 });
 
 export const iconStyle = style({

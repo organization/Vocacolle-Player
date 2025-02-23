@@ -1,6 +1,6 @@
-import { createStore } from "solid-js/store";
-import { fetchRanking } from "@pages/content/api/ranking";
-import { Video } from "@pages/content/types";
+import { createStore } from 'solid-js/store';
+import { fetchRanking } from '@pages/content/api/ranking';
+import { Video } from '@pages/content/types';
 
 export type PlaylistStore = {
   playlist: Video[];

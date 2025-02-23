@@ -19,32 +19,47 @@ const baseRankingStyle = style({
   textAlign: 'center',
   lineHeight: '2rem',
   flexShrink: 0,
-})
+});
 export const rankingStyle = styleVariants({
-  1: [baseRankingStyle, {
-    color: Colors.gray[950],
-    backgroundColor: '#fcd34d',
-    fontSize: '1.0rem',
-  }],
-  2: [baseRankingStyle, {
-    color: Colors.gray[950],
-    backgroundColor: '#94a3b8',
-    fontSize: '1.0rem',
-  }],
-  3: [baseRankingStyle, {
-    color: Colors.gray[50],
-    backgroundColor: '#854d0e',
-    fontSize: '1.0rem',
-  }],
-  in10: [baseRankingStyle, {
-    fontSize: '1.0rem',
-    color: Colors.gray[50],
-  }],
-  in100: [baseRankingStyle, {
-    fontSize: '0.8rem',
-    color: Colors.gray[500],
-  }],
-})
+  1: [
+    baseRankingStyle,
+    {
+      color: Colors.gray[950],
+      backgroundColor: '#fcd34d',
+      fontSize: '1.0rem',
+    },
+  ],
+  2: [
+    baseRankingStyle,
+    {
+      color: Colors.gray[950],
+      backgroundColor: '#94a3b8',
+      fontSize: '1.0rem',
+    },
+  ],
+  3: [
+    baseRankingStyle,
+    {
+      color: Colors.gray[50],
+      backgroundColor: '#854d0e',
+      fontSize: '1.0rem',
+    },
+  ],
+  in10: [
+    baseRankingStyle,
+    {
+      fontSize: '1.0rem',
+      color: Colors.gray[50],
+    },
+  ],
+  in100: [
+    baseRankingStyle,
+    {
+      fontSize: '0.8rem',
+      color: Colors.gray[500],
+    },
+  ],
+});
 
 export const textContainerStyle = style({
   display: 'flex',

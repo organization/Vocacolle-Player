@@ -1,24 +1,24 @@
-import { crx } from "@crxjs/vite-plugin";
-import { resolve } from "path";
-import { defineConfig } from "vite";
-import solidPlugin from "vite-plugin-solid";
+import { crx } from '@crxjs/vite-plugin';
+import { resolve } from 'path';
+import { defineConfig } from 'vite';
+import solidPlugin from 'vite-plugin-solid';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import solidSvg from 'vite-plugin-solid-svg';
 
-import manifest from "./src/manifest";
+import manifest from './src/manifest';
 
-const root = resolve(__dirname, "src");
-const pagesDir = resolve(root, "pages");
-const assetsDir = resolve(root, "assets");
-const outDir = resolve(__dirname, "dist");
-const publicDir = resolve(__dirname, "public");
+const root = resolve(__dirname, 'src');
+const pagesDir = resolve(root, 'pages');
+const assetsDir = resolve(root, 'assets');
+const outDir = resolve(__dirname, 'dist');
+const publicDir = resolve(__dirname, 'public');
 
-const isDev = process.env.__DEV__ === "true";
+const isDev = process.env.__DEV__ === 'true';
 
 export default defineConfig({
   plugins: [
     vanillaExtractPlugin({
-      unstable_mode: 'transform'
+      unstable_mode: 'transform',
     }),
     solidPlugin(),
     solidSvg(),
@@ -26,9 +26,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@src": root,
-      "@assets": assetsDir,
-      "@pages": pagesDir,
+      '@src': root,
+      '@assets': assetsDir,
+      '@pages': pagesDir,
     },
   },
   publicDir,
@@ -36,6 +36,11 @@ export default defineConfig({
     outDir,
     sourcemap: isDev,
     rollupOptions: {
+      input: {
+        content: resolve(pagesDir, 'content', 'index.tsx'),
+        progress: resolve(pagesDir, 'content', 'progress.ts'),
+        background: resolve(pagesDir, 'background', 'index.ts'),
+      },
       // input: {
       //   devtools: resolve(pagesDir, "devtools", "index.html"),
       //   panel: resolve(pagesDir, "panel", "index.html"),
@@ -46,18 +51,10 @@ export default defineConfig({
       //   newtab: resolve(pagesDir, "newtab", "index.html"),
       //   options: resolve(pagesDir, "options", "index.html"),
       // },
-      // output: {
-      //   entryFileNames: "src/pages/[name]/index.js",
-      //   chunkFileNames: isDev
-      //     ? "assets/js/[name].js"
-      //     : "assets/js/[name].[hash].js",
-      //   assetFileNames: (assetInfo) => {
-      //     const { dir, name: _name } = path.parse(assetInfo.name);
-      //     // const assetFolder = getLastElement(dir.split("/"));
-      //     // const name = assetFolder + firstUpperCase(_name);
-      //     return `assets/[ext]/${name}.chunk.[ext]`;
-      //   },
-      // },
+      output: {
+        entryFileNames: 'src/pages/[name]/index.js',
+        chunkFileNames: 'assets/js/[name].js',
+      },
     },
   },
 });

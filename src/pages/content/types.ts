@@ -1,4 +1,5 @@
 export type RankingType = 'top100' | 'rookie' | 'remix';
+
 export interface RankingData {
   meta: Meta;
   data?: Data;
@@ -54,8 +55,8 @@ export interface Video {
   requireSensitiveMasking: boolean;
   videoLive: any; // 필요 시 구체적인 타입으로 수정
   isMuted: boolean;
-  "9d091f87": boolean;
-  "acf68865": boolean;
+  '9d091f87': boolean;
+  acf68865: boolean;
 }
 
 export interface Count {
