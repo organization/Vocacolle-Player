@@ -3,4 +3,5 @@ export const Event = {
   pause: 'vcp:pause',
   volume: 'vcp:volume',
   progress: 'vcp:progress',
+  fullscreen: 'vcp:fullscreen',
 };

@@ -167,3 +167,14 @@ export const iconStyle = style({
 export const iconExpandStyle = style({
   transform: 'rotate(180deg)',
 });
+
+export const timeStyle = style({
+  fontSize: '0.8rem',
+  fontWeight: 'normal',
+  color: Colors.gray[300],
+  userSelect: 'none',
+
+  display: 'flex',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+});

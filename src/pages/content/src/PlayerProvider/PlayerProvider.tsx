@@ -21,23 +21,26 @@ export type PlayerProviderProps = {
 };
 export const PlayerProvider = (props: PlayerProviderProps) => {
   const sendEvent = (event: unknown) => {
-    const iframe = document.querySelector<HTMLIFrameElement>('#vcp-iframe');
-    iframe?.contentWindow?.postMessage(event, '*');
-  };
+    let timestamp = Date.now();
 
-  createEffect(
-    on(
-      () => player.state,
-      (state) => {
-        if (state === 'playing') {
-          sendEvent({ type: Event.play });
-        }
-        if (state === 'paused') {
-          sendEvent({ type: Event.pause });
-        }
-      }
-    )
-  );
+    const iframe = document.querySelector<HTMLIFrameElement>('#vcp-iframe');
+    iframe?.addEventListener('load', () => {
+      if (Date.now() - timestamp > 5000) return;
+
+      setTimeout(() => {
+        iframe?.contentWindow?.postMessage(event, '*');
+      }, 100);
+    }, { once: true });
+
+    let count = 0;
+    const trySend = setInterval(() => {
+      count += 1;
+      if (!iframe?.contentWindow || count > 500) return;
+
+      iframe?.contentWindow?.postMessage(event, '*');
+      clearInterval(trySend);
+    }, 100);
+  };
 
   createEffect(
     on(currentVideo, () => {
@@ -64,6 +67,7 @@ export const PlayerProvider = (props: PlayerProviderProps) => {
     })
   );
 
+  // auto play
   createEffect(
     on(currentVideo, (video) => {
       if (!video) return;
@@ -72,16 +76,32 @@ export const PlayerProvider = (props: PlayerProviderProps) => {
       if (!dom) return;
 
       setPlayer('state', 'paused');
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         setPlayer('state', 'playing');
-      }, 1000);
+      });
     })
   );
 
+  // onNext
   createEffect(on(() => player.progress, (progress) => {
     if (Math.abs(1 - progress) > 0.0005) return;
     setPlaylist('currentIndex', (index) => Math.min(index + 1, playlist.playlist.length - 1));
   }));
+
+  // event
+  createEffect(
+    on(
+      () => player.state,
+      (state) => {
+        if (state === 'playing') {
+          sendEvent({ type: Event.play });
+        }
+        if (state === 'paused') {
+          sendEvent({ type: Event.pause });
+        }
+      }
+    )
+  );
 
   return (
     <PlayerContext.Provider

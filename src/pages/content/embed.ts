@@ -12,7 +12,7 @@ export const initEmbed = () => {
         let count = 0;
         const interval = setInterval(() => {
           count += 1;
-          if (count > 100) clearInterval(interval);
+          if (count > 500) clearInterval(interval);
 
           const button =
             document.querySelector<HTMLButtonElement>('button.f1iasax4');
@@ -62,13 +62,23 @@ export const initEmbed = () => {
 
         return;
       }
+      case Event.fullscreen: {
+        const video = document.querySelector<HTMLVideoElement>('video');
+        if (!video) return;
+
+        video.requestFullscreen();
+        if ('webkitRequestFullscreen' in video) {
+          video.webkitRequestFullscreen();
+        }
+        return;
+      }
     }
   });
 
   const progress = document.querySelector<HTMLDivElement>('.fjpurxp');
   const progressBar = document.querySelector<HTMLDivElement>('.f1k8leow');
 
-  const interval = setInterval(() => {
+  setInterval(() => {
     if (!progress || !progressBar) return;
 
     const max = progress.getBoundingClientRect().width;

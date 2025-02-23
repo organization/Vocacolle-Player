@@ -12,6 +12,7 @@ import IconPlay from '../../assets/icon_play.svg';
 import IconPause from '../../assets/icon_pause.svg';
 import IconNext from '../../assets/icon_next.svg';
 import IconOpen from '../../assets/icon_open.svg';
+import IconFullscreen from '../../assets/icon_fullscreen.svg';
 import IconPiP from '../../assets/icon_pip.svg';
 import IconExpand from '../../assets/icon_expand.svg';
 import IconClose from '../../assets/icon_close.svg';
@@ -24,7 +25,7 @@ import {
   iconExpandStyle,
   iconStyle,
   progressStyle,
-  progressVar,
+  progressVar, timeStyle,
   wrapperAnimationStyle,
   wrapperStyle,
 } from './PlayerBar.css';
@@ -34,6 +35,7 @@ import { PlayerPanel } from '@pages/content/src/PlayerPanel';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { usePlayer } from '@pages/content/src';
 import { Event } from '@pages/content/event';
+import { formatTime } from '../../utils';
 
 export const PlayerBar = () => {
   const { sendEvent } = usePlayer();
@@ -61,13 +63,16 @@ export const PlayerBar = () => {
     window.open(`https://www.nicovideo.jp/watch/${video.id}`);
   };
 
+  const onFullscreen = () => {
+    sendEvent({ type: Event.fullscreen });
+  };
   const onTogglePiP = () => {
     const isPiP = player.mode === 'pip';
     if (!isPiP) {
       setPlayer('mode', 'pip');
     } else {
       if (playlist.mode === 'full') setPlayer('mode', 'full');
-      else setPlayer('mode', 'hidden')
+      else setPlayer('mode', 'hidden');
     }
   };
   const onExpand = () => {
@@ -190,6 +195,15 @@ export const PlayerBar = () => {
           <button class={iconButtonStyle} onClick={onNext}>
             <IconNext class={iconStyle} />
           </button>
+          <Show when={currentVideo()}>
+            {(video) => (
+              <>
+                <div class={timeStyle}>{formatTime(video().duration * (progress() ?? player.progress))}</div>
+                <div class={timeStyle}>/</div>
+                <div class={timeStyle}>{formatTime(video().duration)}</div>
+              </>
+            )}
+          </Show>
         </div>
         <div class={centerContainerStyle}>
           <Show when={currentVideo()}>
@@ -209,6 +223,9 @@ export const PlayerBar = () => {
           </Show>
         </div>
         <div class={containerStyle}>
+          <button class={iconButtonStyle} onClick={onFullscreen}>
+            <IconFullscreen class={iconStyle} />
+          </button>
           <button
             data-active={player.mode === 'pip'}
             class={iconButtonStyle}

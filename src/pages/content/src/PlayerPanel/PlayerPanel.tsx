@@ -1,7 +1,8 @@
 import {
   fixedStyle,
   iframeStyle,
-  itemStyle, pipScale,
+  itemStyle,
+  pipScale,
   pipStyle,
   pipX,
   pipY,
@@ -11,7 +12,7 @@ import {
   videoAnimationStyle,
   videoStyle,
 } from './PlayerPanel.css';
-import { createEffect, createSignal, For, on, Show } from 'solid-js';
+import { createEffect, createSignal, For, on, onCleanup, Show } from 'solid-js';
 import {
   currentVideo,
   playlist,
@@ -36,7 +37,7 @@ export const PlayerPanel = () => {
 
     const rectX = rect.x - coord().x;
     const rectY = rect.y - coord().y;
-    const offsetX = event.offsetX * scale()
+    const offsetX = event.offsetX * scale();
     const offsetY = event.offsetY * scale();
 
     const edgeX = offsetX < 10 || offsetX > rect.width - 10;
@@ -52,9 +53,8 @@ export const PlayerPanel = () => {
           setScale(scale);
         });
       };
-
-
-    } else { // drag mode
+    } else {
+      // drag mode
       onMove = (event: PointerEvent) => {
         const x = event.clientX - rectX - offsetX;
         const y = event.clientY - rectY - offsetY;
@@ -90,11 +90,34 @@ export const PlayerPanel = () => {
 
   createEffect(
     on(
-      () => player.mode !== 'pip',
+      () => player.mode === 'pip',
       (isPiP) => {
         if (!isPiP) {
           setCoord({ x: 0, y: 0 });
-          setScale(1)
+          setScale(1);
+        } else {
+          const rect = iframe()?.getBoundingClientRect();
+          if (!rect) return;
+
+          const offset = playlist.mode === 'full' ? 1 : 5;
+          setCoord({
+            x: -rect.x + 16,
+            y: -rect.y + rect.height * (offset - 1) + 16,
+          });
+
+          const timeout = setTimeout(() => {
+            const rect = iframe()?.getBoundingClientRect();
+            if (!rect) return;
+            setScale(0.5);
+            setCoord({
+              x: coord().x,
+              y: coord().y - rect.height / 2,
+            });
+          }, 600);
+
+          onCleanup(() => {
+            clearTimeout(timeout);
+          });
         }
       }
     )
@@ -115,12 +138,13 @@ export const PlayerPanel = () => {
             style={assignInlineVars({
               [pipX]: coord().x + 'px',
               [pipY]: coord().y + 'px',
-              [pipScale]: `${(scale() * 100).toFixed(5)}%`
+              [pipScale]: `${(scale() * 100).toFixed(5)}%`,
             })}
             onPointerDown={onDragStart}
           >
             <iframe
               id={'vcp-iframe'}
+              allow={'fullscreen'}
               src={`https://embed.nicovideo.jp/watch/${
                 video().id
               }?persistence=1&oldScript=1&referer=&from=0&allowProgrammaticFullScreen=1`}
