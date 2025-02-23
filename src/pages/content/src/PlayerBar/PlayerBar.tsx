@@ -95,7 +95,9 @@ export const PlayerBar = () => {
 
       const track = createReaction(() => player.progress);
       track(() => {
-        setProgress(null);
+        requestAnimationFrame(() => {
+          setProgress(null);
+        });
       });
 
       window.removeEventListener('pointermove', onMove);

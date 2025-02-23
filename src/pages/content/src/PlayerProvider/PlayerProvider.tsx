@@ -6,7 +6,7 @@ import {
   onCleanup,
   useContext,
 } from 'solid-js';
-import { currentVideo } from '@pages/content/store/playlist';
+import { currentVideo, playlist, setPlaylist } from '@pages/content/store/playlist';
 import { Event } from '@pages/content/event';
 import { player, setPlayer } from '@pages/content/store/player';
 
@@ -40,7 +40,7 @@ export const PlayerProvider = (props: PlayerProviderProps) => {
   );
 
   createEffect(
-    on(currentVideo, (video) => {
+    on(currentVideo, () => {
       const listener = (event: MessageEvent) => {
         if (!event.data) return;
         if (typeof event.data !== 'object') return;
@@ -64,27 +64,24 @@ export const PlayerProvider = (props: PlayerProviderProps) => {
     })
   );
 
-  // createEffect(
-  //   on(currentVideo, (video) => {
-  //     if (!video) return;
-  //
-  //     const url = `https://embed.nicovideo.jp/watch/${video.id}?persistence=1&oldScript=1&referer=&from=0&allowProgrammaticFullScreen=1`;
-  //     const dom = (<iframe
-  //       id={'vcp-iframe'}
-  //       src={url}
-  //       style={{ opacity: 0, position: 'fixed', top: 0, left: 0, 'pointer-events': 'none' }}
-  //     />) as HTMLIFrameElement;
-  //
-  //     dom.addEventListener("load", () => {
-  //       setTimeout(() => {
-  //         setPlayer('state', 'playing');
-  //       }, 100);
-  //     });
-  //
-  //     document.body.append(dom);
-  //     onCleanup(() => dom.remove());
-  //   })
-  // );
+  createEffect(
+    on(currentVideo, (video) => {
+      if (!video) return;
+
+      const dom = document.querySelector<HTMLIFrameElement>('#vcp-iframe');
+      if (!dom) return;
+
+      setPlayer('state', 'paused');
+      setTimeout(() => {
+        setPlayer('state', 'playing');
+      }, 1000);
+    })
+  );
+
+  createEffect(on(() => player.progress, (progress) => {
+    if (Math.abs(1 - progress) > 0.0005) return;
+    setPlaylist('currentIndex', (index) => Math.min(index + 1, playlist.playlist.length - 1));
+  }));
 
   return (
     <PlayerContext.Provider
