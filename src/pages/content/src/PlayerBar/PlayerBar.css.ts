@@ -134,16 +134,28 @@ export const iconButtonStyle = style({
   cursor: 'pointer',
   padding: '0.4rem',
   borderRadius: '0.4rem',
-  transition: 'background-color 0.2s',
+  transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
 
-  ':hover': {
-    backgroundColor: Colors.gray[800],
-  },
-  ':disabled': {
-    opacity: 0.5,
-    cursor: 'default',
-    backgroundColor: 'transparent !important',
-  },
+  selectors: {
+    '&:hover': {
+      backgroundColor: Colors.gray[800],
+    },
+    '&:disabled': {
+      opacity: 0.5,
+      cursor: 'default',
+      backgroundColor: 'transparent !important',
+    },
+    '&:active': {
+      transform: 'scale(0.95)',
+    },
+    '&[data-active="true"]': {
+      backgroundColor: 'rgba(241, 106, 3, 0.1)',
+      color: 'rgba(241, 106, 3, 1)'
+    },
+    '&[data-active="true"]:hover': {
+      backgroundColor: 'rgba(241, 106, 3, 0.2)',
+    }
+  }
 });
 
 export const iconStyle = style({

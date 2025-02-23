@@ -1,14 +1,14 @@
-import { keyframes, style, styleVariants } from '@vanilla-extract/css';
+import { createVar, fallbackVar, keyframes, style, styleVariants } from '@vanilla-extract/css';
 import { Colors } from '@pages/content/theme';
 
 export const fixedStyle = style({
   position: 'fixed',
   top: 0,
   bottom: '4.2rem',
-  left: 0,
-  right: 0,
+  left: '0.8rem',
+  right: '0.8rem',
 
-  padding: '0.8rem calc((100vw - 1200px) / 2)',
+  padding: '0.8rem calc((100vw - 1200px - 1.6rem) / 2)',
 
   display: 'flex',
   justifyContent: 'flex-end',
@@ -56,9 +56,6 @@ export const videoStyle = style({
 
   width: 'calc(100% - 480px - 0.8rem)',
   aspectRatio: '16 / 9',
-
-  backgroundColor: 'rgba(25, 25, 25, 0.85)',
-  backdropFilter: 'blur(12px)',
   boxShadow: '0 2px 12px rgba(0, 0, 0, 0.5)',
   color: Colors.gray[50],
 
@@ -68,6 +65,40 @@ export const videoStyle = style({
   animationFillMode: 'both',
 
   transformOrigin: '0% 100%',
+  transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+});
+
+export const pipX = createVar();
+export const pipY = createVar();
+export const pipScale = createVar();
+export const pipStyle = style({
+  transform: `translate(${fallbackVar(pipX, '0')}, ${fallbackVar(pipY, '0')}) scale(${fallbackVar(pipScale, '100%')})`,
+  selectors: {
+    '&::before': {
+      content: '',
+      position: 'absolute',
+      inset: 10,
+
+      zIndex: 101,
+      cursor: 'all-scroll',
+    },
+    '&::after': {
+      content: '',
+      position: 'absolute',
+      inset: 0,
+
+      zIndex: 100,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      backdropFilter: 'blur(8px)',
+      opacity: 0,
+      cursor: 'se-resize',
+
+      transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+    },
+    '&:hover::after': {
+      opacity: 1,
+    }
+  }
 });
 export const iframeStyle = style({
   width: '100%',

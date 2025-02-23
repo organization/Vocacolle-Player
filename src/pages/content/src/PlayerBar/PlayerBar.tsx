@@ -12,6 +12,7 @@ import IconPlay from '../../assets/icon_play.svg';
 import IconPause from '../../assets/icon_pause.svg';
 import IconNext from '../../assets/icon_next.svg';
 import IconOpen from '../../assets/icon_open.svg';
+import IconPiP from '../../assets/icon_pip.svg';
 import IconExpand from '../../assets/icon_expand.svg';
 import IconClose from '../../assets/icon_close.svg';
 
@@ -59,19 +60,38 @@ export const PlayerBar = () => {
 
     window.open(`https://www.nicovideo.jp/watch/${video.id}`);
   };
+
+  const onTogglePiP = () => {
+    const isPiP = player.mode === 'pip';
+    if (!isPiP) {
+      setPlayer('mode', 'pip');
+    } else {
+      if (playlist.mode === 'full') setPlayer('mode', 'full');
+      else setPlayer('mode', 'hidden')
+    }
+  };
   const onExpand = () => {
-    setPlayer('mode', player.mode === 'bar' ? 'full' : 'bar');
+    const isHidden = playlist.mode === 'hidden';
+
+    if (isHidden) {
+      setPlaylist('mode', 'full');
+      if (player.mode !== 'pip') setPlayer('mode', 'full');
+    } else {
+      setPlaylist('mode', 'hidden');
+      if (player.mode !== 'pip') setPlayer('mode', 'hidden');
+    }
   };
   const onClose = () => {
     setPlayer((prev) => ({
       ...prev,
       state: 'paused',
-      mode: 'bar',
+      mode: 'hidden',
       progress: 0,
     }));
     setPlaylist({
       currentIndex: 0,
       playlist: [],
+      mode: 'hidden',
     });
   };
 
@@ -189,11 +209,19 @@ export const PlayerBar = () => {
           </Show>
         </div>
         <div class={containerStyle}>
+          <button
+            data-active={player.mode === 'pip'}
+            class={iconButtonStyle}
+            onClick={onTogglePiP}
+          >
+            <IconPiP class={iconStyle} />
+          </button>
+
           <button class={iconButtonStyle} onClick={onExpand}>
             <IconExpand
               classList={{
                 [iconStyle]: true,
-                [iconExpandStyle]: player.mode === 'full',
+                [iconExpandStyle]: playlist.mode === 'full',
               }}
             />
           </button>

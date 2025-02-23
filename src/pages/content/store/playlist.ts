@@ -5,10 +5,12 @@ import { Video } from '@pages/content/types';
 export type PlaylistStore = {
   playlist: Video[];
   currentIndex: number;
+  mode: 'hidden' | 'full';
 };
 export const [playlist, setPlaylist] = createStore<PlaylistStore>({
   playlist: [],
   currentIndex: 0,
+  mode: 'hidden',
 });
 
 export const setRankingPlaylist = async (videoUrl: string) => {
