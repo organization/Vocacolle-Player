@@ -13,6 +13,8 @@
     (event: CustomEvent) => {
       const progress = event.detail;
 
+      if (typeof progress !== 'number') return;
+
       const caller = (seekbar as any)[property]?._currentElement?.props
         ?.onTouchStart;
       const end = (seekbar as any)[property]?._currentElement?.props
@@ -42,9 +44,8 @@
         ],
       });
 
-      caller(startEvent);
-      end(endEvent);
+      caller?.(startEvent);
+      end?.(endEvent);
     },
-    { once: true }
   );
 })();

@@ -1,5 +1,4 @@
 import { style, styleVariants } from '@vanilla-extract/css';
-import { Colors } from '@pages/content/theme';
 
 export const containerStyle = style({
   width: '100%',
@@ -24,7 +23,7 @@ export const rankingStyle = styleVariants({
   1: [
     baseRankingStyle,
     {
-      color: Colors.gray[950],
+      color: 'oklch(14.5% 0 0 / 1)',
       backgroundColor: '#fcd34d',
       fontSize: '1.0rem',
     },
@@ -32,7 +31,7 @@ export const rankingStyle = styleVariants({
   2: [
     baseRankingStyle,
     {
-      color: Colors.gray[950],
+      color: 'oklch(14.5% 0 0 / 1)',
       backgroundColor: '#94a3b8',
       fontSize: '1.0rem',
     },
@@ -40,7 +39,7 @@ export const rankingStyle = styleVariants({
   3: [
     baseRankingStyle,
     {
-      color: Colors.gray[50],
+      color: 'oklch(94% 0 0 / 1)',
       backgroundColor: '#854d0e',
       fontSize: '1.0rem',
     },
@@ -49,14 +48,14 @@ export const rankingStyle = styleVariants({
     baseRankingStyle,
     {
       fontSize: '1.0rem',
-      color: Colors.gray[50],
+      color: 'oklch(14.5% 0 0 / 1)',
     },
   ],
   in100: [
     baseRankingStyle,
     {
       fontSize: '0.8rem',
-      color: Colors.gray[500],
+      color: 'oklch(14.5% 0 0 / 0.4)',
     },
   ],
 });
@@ -78,7 +77,7 @@ export const imageStyle = style({
 export const titleStyle = style({
   width: '100%',
   fontSize: '1rem',
-  color: Colors.gray[50],
+  color: 'oklch(14.5% 0 0 / 1)',
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
   overflow: 'hidden',
@@ -86,5 +85,5 @@ export const titleStyle = style({
 
 export const artistStyle = style({
   fontSize: '0.8rem',
-  color: Colors.gray[500],
+  color: 'oklch(14.5% 0 0 / 0.4)',
 });

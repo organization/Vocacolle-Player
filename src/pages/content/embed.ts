@@ -19,15 +19,14 @@ export const initEmbed = () => {
           const playButton =
             document.querySelector<HTMLButtonElement>('button.f1e4uk3h');
 
-          if (playButton) {
-            clearInterval(interval);
-            playButton.click();
-          }
           if (button) {
             clearInterval(interval);
             if (button.getAttribute('data-title') !== '再生') return;
 
             button.click();
+          } else if (playButton) {
+            clearInterval(interval);
+            playButton.click();
           }
         }, 100);
         return;

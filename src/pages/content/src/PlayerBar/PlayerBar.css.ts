@@ -1,6 +1,5 @@
 import {
   createVar,
-  keyframes,
   style,
   styleVariants,
 } from '@vanilla-extract/css';
@@ -28,10 +27,11 @@ export const wrapperStyle = style({
   maxWidth: '1200px',
   height: '3.6rem',
 
-  backgroundColor: 'rgba(25, 25, 25, 0.85)',
-  backdropFilter: 'blur(12px)',
-  boxShadow: '0 2px 12px rgba(0, 0, 0, 0.5)',
-  color: Colors.gray[50],
+  backgroundColor: 'oklch(94% 0 0 / 0.2)',
+  backdropFilter: 'blur(8px) saturate(3)',
+  border: '2px solid oklch(94% 0 0 / 0.2)',
+  boxShadow: '0 4px 12px oklch(0% 0 0 / 0.35)',
+  color: Colors.gray[900],
 
   display: 'flex',
   justifyContent: 'space-between',
@@ -43,35 +43,22 @@ export const wrapperStyle = style({
   animationFillMode: 'both',
 });
 
-const showAnimation = keyframes({
-  from: {
-    opacity: 0,
-    transform: 'translateY(1rem)',
-  },
-  to: {
-    opacity: 1,
-    transform: 'translateY(0)',
-  },
-});
-const hideAnimation = keyframes({
-  from: {
-    opacity: 1,
-    transform: 'translateY(0)',
-  },
-  to: {
-    opacity: 0,
-    transform: 'translateY(100%)',
-  },
-});
 export const wrapperAnimationStyle = styleVariants({
   enter: {
     pointerEvents: 'all',
-    animation: `${showAnimation} 0.6s cubic-bezier(0.16, 1, 0.3, 1)`,
+    opacity: 1,
+    transform: 'translateY(0)',
+    scale: 1,
+    transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1), scale 0.3s cubic-bezier(0.37, 0, 0.63, 1)',
+    // animation: `${showAnimation} 0.3s cubic-bezier(0.65, 0, 0.35, 1)`,
   },
   exit: {
-    opacity: 0,
     pointerEvents: 'none',
-    animation: `${hideAnimation} 0.6s cubic-bezier(0.16, 1, 0.3, 1)`,
+    opacity: 0,
+    transform: 'translateY(100%)',
+    scale: 0.75,
+    transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1), scale 0.3s cubic-bezier(0.37, 0, 0.63, 1)',
+    // animation: `${hideAnimation} 0.3s cubic-bezier(0.65, 0, 0.35, 1)`,
   },
 });
 
@@ -87,7 +74,7 @@ export const progressStyle = style({
 
   transformOrigin: '0% 50%',
   pointerEvents: 'none',
-  transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+  transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
   overflow: 'hidden',
   borderRadius: '0.8rem',
 
@@ -99,27 +86,35 @@ export const progressStyle = style({
     right: 0,
     bottom: 0,
     background:
-      'linear-gradient(to right, rgba(241, 106, 3, 0.2) calc(100% - 3.2rem), rgba(241, 106, 3, 0.5) 100%)',
+      'linear-gradient(to right, rgba(241, 106, 3, 0.3) calc(100% - 3.2rem), rgba(241, 106, 3, 0.6) 100%)',
     transform: `translateX(calc(-100% + ${progressVar} * 100%))`,
-    transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+    transition: 'inherit',
   },
 });
 
 export const containerStyle = style({
   display: 'flex',
   gap: '0.4rem',
+  flexShrink: 0,
 });
 
 export const centerContainerStyle = style([
   containerStyle,
   {
     position: 'absolute',
-    left: '50%',
     top: '50%',
-
+    left: '50%',
+    width: 'calc(100% - 400px - 32px)',
     transform: 'translate(-50%, -50%)',
+    overflow: 'hidden',
+    pointerEvents: 'none',
+    padding: '0 0.8rem',
+    justifyContent: 'center',
   },
 ]);
+export const playerBarInfoStyle = style({
+  maxWidth: 'calc(100% - 40px)',
+});
 
 export const iconButtonStyle = style({
   display: 'flex',
@@ -130,15 +125,17 @@ export const iconButtonStyle = style({
 
   fontSize: '0.8rem',
 
-  color: Colors.gray[50],
+  color: 'oklch(14.5% 0 0 / 1)',
   cursor: 'pointer',
   padding: '0.4rem',
   borderRadius: '0.4rem',
-  transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+  pointerEvents: 'auto',
+  flexShrink: 0,
+  transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
 
   selectors: {
     '&:hover': {
-      backgroundColor: Colors.gray[800],
+      backgroundColor: 'oklch(14.5% 0 0 / 0.2)',
     },
     '&:disabled': {
       opacity: 0.5,
@@ -146,7 +143,7 @@ export const iconButtonStyle = style({
       backgroundColor: 'transparent !important',
     },
     '&:active': {
-      transform: 'scale(0.95)',
+      transform: 'scale(0.9)',
     },
     '&[data-active="true"]': {
       backgroundColor: 'rgba(241, 106, 3, 0.1)',
@@ -161,7 +158,7 @@ export const iconButtonStyle = style({
 export const iconStyle = style({
   width: '1.6rem',
   height: '1.6rem',
-  transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+  transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
 });
 
 export const iconExpandStyle = style({
@@ -171,7 +168,7 @@ export const iconExpandStyle = style({
 export const timeStyle = style({
   fontSize: '0.8rem',
   fontWeight: 'normal',
-  color: Colors.gray[300],
+  color: 'oklch(14.5% 0 0 / 0.4)',
   userSelect: 'none',
 
   display: 'flex',

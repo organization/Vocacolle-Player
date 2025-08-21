@@ -26,6 +26,7 @@ export const PlayerPanel = () => {
   const [iframe, setIframe] = createSignal<HTMLIFrameElement | null>(null);
   const [coord, setCoord] = createSignal({ x: 0, y: 0 });
   const [scale, setScale] = createSignal(1);
+  const [isMovingMode, setIsMovingMode] = createSignal(false);
 
   const elements: HTMLElement[] = [];
 
@@ -45,12 +46,15 @@ export const PlayerPanel = () => {
 
     let onMove: (event: PointerEvent) => void;
     if (edgeX || edgeY) {
+      const nowScale = scale();
       onMove = (event: PointerEvent) => {
-        const scaleX = (event.clientX - rect.x) / rect.width;
-        const scaleY = (event.offsetY - rect.y) / rect.height;
-        const scale = Math.min(Math.max(0.1, scaleX, scaleY), 2);
+        const scaleX = (event.clientX - rect.x) / rect.width * nowScale;
+        const scaleY = (event.offsetY - rect.y) / rect.height * nowScale;
+        const newScale = Math.min(Math.max(0.1, scaleX, scaleY), 2);
+        setIsMovingMode(true);
+
         requestAnimationFrame(() => {
-          setScale(scale);
+          setScale(newScale);
         });
       };
     } else {
@@ -58,6 +62,7 @@ export const PlayerPanel = () => {
       onMove = (event: PointerEvent) => {
         const x = event.clientX - rectX - offsetX;
         const y = event.clientY - rectY - offsetY;
+        setIsMovingMode(true);
 
         requestAnimationFrame(() => {
           setCoord({ x, y });
@@ -69,6 +74,8 @@ export const PlayerPanel = () => {
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', cleanUp);
       window.removeEventListener('pointercancel', cleanUp);
+
+      setIsMovingMode(false);
     };
 
     window.addEventListener('pointermove', onMove);
@@ -113,7 +120,7 @@ export const PlayerPanel = () => {
               x: coord().x,
               y: coord().y - rect.height / 2,
             });
-          }, 600);
+          }, 300);
 
           onCleanup(() => {
             clearTimeout(timeout);
@@ -139,15 +146,18 @@ export const PlayerPanel = () => {
               [pipX]: coord().x + 'px',
               [pipY]: coord().y + 'px',
               [pipScale]: `${(scale() * 100).toFixed(5)}%`,
+              transition: isMovingMode() ? 'unset' : undefined,
             })}
             onPointerDown={onDragStart}
           >
             <iframe
               id={'vcp-iframe'}
-              allow={'fullscreen'}
+              allowfullscreen
+              allow={'autoplay; fullscreen'}
+              referrerPolicy={'no-referrer'}
               src={`https://embed.nicovideo.jp/watch/${
                 video().id
-              }?persistence=1&oldScript=1&referer=&from=0&allowProgrammaticFullScreen=1`}
+              }?persistence=1&oldScript=1&referer=&from=0`}
               class={iframeStyle}
             />
           </div>

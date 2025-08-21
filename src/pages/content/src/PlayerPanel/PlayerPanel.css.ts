@@ -1,4 +1,4 @@
-import { createVar, fallbackVar, keyframes, style, styleVariants } from '@vanilla-extract/css';
+import { createVar, fallbackVar, style, styleVariants } from '@vanilla-extract/css';
 import { Colors } from '@pages/content/theme';
 
 export const fixedStyle = style({
@@ -19,36 +19,18 @@ export const fixedStyle = style({
   pointerEvents: 'none',
 });
 
-const videoShow = keyframes({
-  from: {
-    opacity: 0,
-    scale: 0.2,
-  },
-  to: {
-    opacity: 1,
-    scale: 1,
-  },
-});
-const videoHide = keyframes({
-  from: {
-    opacity: 1,
-    scale: 1,
-  },
-  to: {
-    opacity: 0,
-    scale: 0.2,
-  },
-});
-
 export const videoAnimationStyle = styleVariants({
   enter: {
     pointerEvents: 'all',
-    animation: `${videoShow} 0.6s cubic-bezier(0.16, 1, 0.3, 1)`,
+    opacity: 1,
+    transform: 'scale(1)',
+    transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
   },
   exit: {
-    opacity: 0,
     pointerEvents: 'none',
-    animation: `${videoHide} 0.6s cubic-bezier(0.16, 1, 0.3, 1)`,
+    opacity: 0,
+    transform: 'scale(0.2)',
+    transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
   },
 });
 export const videoStyle = style({
@@ -65,7 +47,7 @@ export const videoStyle = style({
   animationFillMode: 'both',
 
   transformOrigin: '0% 100%',
-  transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+  transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
 });
 
 export const pipX = createVar();
@@ -88,12 +70,12 @@ export const pipStyle = style({
       inset: 0,
 
       zIndex: 100,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      backdropFilter: 'blur(8px)',
+      backgroundColor: 'oklch(94% 0 0 / 0.2)',
+      backdropFilter: 'blur(2px)',
       opacity: 0,
-      cursor: 'se-resize',
+      cursor: 'ne-resize',
 
-      transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+      transition: 'opacity 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
     },
     '&:hover::after': {
       opacity: 1,
@@ -112,9 +94,10 @@ export const playlistStyle = style({
   maxWidth: '480px',
   height: '100%',
 
-  backgroundColor: 'rgba(25, 25, 25, 0.85)',
-  backdropFilter: 'blur(12px)',
-  boxShadow: '0 2px 12px rgba(0, 0, 0, 0.5)',
+  backgroundColor: 'oklch(94% 0 0 / 0.2)',
+  backdropFilter: 'blur(8px) saturate(3)',
+  border: '2px solid oklch(94% 0 0 / 0.2)',
+  boxShadow: '0 4px 12px oklch(0 0 0 / 0.35)',
   color: Colors.gray[50],
 
   display: 'flex',
@@ -131,57 +114,47 @@ export const playlistStyle = style({
   animationFillMode: 'both',
 
   transformOrigin: 'bottom',
+
+  selectors: {
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+  },
 });
 
-const playlistShow = keyframes({
-  from: {
-    opacity: 0,
-    height: '0',
-  },
-  to: {
-    opacity: 1,
-    height: '100%',
-  },
-});
-const playlistHide = keyframes({
-  from: {
-    opacity: 1,
-    height: '100%',
-  },
-  to: {
-    opacity: 0,
-    height: '0',
-  },
-});
 export const playlistAnimationStyle = styleVariants({
   enter: {
     pointerEvents: 'all',
-    animation: `${playlistShow} 0.6s cubic-bezier(0.16, 1, 0.3, 1)`,
+    height: '100%',
+    opacity: 1,
+    transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
   },
   exit: {
-    opacity: 0,
     pointerEvents: 'none',
-    animation: `${playlistHide} 0.6s cubic-bezier(0.16, 1, 0.3, 1)`,
+    height: '0',
+    opacity: 0,
+    transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
   },
 });
 
 export const itemStyle = style({
   width: '100%',
+  minHeight: 'fit-content',
   padding: '0.4rem',
   borderRadius: '0.4rem',
   cursor: 'pointer',
 
-  transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+  transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
 
   ':hover': {
-    boxShadow: '0 0 0 4px rgba(241, 106, 3, 0.25) inset',
+    boxShadow: '0 0 0 2px rgba(241, 106, 3, 0.25) inset',
   },
   ':active': {
-    transform: 'scale(0.98)',
+    transform: 'scale(0.95)',
     boxShadow: '0 0 0 30px rgba(241, 106, 3, 0.5) inset',
   },
 });
 
 export const selectedItemStyle = style({
-  backgroundColor: Colors.gray[900],
+  backgroundColor: 'oklch(14.5% 0 0 / 0.2)',
 });

@@ -13,21 +13,33 @@ export const [playlist, setPlaylist] = createStore<PlaylistStore>({
   mode: 'hidden',
 });
 
-export const setRankingPlaylist = async (videoUrl: string) => {
+interface RankingPlaylistOptions {
+  videoUrl?: string;
+  ranking?: number;
+}
+
+export const setRankingPlaylist = async ({
+  videoUrl,
+  ranking: rankingNumber = 0,
+}: RankingPlaylistOptions) => {
   const rankings = await fetchRanking();
 
-  let index = -1;
+  let index = rankingNumber - 1;
   let videos: Video[] = [];
 
-  rankings.forEach((ranking) => {
-    if (index >= 0) return;
+  if (index < 0) {
+    rankings.forEach((ranking) => {
+      if (index >= 0) return;
 
-    const foundIndex = ranking.videos.findIndex((v) => videoUrl.includes(v.id));
-    if (foundIndex < 0) return;
+      const foundIndex = ranking.videos.findIndex((v) =>
+        videoUrl?.includes(v.id)
+      );
+      if (foundIndex < 0) return;
 
-    index = foundIndex;
-    videos = ranking.videos;
-  });
+      index = foundIndex;
+      videos = ranking.videos;
+    });
+  }
 
   if (index < 0) return;
 

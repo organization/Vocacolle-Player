@@ -1,21 +1,50 @@
-export type RankingType = 'top100' | 'rookie' | 'remix';
+export type RankingType = 'top100' | 'rookie' | 'remix' | 'exhibition';
+
+export interface OldRankingData {
+  pageProps: {
+    pageId: string;
+    localRankingData: LocalRankingData;
+  };
+}
+
+export interface LocalRankingData {
+  meta: Meta;
+  data?: {
+    mylist: MyList;
+  };
+}
 
 export interface RankingData {
   meta: Meta;
-  data?: Data;
+  data?: {
+    ranking: Ranking;
+  };
 }
 
 export interface Meta {
   status: number;
 }
 
-export interface Data {
-  ranking: Ranking;
+export interface MyList {
+  decoratedDescriptionHtml: string;
+  defaultSortKey: string;
+  defaultSortOrder: string;
+  description: string;
+  followerCount: number;
+  hasInvisibleItems: boolean;
+  hasNext: boolean;
+  id: number;
+  isFollowing: boolean;
+  isPublic: boolean;
+  items: MyListItem[];
+  name: string;
+  owner: Owner;
+  totalItemCount: number;
 }
 
 export interface Ranking {
   id: number;
-  setting: Setting;
+  setting?: Setting;
   videos: Video[];
 }
 
@@ -36,6 +65,16 @@ export interface Setting {
 export interface Genre {
   key: string;
   label: string;
+}
+
+export interface MyListItem {
+  watchId: `sm${string}`;
+  addedAt: string;
+  decoratedDescriptionHtml: string;
+  description: string;
+  itemId: number;
+  status: string; // 'public'?
+  video: Video;
 }
 
 export interface Video {

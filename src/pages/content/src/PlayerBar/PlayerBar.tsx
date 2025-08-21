@@ -23,7 +23,7 @@ import {
   fixedStyle,
   iconButtonStyle,
   iconExpandStyle,
-  iconStyle,
+  iconStyle, playerBarInfoStyle,
   progressStyle,
   progressVar, timeStyle,
   wrapperAnimationStyle,
@@ -40,6 +40,7 @@ import { formatTime } from '../../utils';
 export const PlayerBar = () => {
   const { sendEvent } = usePlayer();
 
+  const [isMoving, setIsMoving] = createSignal(false);
   const [progress, setProgress] = createSignal<number | null>(null);
   const [slider, setSlider] = createSignal<HTMLDivElement | null>(null);
   const [rect, setRect] = createSignal<DOMRect | null>(null);
@@ -64,7 +65,8 @@ export const PlayerBar = () => {
   };
 
   const onFullscreen = () => {
-    sendEvent({ type: Event.fullscreen });
+    const iframe = document.querySelector<HTMLIFrameElement>('#vcp-iframe');
+    iframe?.requestFullscreen();
   };
   const onTogglePiP = () => {
     const isPiP = player.mode === 'pip';
@@ -87,17 +89,22 @@ export const PlayerBar = () => {
     }
   };
   const onClose = () => {
-    setPlayer((prev) => ({
-      ...prev,
-      state: 'paused',
-      mode: 'hidden',
-      progress: 0,
-    }));
-    setPlaylist({
-      currentIndex: 0,
-      playlist: [],
-      mode: 'hidden',
-    });
+    setPlayer('mode', 'hidden');
+    setPlaylist('mode', 'hidden');
+
+    setTimeout(() => {
+      setPlayer((prev) => ({
+        ...prev,
+        state: 'paused',
+        mode: 'hidden',
+        progress: 0,
+      }));
+      setPlaylist({
+        currentIndex: 0,
+        playlist: [],
+        mode: 'hidden',
+      });
+    }, 300);
   };
 
   // drag
@@ -111,6 +118,7 @@ export const PlayerBar = () => {
     if (!(last instanceof HTMLElement)) return;
     if (element !== last) return;
 
+    setIsMoving(true);
     setProgress(player.progress);
     setRect(element.getBoundingClientRect());
     onMove(event);
@@ -121,6 +129,7 @@ export const PlayerBar = () => {
       const track = createReaction(() => player.progress);
       track(() => {
         requestAnimationFrame(() => {
+          setIsMoving(false);
           setProgress(null);
         });
       });
@@ -132,6 +141,7 @@ export const PlayerBar = () => {
     const cleanUp = (event: PointerEvent) => {
       onMove(event, false);
 
+      setIsMoving(false);
       setProgress(null);
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onEnd);
@@ -151,6 +161,7 @@ export const PlayerBar = () => {
 
     const value = now / max;
     requestAnimationFrame(() => {
+      setIsMoving(true);
       setProgress(value);
     });
 
@@ -178,6 +189,7 @@ export const PlayerBar = () => {
           class={progressStyle}
           style={assignInlineVars({
             [progressVar]: `${progress() ?? player.progress}`,
+            transition: isMoving() ? 'unset' : undefined,
           })}
         />
         <div class={containerStyle}>
@@ -209,12 +221,14 @@ export const PlayerBar = () => {
           <Show when={currentVideo()}>
             {(video) => (
               <>
-                <PlayInfo
-                  ranking={playlist.currentIndex + 1}
-                  title={video().title}
-                  artist={video().owner.name}
-                  album={video().thumbnail.url}
-                />
+                <div class={playerBarInfoStyle}>
+                  <PlayInfo
+                    ranking={playlist.currentIndex + 1}
+                    title={video().title}
+                    artist={video().owner.name}
+                    album={video().thumbnail.url}
+                  />
+                </div>
                 <button class={iconButtonStyle} onClick={onOpen}>
                   <IconOpen class={iconStyle} />
                 </button>
