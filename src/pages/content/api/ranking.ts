@@ -6,17 +6,17 @@ import {
 } from '@pages/content/types';
 
 export const getRankingNumber = (type: RankingType): number | null => {
-  if (type === 'top100') return 286594;
-  if (type === 'rookie') return 286595;
-  if (type === 'remix') return 286596;
+  if (type === 'top100') return 301438;
+  if (type === 'rookie') return 301439;
+  if (type === 'remix') return 301440;
   if (type === 'exhibition') return 301441;
 
   return null;
 };
 export const getRankingType = (num: number): RankingType | null => {
-  if (num === 286594) return 'top100';
-  if (num === 286595) return 'rookie';
-  if (num === 286596) return 'remix';
+  if (num === 301438) return 'top100';
+  if (num === 301439) return 'rookie';
+  if (num === 301440) return 'remix';
   if (num === 301441) return 'exhibition';
 
   return null;
