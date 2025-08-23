@@ -64,7 +64,7 @@ const getRankingData = () => {
 };
 
 interface FetchRanking {
-  (): Promise<Ranking[]>;
+  (): Promise<{ type: RankingType; ranking: Ranking }[]>;
 
   (type: RankingType): Promise<Ranking | undefined>;
 }
@@ -100,18 +100,18 @@ export const fetchRanking = (async (type) => {
   };
 
   if (!type) {
-    const urls = [
-      buildURL('top100'),
-      buildURL('rookie'),
-      buildURL('remix'),
-      buildURL('exhibition'),
-    ];
+    const types: RankingType[] = ['top100', 'rookie', 'remix', 'exhibition'];
 
     const responses = await Promise.all(
-      urls.map((url) => fetchPartialRanking(url))
+      types.map(async (type) => {
+        const response = await fetchPartialRanking(buildURL(type));
+        if (!response) return null;
+
+        return { type, ranking: response };
+      })
     );
 
-    return responses.filter((it): it is Ranking => !!it);
+    return responses.filter((it): it is { type: RankingType; ranking: Ranking } => !!it);
   } else {
     const url = buildURL(type);
     return await fetchPartialRanking(url);

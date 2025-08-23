@@ -1,5 +1,13 @@
 export type RankingType = 'top100' | 'rookie' | 'remix' | 'exhibition';
 
+export type VideoData = {
+  video: Video;
+  type: RankingType;
+  ranking: number;
+};
+
+/* generated */
+
 export interface OldRankingData {
   pageProps: {
     pageId: string;

@@ -11,13 +11,18 @@ export const containerStyle = style({
   userSelect: 'none',
 });
 
+export const indexStyle = style({
+  fontSize: '12px',
+  color: 'oklch(14.5% 0 0 / 0.4)',
+});
+
 const baseRankingStyle = style({
-  width: '2rem',
-  height: '2rem',
   borderRadius: 100,
   textAlign: 'center',
-  lineHeight: '2rem',
   flexShrink: 0,
+  padding: '2px 6px',
+  marginLeft: 'auto',
+  fontSize: '10px',
 });
 export const rankingStyle = styleVariants({
   1: [
@@ -25,7 +30,7 @@ export const rankingStyle = styleVariants({
     {
       color: 'oklch(14.5% 0 0 / 1)',
       backgroundColor: '#fcd34d',
-      fontSize: '1.0rem',
+      fontWeight: 'bold',
     },
   ],
   2: [
@@ -33,7 +38,7 @@ export const rankingStyle = styleVariants({
     {
       color: 'oklch(14.5% 0 0 / 1)',
       backgroundColor: '#94a3b8',
-      fontSize: '1.0rem',
+      fontWeight: 'bold',
     },
   ],
   3: [
@@ -41,20 +46,22 @@ export const rankingStyle = styleVariants({
     {
       color: 'oklch(94% 0 0 / 1)',
       backgroundColor: '#854d0e',
-      fontSize: '1.0rem',
+      fontWeight: 'bold',
     },
   ],
   in10: [
     baseRankingStyle,
     {
-      fontSize: '1.0rem',
-      color: 'oklch(14.5% 0 0 / 1)',
+      mixBlendMode: 'exclusion',
+      backgroundColor: 'oklch(94.5% 0 0 / 0.6)',
+      color: 'oklch(14.5% 0 0 / 0.6)',
     },
   ],
   in100: [
     baseRankingStyle,
     {
-      fontSize: '0.8rem',
+      mixBlendMode: 'exclusion',
+      backgroundColor: 'oklch(94.5% 0 0 / 0.4)',
       color: 'oklch(14.5% 0 0 / 0.4)',
     },
   ],
@@ -68,15 +75,16 @@ export const textContainerStyle = style({
 });
 
 export const imageStyle = style({
-  width: '2.4rem',
-  height: '2.4rem',
-  borderRadius: '0.4rem',
-  aspectRatio: '1',
+  width: '36px',
+  height: '36px',
+  borderRadius: '8px',
+  aspectRatio: '1 / 1',
+  objectFit: 'cover',
 });
 
 export const titleStyle = style({
   width: '100%',
-  fontSize: '1rem',
+  fontSize: '16px',
   color: 'oklch(14.5% 0 0 / 1)',
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
@@ -84,6 +92,6 @@ export const titleStyle = style({
 });
 
 export const artistStyle = style({
-  fontSize: '0.8rem',
+  fontSize: '12px',
   color: 'oklch(14.5% 0 0 / 0.4)',
 });

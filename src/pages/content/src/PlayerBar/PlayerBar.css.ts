@@ -28,7 +28,7 @@ export const wrapperStyle = style({
   height: '3.6rem',
 
   backgroundColor: 'oklch(94% 0 0 / 0.2)',
-  backdropFilter: 'blur(8px) saturate(3)',
+  backdropFilter: 'blur(8px) saturate(5) brightness(0.98)',
   border: '2px solid oklch(94% 0 0 / 0.2)',
   boxShadow: '0 4px 12px oklch(0% 0 0 / 0.35)',
   color: Colors.gray[900],
@@ -37,8 +37,8 @@ export const wrapperStyle = style({
   justifyContent: 'space-between',
   alignItems: 'center',
 
-  borderRadius: '0.8rem',
-  padding: '0 0.4rem',
+  borderRadius: '12px',
+  padding: '0 12px',
   pointerEvents: 'all',
   animationFillMode: 'both',
 });
@@ -76,7 +76,7 @@ export const progressStyle = style({
   pointerEvents: 'none',
   transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
   overflow: 'hidden',
-  borderRadius: '0.8rem',
+  borderRadius: '11px',
 
   '::before': {
     content: '""',
@@ -110,6 +110,7 @@ export const centerContainerStyle = style([
     pointerEvents: 'none',
     padding: '0 0.8rem',
     justifyContent: 'center',
+    alignItems: 'center',
   },
 ]);
 export const playerBarInfoStyle = style({
@@ -121,14 +122,13 @@ export const iconButtonStyle = style({
   flexDirection: 'row',
   justifyContent: 'center',
   alignItems: 'center',
-  gap: '0.4rem',
 
-  fontSize: '0.8rem',
+  fontSize: '16px',
 
   color: 'oklch(14.5% 0 0 / 1)',
   cursor: 'pointer',
-  padding: '0.4rem',
-  borderRadius: '0.4rem',
+  padding: '8px',
+  borderRadius: '6px',
   pointerEvents: 'auto',
   flexShrink: 0,
   transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
@@ -156,8 +156,8 @@ export const iconButtonStyle = style({
 });
 
 export const iconStyle = style({
-  width: '1.6rem',
-  height: '1.6rem',
+  width: '16px',
+  height: '16px',
   transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
 });
 

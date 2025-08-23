@@ -1,4 +1,9 @@
-import { createVar, fallbackVar, style, styleVariants } from '@vanilla-extract/css';
+import {
+  createVar,
+  fallbackVar,
+  style,
+  styleVariants,
+} from '@vanilla-extract/css';
 import { Colors } from '@pages/content/theme';
 
 export const fixedStyle = style({
@@ -79,8 +84,8 @@ export const pipStyle = style({
     },
     '&:hover::after': {
       opacity: 1,
-    }
-  }
+    },
+  },
 });
 export const iframeStyle = style({
   width: '100%',
@@ -95,22 +100,20 @@ export const playlistStyle = style({
   height: '100%',
 
   backgroundColor: 'oklch(94% 0 0 / 0.2)',
-  backdropFilter: 'blur(8px) saturate(3)',
+  backdropFilter: 'blur(8px) saturate(5) brightness(0.98)',
   border: '2px solid oklch(94% 0 0 / 0.2)',
   boxShadow: '0 4px 12px oklch(0 0 0 / 0.35)',
   color: Colors.gray[50],
 
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: '0.4rem',
-  gap: '0',
+  justifyContent: 'flex-start',
+  alignItems: 'stretch',
+  padding: '8px',
+  gap: '8px',
 
-  borderRadius: '0.8rem',
+  borderRadius: '12px',
   pointerEvents: 'all',
-  overflowY: 'auto',
-  overflowX: 'hidden',
   animationFillMode: 'both',
 
   transformOrigin: 'bottom',
@@ -137,6 +140,80 @@ export const playlistAnimationStyle = styleVariants({
   },
 });
 
+export const headerStyle = style({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: '4px 6px',
+  gap: '8px',
+
+  color: 'oklch(14.5% 0 0 / 1)',
+  borderRadius: '8px',
+
+  flexShrink: 0,
+});
+
+export const playlistContainerStyle = style({
+  width: '100%',
+
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+  gap: '0',
+  flex: 1,
+
+  overflowY: 'auto',
+  overflowX: 'hidden',
+});
+
+export const iconStyle = style({
+  width: '16px',
+  height: '16px',
+  transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
+});
+
+export const iconButtonStyle = style({
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: '0.4rem',
+
+  fontSize: '0.8rem',
+
+  color: 'oklch(14.5% 0 0 / 1)',
+  cursor: 'pointer',
+  padding: '0.4rem',
+  borderRadius: '0.4rem',
+  pointerEvents: 'auto',
+  flexShrink: 0,
+  transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
+
+  selectors: {
+    '&:hover': {
+      backgroundColor: 'oklch(14.5% 0 0 / 0.2)',
+    },
+    '&:disabled': {
+      opacity: 0.5,
+      cursor: 'default',
+      backgroundColor: 'transparent !important',
+    },
+    '&:active': {
+      transform: 'scale(0.9)',
+    },
+    '&[data-active="true"]': {
+      backgroundColor: 'rgba(241, 106, 3, 0.1)',
+      color: 'rgba(241, 106, 3, 1)',
+    },
+    '&[data-active="true"]:hover': {
+      backgroundColor: 'rgba(241, 106, 3, 0.2)',
+    },
+  },
+});
+
 export const itemStyle = style({
   width: '100%',
   minHeight: 'fit-content',
@@ -144,17 +221,30 @@ export const itemStyle = style({
   borderRadius: '0.4rem',
   cursor: 'pointer',
 
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  gap: '4px',
+
   transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
 
-  ':hover': {
-    boxShadow: '0 0 0 2px rgba(241, 106, 3, 0.25) inset',
-  },
-  ':active': {
-    transform: 'scale(0.95)',
-    boxShadow: '0 0 0 30px rgba(241, 106, 3, 0.5) inset',
+  selectors: {
+    [`&:hover:not(:has(.${iconButtonStyle}:hover))`]: {
+      boxShadow: '0 0 0 2px rgba(241, 106, 3, 0.25) inset',
+    },
+    '&:active': {
+      transform: 'scale(0.95)',
+      boxShadow: '0 0 0 30px rgba(241, 106, 3, 0.5) inset',
+    },
   },
 });
 
 export const selectedItemStyle = style({
   backgroundColor: 'oklch(14.5% 0 0 / 0.2)',
+});
+
+export const infoStyle = style({
+  width: 0,
+  flexGrow: 1,
 });

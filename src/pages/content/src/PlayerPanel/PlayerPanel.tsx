@@ -1,26 +1,35 @@
 import {
   fixedStyle,
+  headerStyle,
+  iconButtonStyle,
+  iconStyle,
   iframeStyle,
+  infoStyle,
   itemStyle,
   pipScale,
   pipStyle,
   pipX,
   pipY,
-  playlistAnimationStyle,
+  playlistAnimationStyle, playlistContainerStyle,
   playlistStyle,
   selectedItemStyle,
   videoAnimationStyle,
   videoStyle,
 } from './PlayerPanel.css';
-import { createEffect, createSignal, For, on, onCleanup, Show } from 'solid-js';
 import {
-  currentVideo,
-  playlist,
-  setPlaylist,
-} from '@pages/content/store/playlist';
+  batch,
+  createEffect,
+  createSignal,
+  For,
+  on,
+  onCleanup,
+  Show,
+} from 'solid-js';
+import { playlist, setPlaylist } from '@pages/content/store/playlist';
 import { PlayInfo } from '@pages/content/src';
 import { player } from '@pages/content/store/player';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
+import { ListX, Trash } from 'lucide-solid';
 
 export const PlayerPanel = () => {
   const [iframe, setIframe] = createSignal<HTMLIFrameElement | null>(null);
@@ -48,8 +57,8 @@ export const PlayerPanel = () => {
     if (edgeX || edgeY) {
       const nowScale = scale();
       onMove = (event: PointerEvent) => {
-        const scaleX = (event.clientX - rect.x) / rect.width * nowScale;
-        const scaleY = (event.offsetY - rect.y) / rect.height * nowScale;
+        const scaleX = ((event.clientX - rect.x) / rect.width) * nowScale;
+        const scaleY = ((event.offsetY - rect.y) / rect.height) * nowScale;
         const newScale = Math.min(Math.max(0.1, scaleX, scaleY), 2);
         setIsMovingMode(true);
 
@@ -132,7 +141,7 @@ export const PlayerPanel = () => {
 
   return (
     <div class={fixedStyle}>
-      <Show when={currentVideo()}>
+      <Show when={playlist.currentVideo}>
         {(video) => (
           <div
             ref={setIframe}
@@ -170,25 +179,65 @@ export const PlayerPanel = () => {
           [playlistAnimationStyle.exit]: playlist.mode === 'hidden',
         }}
       >
-        <For each={playlist.playlist}>
-          {(video, index) => (
-            <div
-              ref={(el) => (elements[index()] = el)}
-              classList={{
-                [itemStyle]: true,
-                [selectedItemStyle]: playlist.currentIndex === index(),
-              }}
-              onClick={() => setPlaylist('currentIndex', index())}
-            >
-              <PlayInfo
-                ranking={index() + 1}
-                title={video.title}
-                artist={video.owner.name}
-                album={video.thumbnail.url}
-              />
-            </div>
-          )}
-        </For>
+        <div class={headerStyle}>
+          <div>
+            재생목록 ({playlist.currentIndex + 1} / {playlist.playlist.length})
+          </div>
+          <button
+            class={iconButtonStyle}
+            onClick={() => {
+              setPlaylist({
+                playlist: [],
+                currentIndex: 0,
+                mode: 'hidden',
+              });
+            }}
+          >
+            <ListX class={iconStyle} />
+          </button>
+        </div>
+        <div class={playlistContainerStyle}>
+          <For each={playlist.playlist}>
+            {({ video, type, ranking }, index) => (
+              <div
+                ref={(el) => (elements[index()] = el)}
+                classList={{
+                  [itemStyle]: true,
+                  [selectedItemStyle]: playlist.currentIndex === index(),
+                }}
+                onClick={() => setPlaylist('currentIndex', index())}
+              >
+                <PlayInfo
+                  index={index() + 1}
+                  ranking={ranking}
+                  rankingType={type}
+                  title={video.title}
+                  artist={video.owner.name}
+                  album={video.thumbnail.url}
+                  class={infoStyle}
+                />
+                <button
+                  class={iconButtonStyle}
+                  onClick={() => {
+                    batch(() => {
+                      setPlaylist('playlist', (list) =>
+                        list.filter((_, i) => i !== index())
+                      );
+                      if (playlist.currentIndex >= index()) {
+                        setPlaylist('currentIndex', (i) => Math.max(0, i - 1));
+                      }
+                      if (playlist.playlist.length === 0) {
+                        setPlaylist('mode', 'hidden');
+                      }
+                    });
+                  }}
+                >
+                  <Trash class={iconStyle} />
+                </button>
+              </div>
+            )}
+          </For>
+        </div>
       </div>
     </div>
   );

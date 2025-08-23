@@ -1,53 +1,72 @@
 import { createStore } from 'solid-js/store';
 import { fetchRanking } from '@pages/content/api/ranking';
-import { Video } from '@pages/content/types';
+import { RankingType, Video, VideoData } from '@pages/content/types';
+import { rankingTypeToText } from '@pages/content/utils/convert';
 
 export type PlaylistStore = {
-  playlist: Video[];
+  playlist: VideoData[];
   currentIndex: number;
   mode: 'hidden' | 'full';
+  type: RankingType | null;
+
+  get typeName(): string | null;
+  get current(): VideoData | null;
+  get currentVideo(): Video | null;
 };
 export const [playlist, setPlaylist] = createStore<PlaylistStore>({
   playlist: [],
   currentIndex: 0,
   mode: 'hidden',
+  type: null,
+
+  get typeName() {
+    return rankingTypeToText(this.type);
+  },
+  get current() {
+    return this.playlist[this.currentIndex] ?? null;
+  },
+  get currentVideo() {
+    return this.current?.video ?? null;
+  },
 });
 
-interface RankingPlaylistOptions {
-  videoUrl?: string;
-  ranking?: number;
-}
-
-export const setRankingPlaylist = async ({
-  videoUrl,
-  ranking: rankingNumber = 0,
-}: RankingPlaylistOptions) => {
-  const rankings = await fetchRanking();
-
-  let index = rankingNumber - 1;
-  let videos: Video[] = [];
-
-  if (index < 0) {
-    rankings.forEach((ranking) => {
-      if (index >= 0) return;
-
-      const foundIndex = ranking.videos.findIndex((v) =>
-        videoUrl?.includes(v.id)
-      );
-      if (foundIndex < 0) return;
-
-      index = foundIndex;
-      videos = ranking.videos;
-    });
-  }
-
-  if (index < 0) return;
+export const setRankingPlaylist = async (type: RankingType) => {
+  const ranking = await fetchRanking(type);
+  if (!ranking) return;
 
   setPlaylist({
-    playlist: videos,
-    currentIndex: index,
+    playlist: ranking.videos.map((video) => ({
+      video,
+      type,
+      ranking: ranking.videos.indexOf(video) + 1,
+    })),
+    type,
   });
 };
 
-export const currentVideo = (): Video | undefined =>
-  playlist.playlist[playlist.currentIndex];
+export const addPlaylist = async (videoUrl: string): Promise<VideoData | null> => {
+  const rankings = await fetchRanking();
+
+  let type: RankingType | null = null;
+  let videoData: VideoData | null = null;
+  rankings.forEach((it) => {
+    const video = it.ranking.videos.find((v) => videoUrl?.includes(v.id));
+    if (!video) return;
+
+    videoData = {
+      video,
+      type: it.type,
+      ranking: it.ranking.videos.indexOf(video) + 1,
+    };
+    type = it.type;
+  });
+
+  if (!videoData || !type) return null;
+
+  setPlaylist({
+    playlist: [...playlist.playlist, videoData],
+    type,
+  });
+
+  return videoData;
+};

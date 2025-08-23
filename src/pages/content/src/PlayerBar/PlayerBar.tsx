@@ -1,21 +1,7 @@
 import { createReaction, createSignal, Show } from 'solid-js';
 
 import { PlayInfo } from '../PlayInfo';
-import {
-  currentVideo,
-  playlist,
-  setPlaylist,
-} from '@pages/content/store/playlist';
-
-import IconPrevious from '../../assets/icon_previous.svg';
-import IconPlay from '../../assets/icon_play.svg';
-import IconPause from '../../assets/icon_pause.svg';
-import IconNext from '../../assets/icon_next.svg';
-import IconOpen from '../../assets/icon_open.svg';
-import IconFullscreen from '../../assets/icon_fullscreen.svg';
-import IconPiP from '../../assets/icon_pip.svg';
-import IconExpand from '../../assets/icon_expand.svg';
-import IconClose from '../../assets/icon_close.svg';
+import { playlist, setPlaylist } from '@pages/content/store/playlist';
 
 import {
   centerContainerStyle,
@@ -23,9 +9,11 @@ import {
   fixedStyle,
   iconButtonStyle,
   iconExpandStyle,
-  iconStyle, playerBarInfoStyle,
+  iconStyle,
+  playerBarInfoStyle,
   progressStyle,
-  progressVar, timeStyle,
+  progressVar,
+  timeStyle,
   wrapperAnimationStyle,
   wrapperStyle,
 } from './PlayerBar.css';
@@ -36,6 +24,17 @@ import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { usePlayer } from '@pages/content/src';
 import { Event } from '@pages/content/event';
 import { formatTime } from '../../utils';
+import {
+  ChevronUp,
+  ExternalLink,
+  Fullscreen,
+  Pause,
+  PictureInPicture,
+  Play,
+  SkipBack,
+  SkipForward,
+  X,
+} from 'lucide-solid';
 
 export const PlayerBar = () => {
   const { sendEvent } = usePlayer();
@@ -58,7 +57,7 @@ export const PlayerBar = () => {
   };
 
   const onOpen = () => {
-    const video = currentVideo();
+    const video = playlist.currentVideo;
     if (!video) return;
 
     window.open(`https://www.nicovideo.jp/watch/${video.id}`);
@@ -180,8 +179,8 @@ export const PlayerBar = () => {
         ref={setSlider}
         classList={{
           [wrapperStyle]: true,
-          [wrapperAnimationStyle.enter]: currentVideo(),
-          [wrapperAnimationStyle.exit]: !currentVideo(),
+          [wrapperAnimationStyle.enter]: !!playlist.currentVideo,
+          [wrapperAnimationStyle.exit]: !playlist.currentVideo,
         }}
         onPointerDown={onMoveStart}
       >
@@ -194,23 +193,27 @@ export const PlayerBar = () => {
         />
         <div class={containerStyle}>
           <button class={iconButtonStyle} onClick={onPrevious}>
-            <IconPrevious class={iconStyle} />
+            <SkipBack fill={'currentColor'} class={iconStyle} />
           </button>
           <button class={iconButtonStyle} onClick={onPlayPause}>
             <Show
               when={player.state === 'playing'}
-              fallback={<IconPlay class={iconStyle} />}
+              fallback={<Play fill={'currentColor'} class={iconStyle} />}
             >
-              <IconPause class={iconStyle} />
+              <Pause fill={'currentColor'} class={iconStyle} />
             </Show>
           </button>
           <button class={iconButtonStyle} onClick={onNext}>
-            <IconNext class={iconStyle} />
+            <SkipForward fill={'currentColor'} class={iconStyle} />
           </button>
-          <Show when={currentVideo()}>
+          <Show when={playlist.currentVideo}>
             {(video) => (
               <>
-                <div class={timeStyle}>{formatTime(video().duration * (progress() ?? player.progress))}</div>
+                <div class={timeStyle}>
+                  {formatTime(
+                    video().duration * (progress() ?? player.progress)
+                  )}
+                </div>
                 <div class={timeStyle}>/</div>
                 <div class={timeStyle}>{formatTime(video().duration)}</div>
               </>
@@ -218,19 +221,21 @@ export const PlayerBar = () => {
           </Show>
         </div>
         <div class={centerContainerStyle}>
-          <Show when={currentVideo()}>
-            {(video) => (
+          <Show when={playlist.current}>
+            {(videoData) => (
               <>
                 <div class={playerBarInfoStyle}>
                   <PlayInfo
-                    ranking={playlist.currentIndex + 1}
-                    title={video().title}
-                    artist={video().owner.name}
-                    album={video().thumbnail.url}
+                    rankingType={videoData().type}
+                    ranking={videoData().ranking}
+                    index={playlist.currentIndex + 1}
+                    title={videoData().video.title}
+                    artist={videoData().video.owner.name}
+                    album={videoData().video.thumbnail.url}
                   />
                 </div>
                 <button class={iconButtonStyle} onClick={onOpen}>
-                  <IconOpen class={iconStyle} />
+                  <ExternalLink class={iconStyle} />
                 </button>
               </>
             )}
@@ -238,18 +243,18 @@ export const PlayerBar = () => {
         </div>
         <div class={containerStyle}>
           <button class={iconButtonStyle} onClick={onFullscreen}>
-            <IconFullscreen class={iconStyle} />
+            <Fullscreen class={iconStyle} />
           </button>
           <button
             data-active={player.mode === 'pip'}
             class={iconButtonStyle}
             onClick={onTogglePiP}
           >
-            <IconPiP class={iconStyle} />
+            <PictureInPicture class={iconStyle} />
           </button>
 
           <button class={iconButtonStyle} onClick={onExpand}>
-            <IconExpand
+            <ChevronUp
               classList={{
                 [iconStyle]: true,
                 [iconExpandStyle]: playlist.mode === 'full',
@@ -257,7 +262,7 @@ export const PlayerBar = () => {
             />
           </button>
           <button class={iconButtonStyle} onClick={onClose}>
-            <IconClose class={iconStyle} />
+            <X class={iconStyle} />
           </button>
         </div>
       </div>

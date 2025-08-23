@@ -1,12 +1,13 @@
 import {
   createContext,
   createEffect,
+  createMemo,
   JSX,
   on,
   onCleanup,
   useContext,
 } from 'solid-js';
-import { currentVideo, playlist, setPlaylist } from '@pages/content/store/playlist';
+import { playlist, setPlaylist } from '@pages/content/store/playlist';
 import { Event } from '@pages/content/event';
 import { player, setPlayer } from '@pages/content/store/player';
 
@@ -24,13 +25,17 @@ export const PlayerProvider = (props: PlayerProviderProps) => {
     let timestamp = Date.now();
 
     const iframe = document.querySelector<HTMLIFrameElement>('#vcp-iframe');
-    iframe?.addEventListener('load', () => {
-      if (Date.now() - timestamp > 5000) return;
+    iframe?.addEventListener(
+      'load',
+      () => {
+        if (Date.now() - timestamp > 5000) return;
 
-      setTimeout(() => {
-        iframe?.contentWindow?.postMessage(event, '*');
-      }, 100);
-    }, { once: true });
+        setTimeout(() => {
+          iframe?.contentWindow?.postMessage(event, '*');
+        }, 100);
+      },
+      { once: true }
+    );
 
     let count = 0;
     const trySend = setInterval(() => {
@@ -43,33 +48,37 @@ export const PlayerProvider = (props: PlayerProviderProps) => {
   };
 
   createEffect(
-    on(currentVideo, () => {
-      const listener = (event: MessageEvent) => {
-        if (!event.data) return;
-        if (typeof event.data !== 'object') return;
-        if (!('type' in event.data && EventList.includes(event.data.type)))
-          return;
+    on(
+      () => playlist.currentVideo,
+      () => {
+        const listener = (event: MessageEvent) => {
+          if (!event.data) return;
+          if (typeof event.data !== 'object') return;
+          if (!('type' in event.data && EventList.includes(event.data.type)))
+            return;
 
-        switch (event.data.type) {
-          case Event.progress: {
-            setPlayer('progress', event.data.percentage);
-            break;
+          switch (event.data.type) {
+            case Event.progress: {
+              setPlayer('progress', event.data.percentage);
+              break;
+            }
+            default:
+              break;
           }
-          default:
-            break;
-        }
-      };
+        };
 
-      window.addEventListener('message', listener);
-      onCleanup(() => {
-        window.removeEventListener('message', listener);
-      });
-    })
+        window.addEventListener('message', listener);
+        onCleanup(() => {
+          window.removeEventListener('message', listener);
+        });
+      }
+    )
   );
 
   // auto play
+  const currentVideoId = createMemo(() => playlist.currentVideo?.id);
   createEffect(
-    on(currentVideo, (video) => {
+    on(currentVideoId, (video) => {
       if (!video) return;
 
       const dom = document.querySelector<HTMLIFrameElement>('#vcp-iframe');
@@ -83,10 +92,17 @@ export const PlayerProvider = (props: PlayerProviderProps) => {
   );
 
   // onNext
-  createEffect(on(() => player.progress, (progress) => {
-    if (Math.abs(1 - progress) > 0.0005) return;
-    setPlaylist('currentIndex', (index) => Math.min(index + 1, playlist.playlist.length - 1));
-  }));
+  createEffect(
+    on(
+      () => player.progress,
+      (progress) => {
+        if (Math.abs(1 - progress) > 0.0005) return;
+        setPlaylist('currentIndex', (index) =>
+          Math.min(index + 1, playlist.playlist.length - 1)
+        );
+      }
+    )
+  );
 
   // event
   createEffect(
