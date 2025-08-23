@@ -1,8 +1,8 @@
 {
   "name": "vocacolle-player",
   "displayName": "Vocaloid Collection Player",
-  "version": "0.4.2",
-  "description": "Vocaloid Collection 2025 Summer Player",
+  "version": "0.5.0",
+  "description": "Vocaloid Collection Player (2025 Summer Edition)",
   "license": "MIT",
   "author": "Su-Yong",
   "scripts": {
