@@ -18,7 +18,11 @@ export interface OldRankingData {
 export interface LocalRankingData {
   meta: Meta;
   data?: {
-    mylist: MyList;
+    mylist?: MyList;
+    items?: {
+      watchId: `sm${string}`;
+      video: Video;
+    }[];
   };
 }
 
@@ -51,7 +55,7 @@ export interface MyList {
 }
 
 export interface Ranking {
-  id: number;
+  id: number | string;
   setting?: Setting;
   videos: Video[];
 }

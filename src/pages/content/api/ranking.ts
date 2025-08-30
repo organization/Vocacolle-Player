@@ -45,9 +45,12 @@ const buildURL = (type: RankingType, frontendId = 1) => {
     return `https://vocaloid-collection.jp/${oldType}/_next/data/${buildId}/ranking/${type}.json?id=${type}`;
   }
 
-  return `https://nvapi.nicovideo.jp/v1/ranking/nicotop/${getRankingNumber(
-    type
-  )}?_frontendId=${frontendId}`;
+  if (type === 'exhibition')
+    return `https://vocaloid-collection.jp/_next/data/${buildId}/exhibition.json`;
+  return `https://vocaloid-collection.jp/_next/data/${buildId}/ranking/${type}.json?id=${type}`;
+  // return `https://nvapi.nicovideo.jp/v1/ranking/nicotop/${getRankingNumber(
+  //   type
+  // )}?_frontendId=${frontendId}`;
 };
 
 const getRankingData = () => {
@@ -77,21 +80,29 @@ export const fetchRanking = (async (type) => {
     });
     const json: RankingData | OldRankingData | null = await response
       ?.json()
-      ?.catch(() => {
-        console.warn('[Vocacolle Player] 랭킹 데이터를 파싱할 수 없습니다.');
+      ?.catch((err) => {
+        console.warn(
+          '[Vocacolle Player] 랭킹 데이터를 파싱할 수 없습니다.',
+          err
+        );
         return null;
       });
 
     if (!json) return null;
 
     if ('pageProps' in json) {
-      const myList = json.pageProps.localRankingData.data?.mylist;
-      if (!myList) return null;
-
-      const videos = myList.items.map((item) => item.video) ?? [];
+      const id = json.pageProps.localRankingData.data?.mylist?.id ?? json.pageProps.pageId
+      const videos =
+        json.pageProps.localRankingData.data?.mylist?.items.map(
+          (item) => item.video
+        ) ??
+        json.pageProps.localRankingData.data?.items?.map(
+          (item) => item.video
+        ) ??
+        [];
 
       return {
-        id: myList.id,
+        id,
         videos,
       } satisfies Ranking;
     }
@@ -111,7 +122,9 @@ export const fetchRanking = (async (type) => {
       })
     );
 
-    return responses.filter((it): it is { type: RankingType; ranking: Ranking } => !!it);
+    return responses.filter(
+      (it): it is { type: RankingType; ranking: Ranking } => !!it
+    );
   } else {
     const url = buildURL(type);
     return await fetchPartialRanking(url);
