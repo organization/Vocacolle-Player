@@ -30,6 +30,7 @@ import { PlayInfo } from '@pages/content/src';
 import { player } from '@pages/content/store/player';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { ListX, Trash } from 'lucide-solid';
+import { LiquidGlass, useLiquidSurface } from '../glass';
 
 export const PlayerPanel = () => {
   const [iframe, setIframe] = createSignal<HTMLIFrameElement | null>(null);
@@ -139,6 +140,14 @@ export const PlayerPanel = () => {
     )
   );
 
+  const { filterStyles, Filter, onRegister } = useLiquidSurface(() => ({
+    glassThickness: 80,
+    bezelWidth: 15,
+    refractiveIndex: 1.5,
+    blur: 2,
+    specularOpacity: 0.8,
+  }));
+
   return (
     <div class={fixedStyle}>
       <Show when={playlist.currentVideo}>
@@ -164,20 +173,22 @@ export const PlayerPanel = () => {
               allowfullscreen
               allow={'autoplay; fullscreen'}
               referrerPolicy={'no-referrer'}
-              src={`https://embed.nicovideo.jp/watch/${
-                video().id
-              }?persistence=1&oldScript=1&referer=&from=0`}
+              src={`https://embed.nicovideo.jp/watch/${video().id
+                }?persistence=1&oldScript=1&referer=&from=0`}
               class={iframeStyle}
             />
           </div>
         )}
       </Show>
+      <Filter />
       <div
+        ref={onRegister}
         classList={{
           [playlistStyle]: true,
           [playlistAnimationStyle.enter]: playlist.mode === 'full',
           [playlistAnimationStyle.exit]: playlist.mode === 'hidden',
         }}
+        style={filterStyles}
       >
         <div class={headerStyle}>
           <div>

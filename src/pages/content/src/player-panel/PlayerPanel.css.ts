@@ -99,10 +99,10 @@ export const playlistStyle = style({
   maxWidth: '480px',
   height: '100%',
 
-  backgroundColor: 'oklch(94% 0 0 / 0.2)',
-  backdropFilter: 'blur(8px) saturate(5) brightness(0.98)',
-  border: '2px solid oklch(94% 0 0 / 0.2)',
-  boxShadow: '0 4px 12px oklch(0 0 0 / 0.35)',
+  backgroundColor: 'oklch(94% 0 0 / 0.4)',
+  // backdropFilter: 'saturate(5) brightness(0.98)',
+  // border: '2px solid oklch(94% 0 0 / 0.2)',
+  // boxShadow: '0 4px 12px oklch(0 0 0 / 0.35)',
   color: Colors.gray[50],
 
   display: 'flex',
@@ -134,7 +134,8 @@ export const playlistAnimationStyle = styleVariants({
   },
   exit: {
     pointerEvents: 'none',
-    height: '0',
+    // height: '0',
+    transform: 'translateY(100%)',
     opacity: 0,
     transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
   },

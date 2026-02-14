@@ -20,7 +20,7 @@ export const ToastProvider = (props: ToastProviderProps) => {
 
     if (timeoutSet.has(last.id)) return;
     const timeout = window.setTimeout(() => {
-      setList((prev) => prev.filter((it) => it.id !== last.id));
+      // setList((prev) => prev.filter((it) => it.id !== last.id));
       timeoutSet.delete(last.id);
     }, 3000);
     timeoutSet.set(last.id, timeout);

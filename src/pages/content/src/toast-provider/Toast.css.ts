@@ -3,10 +3,9 @@ import { Colors } from '@pages/content/theme';
 
 export const toastContainerStyle = style({
   position: 'fixed',
-  bottom: 0,
-  right: 0,
+  inset: '0.8rem',
 
-  padding: '32px',
+  paddingBottom: 'calc(0.8rem + 3.6rem)',
 
   display: 'flex',
   flexDirection: 'column',
@@ -22,10 +21,7 @@ export const toastStyle = style({
   width: 'fit-content',
   minWidth: '240px',
 
-  backgroundColor: 'oklch(94% 0 0 / 0.2)',
-  backdropFilter: 'blur(8px) saturate(5) brightness(0.98)',
-  border: '2px solid oklch(94% 0 0 / 0.2)',
-  boxShadow: '0 4px 12px oklch(0% 0 0 / 0.35)',
+  backgroundColor: 'oklch(94% 0 0 / 0.4)',
   color: Colors.gray[900],
 
   display: 'flex',

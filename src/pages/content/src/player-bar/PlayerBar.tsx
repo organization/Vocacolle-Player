@@ -1,6 +1,6 @@
 import { createReaction, createSignal, Show } from 'solid-js';
 
-import { PlayInfo } from '../PlayInfo';
+import { PlayInfo } from '../play-info';
 import { playlist, setPlaylist } from '@pages/content/store/playlist';
 
 import {
@@ -19,7 +19,7 @@ import {
 } from './PlayerBar.css';
 import { player, setPlayer } from '@pages/content/store/player';
 import { Portal } from 'solid-js/web';
-import { PlayerPanel } from '@pages/content/src/PlayerPanel';
+import { PlayerPanel } from '@src/pages/content/src/player-panel';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { usePlayer } from '@pages/content/src';
 import { Event } from '@pages/content/event';
@@ -35,6 +35,7 @@ import {
   SkipForward,
   X,
 } from 'lucide-solid';
+import { LiquidGlass, useLiquidSurface } from '../glass';
 
 export const PlayerBar = () => {
   const { sendEvent } = usePlayer();
@@ -170,13 +171,26 @@ export const PlayerBar = () => {
     }
   };
 
+  const { filterStyles, Filter, onRegister } = useLiquidSurface(() => ({
+    glassThickness: 80,
+    bezelWidth: 15,
+    refractiveIndex: 1.5,
+    blur: 2,
+    specularOpacity: 0.8,
+  }));
+
   return (
     <div class={fixedStyle}>
       <Portal>
         <PlayerPanel />
       </Portal>
+      <Filter />
       <div
-        ref={setSlider}
+        style={filterStyles}
+        ref={(el) => {
+          onRegister(el);
+          setSlider(el);
+        }}
         classList={{
           [wrapperStyle]: true,
           [wrapperAnimationStyle.enter]: !!playlist.currentVideo,

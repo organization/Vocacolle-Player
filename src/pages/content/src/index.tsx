@@ -1,3 +1,3 @@
-export * from './PlayerBar';
-export * from './PlayInfo';
-export * from './PlayerProvider';
+export * from './player-bar';
+export * from './play-info';
+export * from './player-provider';

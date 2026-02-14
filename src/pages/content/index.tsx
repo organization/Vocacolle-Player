@@ -6,7 +6,7 @@ import { runOnPage } from '@pages/content/utils';
 import { initEmbed } from '@pages/content/embed';
 import { getOldType } from '@pages/content/api/ranking';
 import { RankingType } from '@pages/content/types';
-import { addToast, ToastProvider } from '@pages/content/src/ToastProvider';
+import { addToast, ToastProvider } from '@src/pages/content/src/toast-provider';
 
 const init = () => {
   if (location.href.includes('embed.nicovideo.jp')) {
