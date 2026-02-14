@@ -4,6 +4,7 @@ import {
   ChevronUp,
   ExternalLink,
   Fullscreen,
+  ListMusic,
   Pause,
   PictureInPicture,
   Play,
@@ -46,9 +47,8 @@ export type PlayerBarProps = {
   onPlayPause: () => void;
   onNext: () => void;
   onOpen: () => void;
-  onFullscreen: () => void;
   onTogglePiP: () => void;
-  onExpand: () => void;
+  onPlaylist: () => void;
   onClose: () => void;
   onProgressChange: (progress: number) => void;
 };
@@ -198,6 +198,9 @@ export const PlayerBar = (props: PlayerBarProps) => {
                     title={videoData().video.title}
                     artist={videoData().video.owner.name}
                     album={videoData().video.thumbnail.url}
+                    onAlbumClick={() => {
+
+                    }}
                   />
                 </div>
                 <button class={iconButtonStyle} onClick={props.onOpen}>
@@ -208,9 +211,6 @@ export const PlayerBar = (props: PlayerBarProps) => {
           </Show>
         </div>
         <div class={containerStyle}>
-          <button class={iconButtonStyle} onClick={props.onFullscreen}>
-            <Fullscreen class={iconStyle} />
-          </button>
           <button
             data-active={props.mode === 'pip'}
             class={iconButtonStyle}
@@ -218,9 +218,8 @@ export const PlayerBar = (props: PlayerBarProps) => {
           >
             <PictureInPicture class={iconStyle} />
           </button>
-
-          <button class={iconButtonStyle} onClick={props.onExpand}>
-            <ChevronUp
+          <button class={iconButtonStyle} onClick={props.onPlaylist}>
+            <ListMusic
               classList={{
                 [iconStyle]: true,
                 [iconExpandStyle]: props.mode === 'full',

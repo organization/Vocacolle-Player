@@ -9,8 +9,6 @@ import { Portal, Show } from 'solid-js/web';
 import { Player } from '@/ui/player/player';
 
 export const App = () => {
-
-
   return (
     <ToastProvider>
       <PlayerProvider>
@@ -35,9 +33,8 @@ export const App = () => {
             onPlayPause={() => { }}
             onNext={() => { }}
             onOpen={() => { }}
-            onFullscreen={() => { }}
             onTogglePiP={() => { }}
-            onExpand={() => { }}
+            onPlaylist={() => { }}
             onClose={() => { }}
             onProgressChange={() => { }}
           />

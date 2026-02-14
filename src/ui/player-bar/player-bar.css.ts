@@ -61,7 +61,7 @@ export const progressStyle = style({
   pointerEvents: 'none',
   transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
   overflow: 'hidden',
-  borderRadius: '11px',
+  borderRadius: '1.6rem',
 
   '::before': {
     content: '""',
@@ -91,7 +91,7 @@ export const centerContainerStyle = style([
     left: '50%',
     width: 'calc(100% - 400px - 32px)',
     transform: 'translate(-50%, -50%)',
-    overflow: 'hidden',
+    overflow: 'visible',
     pointerEvents: 'none',
     padding: '0 0.8rem',
     justifyContent: 'center',
@@ -113,7 +113,7 @@ export const iconButtonStyle = style({
   color: 'oklch(14.5% 0 0 / 1)',
   cursor: 'pointer',
   padding: '8px',
-  borderRadius: '6px',
+  borderRadius: '100px',
   pointerEvents: 'auto',
   flexShrink: 0,
   transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
@@ -121,6 +121,7 @@ export const iconButtonStyle = style({
   selectors: {
     '&:hover': {
       backgroundColor: 'oklch(14.5% 0 0 / 0.2)',
+      transform: 'scale(1.2)',
     },
     '&:disabled': {
       opacity: 0.5,

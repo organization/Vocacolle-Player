@@ -77,9 +77,59 @@ export const textContainerStyle = style({
 export const imageStyle = style({
   width: '36px',
   height: '36px',
-  borderRadius: '8px',
   aspectRatio: '1 / 1',
   objectFit: 'cover',
+});
+
+export const clickableAlbumStyle = style({
+  position: 'relative',
+  cursor: 'pointer',
+  pointerEvents: 'auto',
+  borderRadius: '8px',
+  overflow: 'hidden',
+
+  transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
+
+  selectors: {
+    '&:hover': {
+      scale: 1.2,
+    },
+    '&:active': {
+      scale: 0.95,
+    },
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      inset: 0,
+      backgroundColor: 'oklch(14.5% 0 0 / 0.5)',
+      opacity: 0,
+      transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
+    },
+    '&:hover::before': {
+      opacity: 1,
+    },
+    '&:active::before': {
+      opacity: 1,
+    },
+  },
+});
+export const albumIconStyle = style({
+  position: 'absolute',
+  width: '16px',
+  height: '16px',
+  color: 'oklch(94.5% 0 0 / 1)',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  pointerEvents: 'none',
+  opacity: 0,
+  transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
+
+  selectors: {
+    [`${clickableAlbumStyle}:hover &`]: {
+      opacity: 1,
+    },
+  },
 });
 
 export const titleStyle = style({

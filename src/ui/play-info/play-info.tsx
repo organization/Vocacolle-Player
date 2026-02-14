@@ -4,7 +4,9 @@ import { rankingTypeToText } from '@/utils/convert';
 import { cx } from '@/utils';
 
 import {
+  albumIconStyle,
   artistStyle,
+  clickableAlbumStyle,
   containerStyle,
   imageStyle,
   indexStyle,
@@ -12,6 +14,7 @@ import {
   textContainerStyle,
   titleStyle,
 } from './play-info.css';
+import { MoveDiagonal } from 'lucide-solid';
 
 export type PlayInfoProps = {
   ranking?: number;
@@ -21,6 +24,8 @@ export type PlayInfoProps = {
   artist: string;
   album: string;
   class?: string;
+
+  onAlbumClick?: () => void;
 };
 export const PlayInfo = (props: PlayInfoProps) => {
   return (
@@ -28,7 +33,21 @@ export const PlayInfo = (props: PlayInfoProps) => {
       <Show when={props.index}>
         <div class={indexStyle}>{props.index}</div>
       </Show>
-      <img class={imageStyle} src={props.album} alt="album" />
+      <div
+        classList={{
+          [clickableAlbumStyle]: !!props.onAlbumClick,
+        }}
+      >
+        <Show when={!!props.onAlbumClick}>
+          <MoveDiagonal class={albumIconStyle} />
+        </Show>
+        <img
+          class={imageStyle}
+          src={props.album}
+          alt="album"
+          onClick={props.onAlbumClick}
+        />
+      </div>
       <div class={textContainerStyle}>
         <div class={titleStyle}>{props.title}</div>
         <div class={artistStyle}>{props.artist}</div>
