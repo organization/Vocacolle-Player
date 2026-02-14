@@ -3,23 +3,9 @@ import {
   style,
   styleVariants,
 } from '@vanilla-extract/css';
-import { Colors } from '@pages/content/theme';
+import { Colors } from '@/theme';
 
-export const fixedStyle = style({
-  position: 'fixed',
-  bottom: 0,
-  left: 0,
-  right: 0,
-
-  padding: '0.8rem',
-
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-
-  zIndex: 1000,
-  pointerEvents: 'none',
-});
+export const glassFilter = createVar();
 export const wrapperStyle = style({
   position: 'relative',
 
@@ -27,10 +13,9 @@ export const wrapperStyle = style({
   maxWidth: '1200px',
   height: '3.6rem',
 
-  backgroundColor: 'oklch(94% 0 0 / 0.4)',
-  // backdropFilter: 'saturate(5) brightness(0.98)',
-  // border: '2px solid oklch(94% 0 0 / 0.2)',
-  // boxShadow: '0 4px 12px oklch(0% 0 0 / 0.35)',
+  backgroundColor: 'oklch(94% 0 0 / 0.6)',
+  backdropFilter: `${glassFilter} saturate(5) brightness(0.98)`,
+  boxShadow: '0 4px 12px oklch(0% 0 0 / 0.35)',
   color: Colors.gray[900],
 
   display: 'flex',

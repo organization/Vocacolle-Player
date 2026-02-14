@@ -1,5 +1,6 @@
-import { LiquidGlass } from '../glass';
-import { toastStyle } from './Toast.css';
+import { LiquidGlass } from '@/ui/glass';
+
+import { toastStyle } from './toast.css';
 
 export type ToastProps = {
   message: string;

@@ -8,8 +8,6 @@ import solidSvg from 'vite-plugin-solid-svg';
 import manifest from './src/manifest';
 
 const root = resolve(__dirname, 'src');
-const pagesDir = resolve(root, 'pages');
-const assetsDir = resolve(root, 'assets');
 const outDir = resolve(__dirname, 'dist');
 const publicDir = resolve(__dirname, 'public');
 
@@ -26,9 +24,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@src': root,
-      '@assets': assetsDir,
-      '@pages': pagesDir,
+      '@': root,
     },
   },
   publicDir,
@@ -37,9 +33,9 @@ export default defineConfig({
     sourcemap: isDev,
     rollupOptions: {
       input: {
-        content: resolve(pagesDir, 'content', 'index.tsx'),
-        progress: resolve(pagesDir, 'content', 'progress.ts'),
-        background: resolve(pagesDir, 'background', 'index.ts'),
+        content: resolve(root, 'pages', 'content', 'index.tsx'),
+        embed: resolve(root, 'pages', 'embed', 'index.ts'),
+        background: resolve(root, 'background', 'index.ts'),
       },
       // input: {
       //   devtools: resolve(pagesDir, "devtools", "index.html"),
@@ -52,7 +48,7 @@ export default defineConfig({
       //   options: resolve(pagesDir, "options", "index.html"),
       // },
       output: {
-        entryFileNames: 'src/pages/[name]/index.js',
+        entryFileNames: 'src/[name]/index.js',
         chunkFileNames: 'assets/js/[name].js',
       },
     },

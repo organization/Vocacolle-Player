@@ -1,29 +1,5 @@
 import { createReaction, createSignal, Show } from 'solid-js';
-
-import { PlayInfo } from '../play-info';
-import { playlist, setPlaylist } from '@pages/content/store/playlist';
-
-import {
-  centerContainerStyle,
-  containerStyle,
-  fixedStyle,
-  iconButtonStyle,
-  iconExpandStyle,
-  iconStyle,
-  playerBarInfoStyle,
-  progressStyle,
-  progressVar,
-  timeStyle,
-  wrapperAnimationStyle,
-  wrapperStyle,
-} from './PlayerBar.css';
-import { player, setPlayer } from '@pages/content/store/player';
-import { Portal } from 'solid-js/web';
-import { PlayerPanel } from '@src/pages/content/src/player-panel';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
-import { usePlayer } from '@pages/content/src';
-import { Event } from '@pages/content/event';
-import { formatTime } from '../../utils';
 import {
   ChevronUp,
   ExternalLink,
@@ -35,77 +11,54 @@ import {
   SkipForward,
   X,
 } from 'lucide-solid';
-import { LiquidGlass, useLiquidSurface } from '../glass';
 
-export const PlayerBar = () => {
+import { PlayInfo } from '@/ui/play-info';
+import { usePlayer } from '@/ui/player-provider';
+import { useLiquidSurface } from '@/ui/glass';
+import { formatTime } from '@/utils';
+
+import { Event } from '@/shared/event';
+import { VideoData } from '@/shared/types';
+
+import {
+  centerContainerStyle,
+  containerStyle,
+  glassFilter,
+  iconButtonStyle,
+  iconExpandStyle,
+  iconStyle,
+  playerBarInfoStyle,
+  progressStyle,
+  progressVar,
+  timeStyle,
+  wrapperAnimationStyle,
+  wrapperStyle,
+} from './player-bar.css';
+
+export type PlayerBarProps = {
+  nowPlaying: VideoData | null;
+  progress: number;
+  state: 'playing' | 'paused';
+  mode: 'full' | 'pip' | 'hidden';
+  playlistIndex: number;
+
+  onPrevious: () => void;
+  onPlayPause: () => void;
+  onNext: () => void;
+  onOpen: () => void;
+  onFullscreen: () => void;
+  onTogglePiP: () => void;
+  onExpand: () => void;
+  onClose: () => void;
+  onProgressChange: (progress: number) => void;
+};
+export const PlayerBar = (props: PlayerBarProps) => {
   const { sendEvent } = usePlayer();
 
   const [isMoving, setIsMoving] = createSignal(false);
   const [progress, setProgress] = createSignal<number | null>(null);
   const [slider, setSlider] = createSignal<HTMLDivElement | null>(null);
   const [rect, setRect] = createSignal<DOMRect | null>(null);
-
-  const onPrevious = () => {
-    setPlaylist('currentIndex', (prev) => Math.max(0, prev - 1));
-  };
-  const onPlayPause = () => {
-    setPlayer('state', player.state === 'playing' ? 'paused' : 'playing');
-  };
-  const onNext = () => {
-    setPlaylist('currentIndex', (prev) =>
-      Math.min(prev + 1, playlist.playlist.length - 1)
-    );
-  };
-
-  const onOpen = () => {
-    const video = playlist.currentVideo;
-    if (!video) return;
-
-    window.open(`https://www.nicovideo.jp/watch/${video.id}`);
-  };
-
-  const onFullscreen = () => {
-    const iframe = document.querySelector<HTMLIFrameElement>('#vcp-iframe');
-    iframe?.requestFullscreen();
-  };
-  const onTogglePiP = () => {
-    const isPiP = player.mode === 'pip';
-    if (!isPiP) {
-      setPlayer('mode', 'pip');
-    } else {
-      if (playlist.mode === 'full') setPlayer('mode', 'full');
-      else setPlayer('mode', 'hidden');
-    }
-  };
-  const onExpand = () => {
-    const isHidden = playlist.mode === 'hidden';
-
-    if (isHidden) {
-      setPlaylist('mode', 'full');
-      if (player.mode !== 'pip') setPlayer('mode', 'full');
-    } else {
-      setPlaylist('mode', 'hidden');
-      if (player.mode !== 'pip') setPlayer('mode', 'hidden');
-    }
-  };
-  const onClose = () => {
-    setPlayer('mode', 'hidden');
-    setPlaylist('mode', 'hidden');
-
-    setTimeout(() => {
-      setPlayer((prev) => ({
-        ...prev,
-        state: 'paused',
-        mode: 'hidden',
-        progress: 0,
-      }));
-      setPlaylist({
-        currentIndex: 0,
-        playlist: [],
-        mode: 'hidden',
-      });
-    }, 300);
-  };
 
   // drag
   const maxWidth = () => (rect()?.width ?? 16) - 16;
@@ -119,14 +72,14 @@ export const PlayerBar = () => {
     if (element !== last) return;
 
     setIsMoving(true);
-    setProgress(player.progress);
+    setProgress(props.progress);
     setRect(element.getBoundingClientRect());
     onMove(event);
 
     const onEnd = (event: PointerEvent) => {
       onMove(event, true);
 
-      const track = createReaction(() => player.progress);
+      const track = createReaction(() => props.progress);
       track(() => {
         requestAnimationFrame(() => {
           setIsMoving(false);
@@ -167,11 +120,11 @@ export const PlayerBar = () => {
 
     if (isEnd) {
       sendEvent({ type: Event.progress, progress: value });
-      setPlayer('progress', value);
+      props.onProgressChange(value);
     }
   };
 
-  const { filterStyles, Filter, onRegister } = useLiquidSurface(() => ({
+  const { filterId, Filter, onRegister } = useLiquidSurface(() => ({
     glassThickness: 80,
     bezelWidth: 15,
     refractiveIndex: 1.5,
@@ -180,52 +133,51 @@ export const PlayerBar = () => {
   }));
 
   return (
-    <div class={fixedStyle}>
-      <Portal>
-        <PlayerPanel />
-      </Portal>
+    <>
       <Filter />
       <div
-        style={filterStyles}
         ref={(el) => {
           onRegister(el);
           setSlider(el);
         }}
         classList={{
           [wrapperStyle]: true,
-          [wrapperAnimationStyle.enter]: !!playlist.currentVideo,
-          [wrapperAnimationStyle.exit]: !playlist.currentVideo,
+          [wrapperAnimationStyle.enter]: !!props.nowPlaying,
+          [wrapperAnimationStyle.exit]: !props.nowPlaying,
         }}
+        style={assignInlineVars({
+          [glassFilter]: `url(#${filterId})`,
+        })}
         onPointerDown={onMoveStart}
       >
         <div
           class={progressStyle}
           style={assignInlineVars({
-            [progressVar]: `${progress() ?? player.progress}`,
+            [progressVar]: `${progress() ?? props.progress}`,
             transition: isMoving() ? 'unset' : undefined,
           })}
         />
         <div class={containerStyle}>
-          <button class={iconButtonStyle} onClick={onPrevious}>
+          <button class={iconButtonStyle} onClick={props.onPrevious}>
             <SkipBack fill={'currentColor'} class={iconStyle} />
           </button>
-          <button class={iconButtonStyle} onClick={onPlayPause}>
+          <button class={iconButtonStyle} onClick={props.onPlayPause}>
             <Show
-              when={player.state === 'playing'}
+              when={props.state === 'playing'}
               fallback={<Play fill={'currentColor'} class={iconStyle} />}
             >
               <Pause fill={'currentColor'} class={iconStyle} />
             </Show>
           </button>
-          <button class={iconButtonStyle} onClick={onNext}>
+          <button class={iconButtonStyle} onClick={props.onNext}>
             <SkipForward fill={'currentColor'} class={iconStyle} />
           </button>
-          <Show when={playlist.currentVideo}>
+          <Show when={props.nowPlaying?.video}>
             {(video) => (
               <>
                 <div class={timeStyle}>
                   {formatTime(
-                    video().duration * (progress() ?? player.progress)
+                    video().duration * (progress() ?? props.progress)
                   )}
                 </div>
                 <div class={timeStyle}>/</div>
@@ -235,20 +187,20 @@ export const PlayerBar = () => {
           </Show>
         </div>
         <div class={centerContainerStyle}>
-          <Show when={playlist.current}>
+          <Show when={props.nowPlaying}>
             {(videoData) => (
               <>
                 <div class={playerBarInfoStyle}>
                   <PlayInfo
                     rankingType={videoData().type}
                     ranking={videoData().ranking}
-                    index={playlist.currentIndex + 1}
+                    index={props.playlistIndex + 1}
                     title={videoData().video.title}
                     artist={videoData().video.owner.name}
                     album={videoData().video.thumbnail.url}
                   />
                 </div>
-                <button class={iconButtonStyle} onClick={onOpen}>
+                <button class={iconButtonStyle} onClick={props.onOpen}>
                   <ExternalLink class={iconStyle} />
                 </button>
               </>
@@ -256,30 +208,30 @@ export const PlayerBar = () => {
           </Show>
         </div>
         <div class={containerStyle}>
-          <button class={iconButtonStyle} onClick={onFullscreen}>
+          <button class={iconButtonStyle} onClick={props.onFullscreen}>
             <Fullscreen class={iconStyle} />
           </button>
           <button
-            data-active={player.mode === 'pip'}
+            data-active={props.mode === 'pip'}
             class={iconButtonStyle}
-            onClick={onTogglePiP}
+            onClick={props.onTogglePiP}
           >
             <PictureInPicture class={iconStyle} />
           </button>
 
-          <button class={iconButtonStyle} onClick={onExpand}>
+          <button class={iconButtonStyle} onClick={props.onExpand}>
             <ChevronUp
               classList={{
                 [iconStyle]: true,
-                [iconExpandStyle]: playlist.mode === 'full',
+                [iconExpandStyle]: props.mode === 'full',
               }}
             />
           </button>
-          <button class={iconButtonStyle} onClick={onClose}>
+          <button class={iconButtonStyle} onClick={props.onClose}>
             <X class={iconStyle} />
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };

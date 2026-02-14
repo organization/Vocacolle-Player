@@ -14,7 +14,7 @@ const manifest = defineManifest(async () => ({
   name: packageJson.displayName ?? packageJson.name,
   version: `${major}.${minor}.${patch}.${label}`,
   description: packageJson.description,
-  background: { service_worker: 'src/pages/background/index.ts' },
+  background: { service_worker: 'src/background/index.ts' },
   icons: {
     '128': 'icons/128x128.png',
   },
@@ -26,7 +26,7 @@ const manifest = defineManifest(async () => ({
         'http://embed.nicovideo.jp/*',
         'https://embed.nicovideo.jp/*',
       ],
-      js: ['src/pages/content/index.tsx'],
+      js: ['src/pages/content/index.tsx', 'src/pages/embed/index.ts'],
       all_frames: true,
     },
   ],

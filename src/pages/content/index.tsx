@@ -1,19 +1,15 @@
 import { render } from 'solid-js/web';
 
-import { PlayerBar, PlayerProvider } from './src';
-import { addPlaylist, setRankingPlaylist } from '@pages/content/store/playlist';
-import { runOnPage } from '@pages/content/utils';
-import { initEmbed } from '@pages/content/embed';
-import { getOldType } from '@pages/content/api/ranking';
-import { RankingType } from '@pages/content/types';
-import { addToast, ToastProvider } from '@src/pages/content/src/toast-provider';
+import { addToast } from '@/ui/toast-provider';
+
+import { runOnPage } from '@/utils';
+import { RankingType } from '@/shared/types';
+
+import { getOldType } from './api/ranking';
+import { addPlaylist, setRankingPlaylist } from './store/playlist';
+import { App } from './app';
 
 const init = () => {
-  if (location.href.includes('embed.nicovideo.jp')) {
-    initEmbed();
-    return;
-  }
-
   const type = getOldType();
   if (type) {
     const year = Number(type.split('-')[0]);
@@ -153,13 +149,7 @@ const init = () => {
   });
 
   render(
-    () => (
-      <ToastProvider>
-        <PlayerProvider>
-          <PlayerBar />
-        </PlayerProvider>
-      </ToastProvider>
-    ),
+    App,
     document.body!
   );
 };

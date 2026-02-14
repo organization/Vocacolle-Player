@@ -1,8 +1,8 @@
 import { createEffect, createSignal, For, JSX } from 'solid-js';
 import { Portal } from 'solid-js/web';
 
-import { Toast, ToastProps } from './Toast';
-import { toastContainerStyle } from './Toast.css';
+import { Toast, ToastProps } from './toast';
+import { toastContainerStyle } from './toast.css';
 
 type ToastData = ToastProps & { id: number };
 

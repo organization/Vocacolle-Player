@@ -10,7 +10,9 @@
 
   window.addEventListener(
     'vcp:progress',
-    (event: CustomEvent) => {
+    (event: Event) => {
+      if (!(event instanceof CustomEvent)) return;
+
       const progress = event.detail;
 
       if (typeof progress !== 'number') return;

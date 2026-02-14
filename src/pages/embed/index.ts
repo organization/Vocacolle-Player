@@ -1,4 +1,4 @@
-import { Event } from '@pages/content/event';
+import { Event } from '@/shared/event';
 
 const EventList = Object.values(Event);
 export const initEmbed = () => {
@@ -67,7 +67,7 @@ export const initEmbed = () => {
 
         video.requestFullscreen();
         if ('webkitRequestFullscreen' in video) {
-          video.webkitRequestFullscreen();
+          (video.webkitRequestFullscreen as typeof video.requestFullscreen)();
         }
         return;
       }
@@ -90,3 +90,5 @@ export const initEmbed = () => {
     window.parent.postMessage({ type: Event.progress, percentage }, '*');
   }, 100);
 };
+
+if (location.href.includes('embed.nicovideo.jp')) initEmbed();

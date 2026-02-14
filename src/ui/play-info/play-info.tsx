@@ -1,3 +1,8 @@
+import { Show } from 'solid-js';
+
+import { rankingTypeToText } from '@/utils/convert';
+import { cx } from '@/utils';
+
 import {
   artistStyle,
   containerStyle,
@@ -6,10 +11,7 @@ import {
   rankingStyle,
   textContainerStyle,
   titleStyle,
-} from './PlayInfo.css';
-import { Show } from 'solid-js';
-import { rankingTypeToText } from '@pages/content/utils/convert';
-import { cx } from '@pages/content/utils';
+} from './play-info.css';
 
 export type PlayInfoProps = {
   ranking?: number;

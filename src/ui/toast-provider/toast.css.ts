@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
-import { Colors } from '@pages/content/theme';
+
+import { Colors } from '@/theme';
 
 export const toastContainerStyle = style({
   position: 'fixed',

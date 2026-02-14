@@ -3,7 +3,7 @@ import {
   Ranking,
   RankingData,
   RankingType,
-} from '@pages/content/types';
+} from '@/shared/types';
 
 export const getRankingNumber = (type: RankingType): number | null => {
   if (type === 'top100') return 301438;

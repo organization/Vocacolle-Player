@@ -1,7 +1,9 @@
 import { createStore } from 'solid-js/store';
-import { fetchRanking } from '@pages/content/api/ranking';
-import { RankingType, Video, VideoData } from '@pages/content/types';
-import { rankingTypeToText } from '@pages/content/utils/convert';
+
+import { RankingType, Video, VideoData } from '@/shared/types';
+import { rankingTypeToText } from '@/utils/convert';
+
+import { fetchRanking } from '../api/ranking';
 
 export type PlaylistStore = {
   playlist: VideoData[];
