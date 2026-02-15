@@ -52,7 +52,7 @@ export const initEmbed = () => {
         if (!seekbar) return;
 
         const script = document.createElement('script');
-        script.src = chrome.runtime.getURL('/src/pages/progress/index.js');
+        script.src = chrome.runtime.getURL('/src/progress/index.js');
         document.body.appendChild(script);
         window.dispatchEvent(
           new CustomEvent(Event.progress, { detail: event.data.progress })

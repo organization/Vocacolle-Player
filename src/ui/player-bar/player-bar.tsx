@@ -11,7 +11,6 @@ import {
 } from 'lucide-solid';
 
 import { PlayInfo } from '@/ui/play-info';
-import { usePlayer } from '@/ui/player-provider';
 import { useLiquidSurface } from '@/ui/glass';
 import { formatTime } from '@/utils';
 
@@ -46,8 +45,6 @@ export type PlayerBarProps = {
   onProgressChange: (progress: number) => void;
 };
 export const PlayerBar = (props: PlayerBarProps) => {
-  const { sendEvent } = usePlayer();
-
   const [isMoving, setIsMoving] = createSignal(false);
   const [progress, setProgress] = createSignal<number | null>(null);
   const [slider, setSlider] = createSignal<HTMLDivElement | null>(null);
@@ -112,7 +109,6 @@ export const PlayerBar = (props: PlayerBarProps) => {
     });
 
     if (isEnd) {
-      sendEvent({ type: Event.progress, progress: value });
       props.onProgressChange(value);
     }
   };
