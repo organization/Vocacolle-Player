@@ -40,7 +40,6 @@ export type PlayerBarProps = {
   nowPlaying: VideoData | null;
   progress: number;
   state: 'playing' | 'paused';
-  mode: 'full' | 'pip' | 'hidden';
   playlistIndex: number;
 
   onPrevious: () => void;
@@ -126,7 +125,7 @@ export const PlayerBar = (props: PlayerBarProps) => {
 
   const { filterId, Filter, onRegister } = useLiquidSurface(() => ({
     glassThickness: 80,
-    bezelWidth: 15,
+    bezelWidth: 20,
     refractiveIndex: 1.5,
     blur: 2,
     specularOpacity: 0.8,
@@ -140,11 +139,7 @@ export const PlayerBar = (props: PlayerBarProps) => {
           onRegister(el);
           setSlider(el);
         }}
-        classList={{
-          [wrapperStyle]: true,
-          [wrapperAnimationStyle.enter]: !!props.nowPlaying,
-          [wrapperAnimationStyle.exit]: !props.nowPlaying,
-        }}
+        class={wrapperStyle}
         style={assignInlineVars({
           [glassFilter]: `url(#${filterId})`,
         })}
@@ -212,7 +207,7 @@ export const PlayerBar = (props: PlayerBarProps) => {
         </div>
         <div class={containerStyle}>
           <button
-            data-active={props.mode === 'pip'}
+            // data-active={props.mode === 'pip'}
             class={iconButtonStyle}
             onClick={props.onTogglePiP}
           >
@@ -222,7 +217,7 @@ export const PlayerBar = (props: PlayerBarProps) => {
             <ListMusic
               classList={{
                 [iconStyle]: true,
-                [iconExpandStyle]: props.mode === 'full',
+                // [iconExpandStyle]: props.mode === 'full',
               }}
             />
           </button>

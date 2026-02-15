@@ -10,10 +10,9 @@ export const wrapperStyle = style({
   position: 'relative',
 
   width: '100%',
-  maxWidth: '1200px',
   height: '3.6rem',
 
-  backgroundColor: 'oklch(94% 0 0 / 0.6)',
+  backgroundColor: 'oklch(100% 0 0 / 0.8)',
   backdropFilter: `${glassFilter} saturate(5) brightness(0.98)`,
   boxShadow: '0 4px 12px oklch(0% 0 0 / 0.35)',
   color: Colors.gray[900],
