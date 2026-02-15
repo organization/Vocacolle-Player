@@ -1,11 +1,12 @@
 import { createEffect, createSignal, For, JSX } from 'solid-js';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { Portal } from 'solid-js/web';
+import { Flip } from 'solid-flip';
 
 import { Toast, ToastProps } from './toast';
 import { useLiquidSurface } from '../glass';
 
-import { glassFilter, toastContainerStyle } from './toast.css';
+import { glassFilter, toastAnimationStyle, toastContainerStyle } from './toast.css';
 
 type ToastData = ToastProps & { id: number };
 
@@ -47,7 +48,18 @@ export const ToastProvider = (props: ToastProviderProps) => {
             [glassFilter]: `url(#${filterId})`,
           })}
         >
-          <For each={list()}>{(item) => <Toast {...item} />}</For>
+          <For each={list()}>
+            {(item) => (
+              <Flip
+                id={`toast-${item.id}`}
+                enter={toastAnimationStyle.enter}
+                exit={toastAnimationStyle.exit}
+                with={list()}
+              >
+                <Toast {...item} />
+              </Flip>
+            )}
+          </For>
         </div>
       </Portal>
     </>

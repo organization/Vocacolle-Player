@@ -63,13 +63,13 @@ const useMotionSizeObservers = <T extends HTMLElement = HTMLDivElement>(
 
     batch(() => {
       if (Math.abs(width() - newWidth) > 0.5) {
-        setWidth(newWidth);
+        setWidth(~~newWidth);
       }
       if (Math.abs(height() - newHeight) > 0.5) {
-        setHeight(newHeight);
+        setHeight(~~newHeight);
       }
       if (Math.abs(borderRadius() - newRadius) > 0.5) {
-        setBorderRadius(newRadius);
+        setBorderRadius(~~newRadius);
       }
     });
 
@@ -80,45 +80,49 @@ const useMotionSizeObservers = <T extends HTMLElement = HTMLDivElement>(
   };
 
   // Observe size changes
-  createRenderEffect(on(disabled, () => {
-    const container = containerRef();
-    if (!container || disabled()) return;
+  createRenderEffect(on(
+    () => [disabled(), containerRef()] as const,
+    ([disabled, container]) => {
+      if (!container || disabled) return;
 
-    const resizeObserver = new ResizeObserver(() => {
-      requestAnimationFrame(updateDimensions);
-    });
+      const resizeObserver = new ResizeObserver(() => {
+        requestAnimationFrame(updateDimensions);
+      });
 
-    resizeObserver.observe(container);
+      resizeObserver.observe(container);
 
-    // Initial measurement
-    updateDimensions();
+      // Initial measurement
+      updateDimensions();
 
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }));
+      return () => {
+        resizeObserver.disconnect();
+      };
+    },
+  ));
 
   // Watch for border radius changes through MutationObserver
-  createEffect(on(disabled, () => {
-    const container = containerRef();
-    if (!container || disabled()) return;
+  createEffect(on(
+    () => [disabled(), containerRef()] as const,
+    ([disabled, container]) => {
+      if (!container || disabled) return;
 
-    let timeoutId: NodeJS.Timeout;
-    const mutationObserver = new MutationObserver(() => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(updateDimensions, 100); // Debounce mutations
-    });
+      let timeoutId: NodeJS.Timeout;
+      const mutationObserver = new MutationObserver(() => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(updateDimensions, 100); // Debounce mutations
+      });
 
-    mutationObserver.observe(container, {
-      attributes: true,
-      attributeFilter: ['style', 'class'],
-    });
+      mutationObserver.observe(container, {
+        attributes: true,
+        attributeFilter: ['style', 'class'],
+      });
 
-    return () => {
-      clearTimeout(timeoutId);
-      mutationObserver.disconnect();
-    };
-  }));
+      return () => {
+        clearTimeout(timeoutId);
+        mutationObserver.disconnect();
+      };
+    },
+  ));
 
   return {
     width,
@@ -166,10 +170,10 @@ export const useLiquidSurface = <T extends HTMLElement = HTMLDivElement>(options
     <LiquidFilter id={filterId} width={finalWidth()} height={finalHeight()} radius={finalRadius()} {...options()} />
   );
 
-  const filterStyles = {
+  const filterStyles = () => ({
     'backdrop-filter': `url(#${filterId})`,
     '-webkit-backdrop-filter': `url(#${filterId})`,
-  };
+  });
 
   return {
     filterId,
@@ -211,8 +215,8 @@ export const LiquidGlass = (props: LiquidGlassProps & JSX.HTMLAttributes<HTMLDiv
       <Filter />
       {!local.targetRef && (
         <LiquidDiv
-          {...props}
-          style={sx(filterStyles, props.style)}
+          {...local}
+          style={sx(filterStyles(), local.style)}
           filterId={filterId}
           ref={onRegister}
         >
