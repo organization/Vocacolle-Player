@@ -11,7 +11,7 @@ import { PlaylistView } from '@/ui/playlist-view';
 import { player } from './store/player';
 import { playlist } from './store/playlist';
 
-import { fixedStyle, playerBarWrapperAnimationStyle, playerBarWrapperStyle, sidebarAnimationStyle, sidebarStyle } from './app.css';
+import { fixedStyle, playerBarWrapperAnimationStyle, playerBarWrapperStyle, sidebarAnimationStyle, sidebarStyle, sidebarTitleStyle, videoContainerStyle, videoWrapperAnimationStyle } from './app.css';
 
 export const App = () => {
   const [showSidebar, setShowSidebar] = createSignal(false);
@@ -28,16 +28,21 @@ export const App = () => {
       <ToastProvider>
         <PlayerProvider>
           <div class={fixedStyle}>
-            <Portal>
+            <div
+              classList={{
+                [videoContainerStyle]: true,
+                [videoWrapperAnimationStyle.enter]: showPlayer(),
+                [videoWrapperAnimationStyle.exit]: !showPlayer(),
+              }}
+            >
               <Show when={playlist.current}>
                 {(video) => (
                   <Player
                     videoId={video().video.id}
-                    mode={player.mode}
                   />
                 )}
               </Show>
-            </Portal>
+            </div>
             <div
               classList={{
                 [playerBarWrapperStyle]: true,
@@ -54,7 +59,6 @@ export const App = () => {
                 onPlayPause={() => { }}
                 onNext={() => { }}
                 onOpen={() => { }}
-                onTogglePiP={() => { }}
                 onPlaylist={() => setShowSidebar((prev) => !prev)}
                 onClose={() => setShowPlayer(false)}
                 onProgressChange={() => { }}
@@ -72,7 +76,7 @@ export const App = () => {
                 playlist={playlist.playlist}
               >
                 <div>
-                  <h2>플레이리스트</h2>
+                  <h2 class={sidebarTitleStyle}>플레이리스트</h2>
                 </div>
               </PlaylistView>
             </div>

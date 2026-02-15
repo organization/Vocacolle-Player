@@ -1,12 +1,9 @@
 import { createReaction, createSignal, Show } from 'solid-js';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import {
-  ChevronUp,
   ExternalLink,
-  Fullscreen,
   ListMusic,
   Pause,
-  PictureInPicture,
   Play,
   SkipBack,
   SkipForward,
@@ -26,13 +23,11 @@ import {
   containerStyle,
   glassFilter,
   iconButtonStyle,
-  iconExpandStyle,
   iconStyle,
   playerBarInfoStyle,
   progressStyle,
   progressVar,
   timeStyle,
-  wrapperAnimationStyle,
   wrapperStyle,
 } from './player-bar.css';
 
@@ -46,7 +41,6 @@ export type PlayerBarProps = {
   onPlayPause: () => void;
   onNext: () => void;
   onOpen: () => void;
-  onTogglePiP: () => void;
   onPlaylist: () => void;
   onClose: () => void;
   onProgressChange: (progress: number) => void;
@@ -206,13 +200,6 @@ export const PlayerBar = (props: PlayerBarProps) => {
           </Show>
         </div>
         <div class={containerStyle}>
-          <button
-            // data-active={props.mode === 'pip'}
-            class={iconButtonStyle}
-            onClick={props.onTogglePiP}
-          >
-            <PictureInPicture class={iconStyle} />
-          </button>
           <button class={iconButtonStyle} onClick={props.onPlaylist}>
             <ListMusic
               classList={{

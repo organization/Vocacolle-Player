@@ -1,42 +1,80 @@
-import { createEffect, createSignal, on, onCleanup } from 'solid-js';
-import { iframeStyle, pipScale, pipStyle, pipX, pipY, videoAnimationStyle, videoStyle } from './player.css';
+import { createSignal } from 'solid-js';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
+import { Move, Scaling } from 'lucide-solid';
+
+import { iconStyle, iframeStyle, moveIconStyle, pipScale, pipStyle, pipX, pipY, scalingIconStyle, videoStyle } from './player.css';
+import { cx } from '@/utils';
+
+const BEZEL_WIDTH = 16;
 
 export type PlayerProps = {
   videoId: string;
-  mode: 'full' | 'pip' | 'hidden';
 };
 export const Player = (props: PlayerProps) => {
   const [iframe, setIframe] = createSignal<HTMLIFrameElement | null>(null);
   const [coord, setCoord] = createSignal({ x: 0, y: 0 });
-  const [scale, setScale] = createSignal(1);
+  const [scale, setScale] = createSignal(300 / document.body.clientWidth * 2);
   const [isMovingMode, setIsMovingMode] = createSignal(false);
+  const [edge, setEdge] = createSignal<'ne' | 'nw' | 'se' | 'sw' | null>(null);
+
+  const onEdgeCheck = (event: PointerEvent) => {
+    if (!iframe()) return;
+    const rect = iframe()!.getBoundingClientRect();
+    const offsetX = event.clientX - rect.x;
+    const offsetY = event.clientY - rect.y;
+
+    const edgeX = offsetX < BEZEL_WIDTH || offsetX > rect.width - BEZEL_WIDTH;
+    const edgeY = offsetY < BEZEL_WIDTH || offsetY > rect.height - BEZEL_WIDTH;
+    if (!edgeX && !edgeY) {
+      setEdge(null);
+      return;
+    }
+
+    if (offsetX < rect.width / 2 && offsetY < rect.height / 2) setEdge('nw');
+    if (offsetX >= rect.width / 2 && offsetY < rect.height / 2) setEdge('ne');
+    if (offsetX < rect.width / 2 && offsetY >= rect.height / 2) setEdge('sw');
+    if (offsetX >= rect.width / 2 && offsetY >= rect.height / 2) setEdge('se');
+  };
 
   const onDragStart = (event: PointerEvent) => {
     event.preventDefault();
 
     const rect = iframe()?.getBoundingClientRect();
     if (!rect) return;
+    const startCoord = coord();
 
-    const rectX = rect.x - coord().x;
-    const rectY = rect.y - coord().y;
+    const rectX = rect.x - startCoord.x;
+    const rectY = rect.y - startCoord.y;
     const offsetX = event.offsetX * scale();
     const offsetY = event.offsetY * scale();
 
-    const edgeX = offsetX < 10 || offsetX > rect.width - 10;
-    const edgeY = offsetY < 10 || offsetY > rect.height - 10;
+    const edgeX = offsetX < BEZEL_WIDTH || offsetX > rect.width - BEZEL_WIDTH;
+    const edgeY = offsetY < BEZEL_WIDTH || offsetY > rect.height - BEZEL_WIDTH;
 
     let onMove: (event: PointerEvent) => void;
     if (edgeX || edgeY) {
       const nowScale = scale();
+      const isTop = offsetY < BEZEL_WIDTH;
+      const isLeft = offsetX < BEZEL_WIDTH;
+
       onMove = (event: PointerEvent) => {
-        const scaleX = ((event.clientX - rect.x) / rect.width) * nowScale;
-        const scaleY = ((event.offsetY - rect.y) / rect.height) * nowScale;
+        const width = isLeft ? rect.right - event.clientX : event.clientX - rect.left;
+        const height = isTop ? rect.bottom - event.clientY : event.clientY - rect.top;
+        const scaleX = (width / rect.width) * nowScale;
+        const scaleY = (height / rect.height) * nowScale;
         const newScale = Math.min(Math.max(0.1, scaleX, scaleY), 2);
         setIsMovingMode(true);
 
+        const scaleRatio = newScale / nowScale;
+        const newXOffset = isLeft ? rect.width * (scaleRatio - 1) : 0;
+        const newYOffset = isTop ? 0 : rect.height * (1 - scaleRatio);
+
         requestAnimationFrame(() => {
           setScale(newScale);
+          setCoord({
+            x: startCoord.x - newXOffset,
+            y: startCoord.y - newYOffset,
+          });
         });
       };
     } else {
@@ -65,49 +103,13 @@ export const Player = (props: PlayerProps) => {
     window.addEventListener('pointercancel', cleanUp, { once: true });
   };
 
-  createEffect(
-    on(
-      () => props.mode === 'pip',
-      (isPiP) => {
-        if (!isPiP) {
-          setCoord({ x: 0, y: 0 });
-          setScale(1);
-        } else {
-          const rect = iframe()?.getBoundingClientRect();
-          if (!rect) return;
-
-          const offset = props.mode === 'full' ? 1 : 5;
-          setCoord({
-            x: -rect.x + 16,
-            y: -rect.y + rect.height * (offset - 1) + 16,
-          });
-
-          const timeout = setTimeout(() => {
-            const rect = iframe()?.getBoundingClientRect();
-            if (!rect) return;
-            setScale(0.5);
-            setCoord({
-              x: coord().x,
-              y: coord().y - rect.height / 2,
-            });
-          }, 300);
-
-          onCleanup(() => {
-            clearTimeout(timeout);
-          });
-        }
-      }
-    )
-  );
-
   return (
     <div
       ref={setIframe}
+      data-edge={edge()}
       classList={{
         [videoStyle]: true,
-        [pipStyle]: props.mode === 'pip',
-        [videoAnimationStyle.enter]: props.mode !== 'hidden',
-        [videoAnimationStyle.exit]: props.mode === 'hidden',
+        [pipStyle]: true,
       }}
       style={assignInlineVars({
         [pipX]: coord().x + 'px',
@@ -115,6 +117,7 @@ export const Player = (props: PlayerProps) => {
         [pipScale]: `${(scale() * 100).toFixed(5)}%`,
         transition: isMovingMode() ? 'unset' : undefined,
       })}
+      onPointerMove={onEdgeCheck}
       onPointerDown={onDragStart}
     >
       <iframe
@@ -125,6 +128,8 @@ export const Player = (props: PlayerProps) => {
         src={`https://embed.nicovideo.jp/watch/${props.videoId}?persistence=1&oldScript=1&referer=&from=0`}
         class={iframeStyle}
       />
+      <Move class={cx(iconStyle, moveIconStyle)} width={'25%'} height={'25%'} />
+      <Scaling class={cx(iconStyle, scalingIconStyle)} width={'25%'} height={'25%'} />
     </div>
   );
 };

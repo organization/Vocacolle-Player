@@ -42,8 +42,6 @@ export const sidebarStyle = style({
 
   width: '20rem',
   height: '100%',
-  // padding: '0.8rem',
-  // paddingBottom: 'calc(0.8rem + 3.6rem + 0.8rem)',
 
   display: 'flex',
   flexDirection: 'column',
@@ -51,6 +49,10 @@ export const sidebarStyle = style({
 
   zIndex: 1000,
   pointerEvents: 'none',
+});
+export const sidebarTitleStyle = style({
+  fontSize: '1.25rem',
+  fontWeight: 'bold',
 });
 
 export const sidebarAnimationStyle = styleVariants({
@@ -61,5 +63,33 @@ export const sidebarAnimationStyle = styleVariants({
   hide: {
     transform: 'translateX(100%)',
     transition: 'transform 0.3s ease-in-out',
+  },
+});
+
+export const videoContainerStyle = style({
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+
+  width: '50vw',
+  padding: '0.8rem',
+
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+
+  zIndex: 1000,
+  pointerEvents: 'none',
+});
+export const videoWrapperAnimationStyle = styleVariants({
+  enter: {
+    opacity: 1,
+    transform: 'scale(1)',
+    transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
+  },
+  exit: {
+    opacity: 0,
+    transform: 'scale(0.2)',
+    transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
   },
 });
