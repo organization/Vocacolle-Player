@@ -133,7 +133,12 @@ const Content = () => {
           onPrevious={() => setPlaylist('currentIndex', (index) => Math.max(index - 1, 0))}
           onPlayPause={() => setPlayer('state', (state) => (state === 'playing' ? 'paused' : 'playing'))}
           onNext={() => setPlaylist('currentIndex', (index) => Math.min(index + 1, playlist.playlist.length - 1))}
-          onOpen={() => { }}
+          onOpen={() => {
+            const video = playlist.currentVideo;
+            if (!video) return;
+
+            window.open(`https://www.nicovideo.jp/watch/${video.id}`);
+          }}
           onPlaylist={() => setShowSidebar((prev) => !prev)}
           onClose={() => setShowPlayer(false)}
           onProgressChange={(progress) => sendEvent({ type: Event.progress, progress })}

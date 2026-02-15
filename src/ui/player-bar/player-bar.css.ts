@@ -70,7 +70,21 @@ export const progressStyle = style({
     right: 0,
     bottom: 0,
     background:
-      'linear-gradient(to right, rgba(241, 106, 3, 0.3) calc(100% - 3.2rem), rgba(241, 106, 3, 0.6) 100%)',
+      `linear-gradient(
+        to right,
+        rgba(22, 232, 248, 0.3) 0%,
+        rgba(13, 181, 194, 0.3) 20%,
+        rgba(5, 155, 167, 0.3) 30.7692%,
+        rgba(218, 66, 86, 0.3) 65%,
+        rgba(211, 32, 55, 0.6) 100%
+      )`,
+      /*
+        rgba(22, 232, 248, 0.3) calc(100% - 3.2rem),
+        rgba(13, 181, 194, 0.3) calc(100% - 2.56rem),
+        rgba(5, 155, 167, 0.3) calc(100% - 2.2153856rem),
+        rgba(218, 66, 86, 0.3) calc(100% - 1.12rem),
+        rgba(211, 32, 55, 0.6) 100%
+      */
     transform: `translateX(calc(-100% + ${progressVar} * 100%))`,
     transition: 'inherit',
   },
