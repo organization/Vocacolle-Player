@@ -5,9 +5,10 @@ import { addToast } from '@/ui/toast-provider';
 import { runOnPage } from '@/utils';
 import { RankingType } from '@/shared/types';
 
+import { App } from './app';
 import { getOldType } from './api/ranking';
 import { addPlaylist, setRankingPlaylist } from './store/playlist';
-import { App } from './app';
+import { broadcastVideoClick } from './hook/use-video-data';
 
 const init = () => {
   const type = getOldType();
@@ -102,13 +103,14 @@ const init = () => {
                   event.preventDefault();
                   event.stopPropagation();
 
-                  addPlaylist(anchor.href).then((result) => {
-                    if (result) {
-                      addToast({
-                        message: `"${result.video.title}"(이)가 재생목록에 추가되었습니다.`,
-                      });
-                    }
-                  });
+                  broadcastVideoClick(anchor.href);
+                  // addPlaylist(anchor.href).then((result) => {
+                  //   if (result) {
+                  //     addToast({
+                  //       message: `"${result.video.title}"(이)가 재생목록에 추가되었습니다.`,
+                  //     });
+                  //   }
+                  // });
                 },
                 { capture: true }
               );

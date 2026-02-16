@@ -53,6 +53,13 @@ export const sidebarStyle = style({
 export const sidebarTitleStyle = style({
   fontSize: '1.25rem',
   fontWeight: 'bold',
+  flex: 1,
+});
+export const sidebarHeaderStyle = style({
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
 });
 
 export const sidebarAnimationStyle = styleVariants({

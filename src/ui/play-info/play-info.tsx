@@ -9,6 +9,7 @@ import {
   clickableAlbumStyle,
   containerStyle,
   imageStyle,
+  imageWrapperStyle,
   indexStyle,
   rankingStyle,
   textContainerStyle,
@@ -35,8 +36,10 @@ export const PlayInfo = (props: PlayInfoProps) => {
       </Show>
       <div
         classList={{
+          [imageWrapperStyle]: true,
           [clickableAlbumStyle]: !!props.onAlbumClick,
         }}
+        onClick={props.onAlbumClick}
       >
         <Show when={!!props.onAlbumClick}>
           <MoveDiagonal class={albumIconStyle} />
@@ -45,7 +48,6 @@ export const PlayInfo = (props: PlayInfoProps) => {
           class={imageStyle}
           src={props.album}
           alt="album"
-          onClick={props.onAlbumClick}
         />
       </div>
       <div class={textContainerStyle}>

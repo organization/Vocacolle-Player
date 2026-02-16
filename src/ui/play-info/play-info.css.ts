@@ -77,16 +77,23 @@ export const textContainerStyle = style({
 export const imageStyle = style({
   width: '36px',
   height: '36px',
+  minWidth: '36px',
+  minHeight: '36px',
+
   aspectRatio: '1 / 1',
   objectFit: 'cover',
+  flexShrink: 0,
 });
 
+export const imageWrapperStyle = style({
+  borderRadius: '8px',
+  overflow: 'hidden',
+  flexShrink: 0,
+});
 export const clickableAlbumStyle = style({
   position: 'relative',
   cursor: 'pointer',
   pointerEvents: 'auto',
-  borderRadius: '8px',
-  overflow: 'hidden',
 
   transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
 

@@ -12,17 +12,15 @@ import {
 
 import { PlayInfo } from '@/ui/play-info';
 import { useLiquidSurface } from '@/ui/glass';
+import { IconButton } from '@/ui/button';
 import { formatTime } from '@/utils';
 
-import { Event } from '@/shared/event';
 import { VideoData } from '@/shared/types';
 
 import {
   centerContainerStyle,
   containerStyle,
   glassFilter,
-  iconButtonStyle,
-  iconStyle,
   playerBarInfoStyle,
   progressStyle,
   progressVar,
@@ -42,6 +40,7 @@ export type PlayerBarProps = {
   onOpen: () => void;
   onPlaylist: () => void;
   onClose: () => void;
+  onAlbumClick: () => void;
   onProgressChange: (progress: number) => void;
 };
 export const PlayerBar = (props: PlayerBarProps) => {
@@ -143,20 +142,9 @@ export const PlayerBar = (props: PlayerBarProps) => {
           })}
         />
         <div class={containerStyle}>
-          <button class={iconButtonStyle} onClick={props.onPrevious}>
-            <SkipBack fill={'currentColor'} class={iconStyle} />
-          </button>
-          <button class={iconButtonStyle} onClick={props.onPlayPause}>
-            <Show
-              when={props.state === 'playing'}
-              fallback={<Play fill={'currentColor'} class={iconStyle} />}
-            >
-              <Pause fill={'currentColor'} class={iconStyle} />
-            </Show>
-          </button>
-          <button class={iconButtonStyle} onClick={props.onNext}>
-            <SkipForward fill={'currentColor'} class={iconStyle} />
-          </button>
+          <IconButton fill={'currentColor'} icon={SkipBack} onClick={props.onPrevious} />
+          <IconButton fill={'currentColor'} icon={props.state === 'playing' ? Pause : Play} onClick={props.onPlayPause} />
+          <IconButton fill={'currentColor'} icon={SkipForward} onClick={props.onNext} />
           <Show when={props.nowPlaying?.video}>
             {(video) => (
               <>
@@ -183,30 +171,23 @@ export const PlayerBar = (props: PlayerBarProps) => {
                     title={videoData().video.title}
                     artist={videoData().video.owner.name}
                     album={videoData().video.thumbnail.url}
-                    onAlbumClick={() => {
-
-                    }}
+                    onAlbumClick={props.onAlbumClick}
                   />
                 </div>
-                <button class={iconButtonStyle} onClick={props.onOpen}>
-                  <ExternalLink class={iconStyle} />
-                </button>
+                <IconButton icon={ExternalLink} onClick={props.onOpen} />
               </>
             )}
           </Show>
         </div>
         <div class={containerStyle}>
-          <button class={iconButtonStyle} onClick={props.onPlaylist}>
-            <ListMusic
-              classList={{
-                [iconStyle]: true,
-                // [iconExpandStyle]: props.mode === 'full',
-              }}
-            />
-          </button>
-          <button class={iconButtonStyle} onClick={props.onClose}>
-            <X class={iconStyle} />
-          </button>
+          <IconButton
+            icon={ListMusic}
+            onClick={props.onPlaylist}
+          />
+          <IconButton
+            icon={X}
+            onClick={props.onClose}
+          />
         </div>
       </div>
     </>
