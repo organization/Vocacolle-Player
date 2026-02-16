@@ -1,4 +1,4 @@
-import { createSignal } from 'solid-js';
+import { createSignal, Show } from 'solid-js';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { Move, Scaling } from 'lucide-solid';
 
@@ -8,7 +8,8 @@ import { cx } from '@/utils';
 const BEZEL_WIDTH = 16;
 
 export type PlayerProps = {
-  videoId: string;
+  videoId?: string;
+  pip?: boolean;
 };
 export const Player = (props: PlayerProps) => {
   const [iframe, setIframe] = createSignal<HTMLIFrameElement | null>(null);
@@ -18,6 +19,7 @@ export const Player = (props: PlayerProps) => {
   const [edge, setEdge] = createSignal<'ne' | 'nw' | 'se' | 'sw' | null>(null);
 
   const onEdgeCheck = (event: PointerEvent) => {
+    if (!props.pip) return;
     if (!iframe()) return;
     const rect = iframe()!.getBoundingClientRect();
     const offsetX = event.clientX - rect.x;
@@ -38,6 +40,7 @@ export const Player = (props: PlayerProps) => {
 
   const onDragStart = (event: PointerEvent) => {
     event.preventDefault();
+    if (!props.pip) return;
 
     const rect = iframe()?.getBoundingClientRect();
     if (!rect) return;
@@ -109,7 +112,7 @@ export const Player = (props: PlayerProps) => {
       data-edge={edge()}
       classList={{
         [videoStyle]: true,
-        [pipStyle]: true,
+        [pipStyle]: props.pip,
       }}
       style={assignInlineVars({
         [pipX]: coord().x + 'px',
@@ -128,8 +131,10 @@ export const Player = (props: PlayerProps) => {
         src={`https://embed.nicovideo.jp/watch/${props.videoId}?persistence=1&oldScript=1&referer=&from=0`}
         class={iframeStyle}
       />
-      <Move class={cx(iconStyle, moveIconStyle)} width={'25%'} height={'25%'} />
-      <Scaling class={cx(iconStyle, scalingIconStyle)} width={'25%'} height={'25%'} />
+      <Show when={props.pip}>
+        <Move class={cx(iconStyle, moveIconStyle)} width={'25%'} height={'25%'} />
+        <Scaling class={cx(iconStyle, scalingIconStyle)} width={'25%'} height={'25%'} />
+      </Show>
     </div>
   );
 };

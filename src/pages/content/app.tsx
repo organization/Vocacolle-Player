@@ -1,13 +1,15 @@
 import { createEffect, createMemo, createSignal, on, onCleanup } from 'solid-js';
 import { Show } from 'solid-js/web';
 import { FlipProvider } from 'solid-flip';
+import { ListMusic, ListX } from 'lucide-solid';
 
 import { Player } from '@/ui/player';
+import { Dialog } from '@/ui/dialog';
+import { IconButton } from '@/ui/button';
 import { PlayerBar } from '@/ui/player-bar';
 import { addToast, ToastProvider } from '@/ui/toast-provider';
 import { PlayerProvider, usePlayer } from '@/ui/player-provider';
 import { PlaylistView } from '@/ui/playlist-view';
-import { Dialog } from '@/ui/dialog';
 
 import { Event } from '@/shared/event';
 
@@ -16,14 +18,14 @@ import { playlist, setPlaylist } from './store/playlist';
 import { resetVideoData, useVideoData } from './hook/use-video-data';
 
 import { fixedStyle, playerBarWrapperAnimationStyle, playerBarWrapperStyle, sidebarAnimationStyle, sidebarHeaderStyle, sidebarStyle, sidebarTitleStyle, videoContainerStyle, videoWrapperAnimationStyle } from './app.css';
-import { ListMusic, ListX } from 'lucide-solid';
-import { IconButton } from '@/ui/button';
+import { VideoPanel } from './component/video-panel';
 
 const EventList = Object.values(Event);
 const Content = () => {
   const { sendEvent } = usePlayer();
   const [videoData] = useVideoData();
 
+  const [showFullscreen, setShowFullscreen] = createSignal(false);
   const [showSidebar, setShowSidebar] = createSignal(false);
   const [showPlayer, setShowPlayer] = createSignal(false);
   const [openExistCheck, setOpenExistCheck] = createSignal(false);
@@ -124,6 +126,13 @@ const Content = () => {
     }),
   );
 
+  const videoPlayer = (
+    <Player
+      videoId={playlist.current?.video.id}
+      pip={!showFullscreen()}
+    />
+  );
+
   return (
     <div class={fixedStyle}>
       <div
@@ -133,14 +142,34 @@ const Content = () => {
           [videoWrapperAnimationStyle.exit]: !showPlayer(),
         }}
       >
-        <Show when={playlist.current}>
-          {(video) => (
-            <Player
-              videoId={video().video.id}
-            />
-          )}
+        <Show when={playlist.current && !showFullscreen()}>
+          {videoPlayer}
         </Show>
       </div>
+      <Show when={showFullscreen()}>
+        <VideoPanel
+          nowPlaying={playlist.current}
+          playlistIndex={playlist.currentIndex}
+          progress={player.progress}
+          state={player.state}
+          playlist={playlist.playlist}
+          onPrevious={() => setPlaylist('currentIndex', (index) => Math.max(index - 1, 0))}
+          onPlayPause={() => setPlayer('state', (state) => (state === 'playing' ? 'paused' : 'playing'))}
+          onNext={() => setPlaylist('currentIndex', (index) => Math.min(index + 1, playlist.playlist.length - 1))}
+          onOpen={() => {
+            const video = playlist.currentVideo;
+            if (!video) return;
+
+            window.open(`https://www.nicovideo.jp/watch/${video.id}`);
+          }}
+          onAlbumClick={() => setShowFullscreen(true)}
+          onPlaylist={() => setShowSidebar((prev) => !prev)}
+          onClose={() => setShowFullscreen(false)}
+          onProgressChange={(progress) => sendEvent({ type: Event.progress, progress })}
+        >
+          {videoPlayer}
+        </VideoPanel>
+      </Show>
       <div
         classList={{
           [playerBarWrapperStyle]: true,
@@ -162,7 +191,7 @@ const Content = () => {
 
             window.open(`https://www.nicovideo.jp/watch/${video.id}`);
           }}
-          onAlbumClick={() => { }}
+          onAlbumClick={() => setShowFullscreen(true)}
           onPlaylist={() => setShowSidebar((prev) => !prev)}
           onClose={() => setShowPlayer(false)}
           onProgressChange={(progress) => sendEvent({ type: Event.progress, progress })}

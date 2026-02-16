@@ -47,6 +47,10 @@ export const sidebarStyle = style({
   flexDirection: 'column',
   gap: '1rem',
 
+  backgroundColor: 'oklch(100% 0 0 / 0.8)',
+  backdropFilter: 'blur(2px) saturate(5) brightness(0.98)',
+  boxShadow: '0 4px 12px oklch(0% 0 0 / 0.35)',
+
   zIndex: 1000,
   pointerEvents: 'none',
 });
