@@ -104,3 +104,16 @@ export const videoWrapperAnimationStyle = styleVariants({
     transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
   },
 });
+
+export const videoPanelAnimationStyle = styleVariants({
+  enter: {
+    opacity: 0,
+    transform: 'translateY(100%)',
+    filter: 'blur(4px)',
+  },
+  exit: {
+    opacity: 0,
+    transform: 'scale(0.8)',
+    filter: 'blur(8px)',
+  },
+});

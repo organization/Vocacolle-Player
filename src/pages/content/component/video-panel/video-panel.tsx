@@ -1,17 +1,18 @@
+import { createReaction, createSignal, For, onCleanup, onMount, Show } from 'solid-js';
+import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { Pause, Play, SkipBack, SkipForward, X } from 'lucide-solid';
 import { JSX } from 'solid-js/jsx-runtime';
-import { createReaction, createSignal, Show } from 'solid-js';
-import { assignInlineVars } from '@vanilla-extract/dynamic';
+import { Flip, Unflip } from 'solid-flip';
 
 import { IconButton } from '@/ui/button';
 import { PlayerBarProps } from '@/ui/player-bar';
 import { PlaylistView, PlaylistViewProps } from '@/ui/playlist-view';
-import { timeStyle } from '@/ui/player-bar/player-bar.css';
 import { formatTime } from '@/utils';
 
 import { Logo2026Winter } from '../logo';
 
-import { containerStyle, contentStyle, headerStyle, imageEffectStyle, logoStyle, playlistTitleStyle, playlistWrapperStyle, progressStyle, progressVar, progressWrapperStyle, sectionStyle, toolbarStyle } from './video-panel.css';
+import { timeStyle } from '@/ui/player-bar/player-bar.css';
+import { containerStyle, contentStyle, count, headerStyle, imageEffectAnimationStyle, imageEffectStyle, logoStyle, playlistTitleStyle, playlistWrapperStyle, progressStyle, progressVar, progressWrapperStyle, sectionStyle, toolbarStyle } from './video-panel.css';
 
 const availableBackgroundList = [
   '2025-summer/images/bg/bg_detail_pc.png',
@@ -31,9 +32,10 @@ export const VideoPanel = (props: VideoPanelProps) => {
   const [progress, setProgress] = createSignal<number | null>(null);
   const [slider, setSlider] = createSignal<HTMLDivElement | null>(null);
   const [rect, setRect] = createSignal<DOMRect | null>(null);
-  const [effectIndex, setEffectIndex] = createSignal(Math.floor(Math.random() * availableBackgroundList.length));
 
-  const backgroundEffectUrl = () => `https://vocaloid-collection.jp/${availableBackgroundList[effectIndex()]}`;
+  const [effectBackgroundList, setEffectBackgroundList] = createSignal<string[]>(availableBackgroundList);
+  const [effectIndex, setEffectIndex] = createSignal(0);
+
   const maxWidth = () => (rect()?.width ?? 16) - 16;
 
   const onMoveStart = (event: PointerEvent) => {
@@ -96,12 +98,53 @@ export const VideoPanel = (props: VideoPanelProps) => {
     }
   };
 
+  onMount(() => {
+    const getShuffled = () => {
+      const list = [...availableBackgroundList];
+
+      for (let i = list.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [list[i], list[j]] = [list[j], list[i]];
+      }
+
+      return list;
+    };
+
+    setEffectBackgroundList(getShuffled());
+    const interval = setInterval(() => {
+      setEffectIndex((prev) => (prev + 1) % availableBackgroundList.length);
+      if (effectIndex() === 0) {
+        setEffectBackgroundList(getShuffled());
+      }
+    }, 5000);
+
+    onCleanup(() => {
+      clearInterval(interval);
+    });
+  });
+
   return (
-    <div class={containerStyle}>
-      <img
-        src={backgroundEffectUrl()}
-        class={imageEffectStyle}
-      />
+    <div
+      class={containerStyle}
+      style={assignInlineVars({
+        [count]: effectBackgroundList().length.toString(),
+      })}
+    >
+      <For each={effectBackgroundList()}>
+        {(url, index) => (
+          <img
+            src={`https://vocaloid-collection.jp/${url}`}
+            classList={{
+              [imageEffectStyle]: true,
+              [imageEffectAnimationStyle.show]: index() === effectIndex(),
+              [imageEffectAnimationStyle.hide]: index() !== effectIndex(),
+            }}
+            style={{
+              'animation-delay': `${(index() - effectBackgroundList().length) * 5}s`,
+            }}
+          />
+        )}
+      </For>
       <div class={contentStyle}>
         <div class={headerStyle}>
           <Logo2026Winter class={logoStyle} />

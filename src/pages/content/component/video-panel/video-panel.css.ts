@@ -1,4 +1,4 @@
-import { createVar, style } from '@vanilla-extract/css';
+import { createVar, keyframes, style, styleVariants } from '@vanilla-extract/css';
 
 export const containerStyle = style({
   position: 'fixed',
@@ -18,6 +18,16 @@ export const containerStyle = style({
   zIndex: 10000,
   pointerEvents: 'all',
 });
+
+export const count = createVar();
+const effectAnimation = keyframes({
+  from: {
+    transform: `translateX(2.5%) scale(1.1)`,
+  },
+  to: {
+    transform: `translateX(-2.5%) scale(1.1)`,
+  },
+});
 export const imageEffectStyle = style({
   position: 'absolute',
   inset: 0,
@@ -25,9 +35,21 @@ export const imageEffectStyle = style({
   height: '100%',
 
   objectFit: 'cover',
-  opacity: 0.7,
   pointerEvents: 'none',
   zIndex: -1,
+  animation: `${effectAnimation} 5s linear infinite`,
+
+  transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+});
+export const imageEffectAnimationStyle = styleVariants({
+  show: {
+    opacity: 1,
+  },
+  hide: {
+    opacity: 0,
+    filter: 'blur(4px)',
+    transform: `translateX(-2.5%) scale(1.1)`,
+  },
 });
 
 export const contentStyle = style({
@@ -119,13 +141,13 @@ export const progressStyle = style({
         rgba(218, 66, 86, 0.3) 65%,
         rgba(211, 32, 55, 0.6) 100%
       )`,
-      /*
-        rgba(22, 232, 248, 0.3) calc(100% - 3.2rem),
-        rgba(13, 181, 194, 0.3) calc(100% - 2.56rem),
-        rgba(5, 155, 167, 0.3) calc(100% - 2.2153856rem),
-        rgba(218, 66, 86, 0.3) calc(100% - 1.12rem),
-        rgba(211, 32, 55, 0.6) 100%
-      */
+    /*
+      rgba(22, 232, 248, 0.3) calc(100% - 3.2rem),
+      rgba(13, 181, 194, 0.3) calc(100% - 2.56rem),
+      rgba(5, 155, 167, 0.3) calc(100% - 2.2153856rem),
+      rgba(218, 66, 86, 0.3) calc(100% - 1.12rem),
+      rgba(211, 32, 55, 0.6) 100%
+    */
     transform: `translateX(calc(-100% + ${progressVar} * 100%))`,
     transition: 'inherit',
   },

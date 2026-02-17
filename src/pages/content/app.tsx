@@ -1,6 +1,6 @@
 import { createEffect, createMemo, createSignal, on, onCleanup } from 'solid-js';
 import { Show } from 'solid-js/web';
-import { FlipProvider } from 'solid-flip';
+import { Flip, FlipProvider } from 'solid-flip';
 import { ListMusic, ListX } from 'lucide-solid';
 
 import { Player } from '@/ui/player';
@@ -17,8 +17,9 @@ import { player, setPlayer } from './store/player';
 import { playlist, setPlaylist } from './store/playlist';
 import { resetVideoData, useVideoData } from './hook/use-video-data';
 
-import { fixedStyle, playerBarWrapperAnimationStyle, playerBarWrapperStyle, sidebarAnimationStyle, sidebarHeaderStyle, sidebarStyle, sidebarTitleStyle, videoContainerStyle, videoWrapperAnimationStyle } from './app.css';
 import { VideoPanel } from './component/video-panel';
+
+import { fixedStyle, playerBarWrapperAnimationStyle, playerBarWrapperStyle, sidebarAnimationStyle, sidebarHeaderStyle, sidebarStyle, sidebarTitleStyle, videoContainerStyle, videoPanelAnimationStyle, videoWrapperAnimationStyle } from './app.css';
 
 const EventList = Object.values(Event);
 const Content = () => {
@@ -146,29 +147,35 @@ const Content = () => {
           {videoPlayer}
         </Show>
       </div>
-      <Show when={showFullscreen()}>
-        <VideoPanel
-          nowPlaying={playlist.current}
-          playlistIndex={playlist.currentIndex}
-          progress={player.progress}
-          state={player.state}
-          playlist={playlist.playlist}
-          onPrevious={() => setPlaylist('currentIndex', (index) => Math.max(index - 1, 0))}
-          onPlayPause={() => setPlayer('state', (state) => (state === 'playing' ? 'paused' : 'playing'))}
-          onNext={() => setPlaylist('currentIndex', (index) => Math.min(index + 1, playlist.playlist.length - 1))}
-          onOpen={() => {
-            const video = playlist.currentVideo;
-            if (!video) return;
-
-            window.open(`https://www.nicovideo.jp/watch/${video.id}`);
-          }}
-          onAlbumClick={() => setShowFullscreen(true)}
-          onPlaylist={() => setShowSidebar((prev) => !prev)}
-          onClose={() => setShowFullscreen(false)}
-          onProgressChange={(progress) => sendEvent({ type: Event.progress, progress })}
+      <Show when={showFullscreen()} keyed>
+        <Flip
+          id={'video-panel'}
+          enter={videoPanelAnimationStyle.enter}
+          exit={videoPanelAnimationStyle.exit}
         >
-          {videoPlayer}
-        </VideoPanel>
+          <VideoPanel
+            nowPlaying={playlist.current}
+            playlistIndex={playlist.currentIndex}
+            progress={player.progress}
+            state={player.state}
+            playlist={playlist.playlist}
+            onPrevious={() => setPlaylist('currentIndex', (index) => Math.max(index - 1, 0))}
+            onPlayPause={() => setPlayer('state', (state) => (state === 'playing' ? 'paused' : 'playing'))}
+            onNext={() => setPlaylist('currentIndex', (index) => Math.min(index + 1, playlist.playlist.length - 1))}
+            onOpen={() => {
+              const video = playlist.currentVideo;
+              if (!video) return;
+
+              window.open(`https://www.nicovideo.jp/watch/${video.id}`);
+            }}
+            onAlbumClick={() => setShowFullscreen(true)}
+            onPlaylist={() => setShowSidebar((prev) => !prev)}
+            onClose={() => setShowFullscreen(false)}
+            onProgressChange={(progress) => sendEvent({ type: Event.progress, progress })}
+          >
+            {videoPlayer}
+          </VideoPanel>
+        </Flip>
       </Show>
       <div
         classList={{
@@ -217,9 +224,9 @@ const Content = () => {
       </div>
       <Dialog
         title={'재생목록이 이미 존재합니다'}
-        description={'현재 재생목록이 존재합니다. 현재 재생목록을 리셋하고 새로운 재생목록을 만드시겠습니까?'}
+        description={'현재 재생목록이 존재합니다. 선택한 곡을 현재 재생목록에 추가하시겠습니까? 혹은 새로 재생목록을 만드시겠습니까?'}
         actions={[
-          { id: 'cancel', label: '취소', type: 'default' },
+          { id: 'add', label: '현재 재생목록에 추가', type: 'default' },
           { id: 'confirm', label: '새로 만들기', type: 'primary' },
         ]}
         open={openExistCheck()}
@@ -227,25 +234,28 @@ const Content = () => {
         onAction={(id) => {
           setOpenExistCheck(false);
 
-          if (id === 'confirm') {
-            const data = videoData()?.videoData;
-            if (!data) {
-              addToast({
-                message: `"${videoData()?.videoData.video.title}"(을)를 재생목록에 추가하지 못하였습니다.`,
-              });
-              return;
-            }
+          const data = videoData()?.videoData;
+          if (!data) {
+            addToast({
+              message: `"${videoData()?.videoData.video.title}"(을)를 재생목록에 추가하지 못하였습니다.`,
+            });
+            return;
+          }
 
+          if (id === 'confirm') {
             setPlaylist({
               playlist: [data],
               currentIndex: 0,
               type: videoData()?.type ?? null,
             });
-            addToast({
-              message: `"${videoData()?.videoData.video.title}"(이)가 재생목록에 추가되었습니다.`,
-            });
             resetVideoData();
+          } else {
+            setPlaylist('playlist', (prev) => [...prev, data]);
           }
+
+          addToast({
+            message: `"${videoData()?.videoData.video.title}"(이)가 재생목록에 추가되었습니다.`,
+          });
         }}
       >
       </Dialog>
