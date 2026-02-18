@@ -1,8 +1,7 @@
 import { createReaction, createSignal, For, onCleanup, onMount, Show } from 'solid-js';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
-import { Pause, Play, SkipBack, SkipForward, X } from 'lucide-solid';
+import { ExternalLink, Pause, Play, SkipBack, SkipForward, X } from 'lucide-solid';
 import { JSX } from 'solid-js/jsx-runtime';
-import { Flip, Unflip } from 'solid-flip';
 
 import { IconButton } from '@/ui/button';
 import { PlayerBarProps } from '@/ui/player-bar';
@@ -22,7 +21,7 @@ const availableBackgroundList = [
   '2023-spring/_nuxt/img/bg_detail_pc.503fade.png',
 ];
 
-export type VideoPanelProps = PlayerBarProps & PlaylistViewProps & {
+export type VideoPanelProps = PlayerBarProps & Omit<PlaylistViewProps, 'nowPlayingId'> & {
   children?: JSX.Element;
 
   onClose: () => void;
@@ -157,18 +156,20 @@ export const VideoPanel = (props: VideoPanelProps) => {
           {props.children}
           <div class={playlistWrapperStyle}>
             <PlaylistView
+              nowPlayingId={props.nowPlaying?.video.id}
               playlist={props.playlist}
+              onVideo={props.onVideo}
             >
               <h2 class={playlistTitleStyle}>
-                재생목록
+                재생목록 ({props.playlistIndex + 1} / {props.playlist.length})
               </h2>
             </PlaylistView>
           </div>
         </div>
         <div class={toolbarStyle}>
-          <IconButton fill={'currentColor'} icon={SkipBack} onClick={props.onPrevious} />
+          <IconButton disabled={!props.canPrevious} fill={'currentColor'} icon={SkipBack} onClick={props.onPrevious} />
           <IconButton fill={'currentColor'} icon={props.state === 'playing' ? Pause : Play} onClick={props.onPlayPause} />
-          <IconButton fill={'currentColor'} icon={SkipForward} onClick={props.onNext} />
+          <IconButton disabled={!props.canNext} fill={'currentColor'} icon={SkipForward} onClick={props.onNext} />
           <Show when={props.nowPlaying?.video}>
             {(video) => (
               <>
@@ -195,6 +196,7 @@ export const VideoPanel = (props: VideoPanelProps) => {
               })}
             />
           </div>
+          <IconButton icon={ExternalLink} onClick={props.onOpen} />
         </div>
       </div>
     </div>

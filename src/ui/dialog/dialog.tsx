@@ -106,7 +106,7 @@ export const Dialog = (props: DialogProps) => {
             backdropClickFlag = false;
           }}
           onPointerUp={() => {
-            if (backdropClickFlag && props.closable) props.onClose?.();
+            if (backdropClickFlag && (props.closable ?? true)) props.onClose?.();
             backdropClickFlag = false;
           }}
         >

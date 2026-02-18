@@ -19,7 +19,7 @@
     "@vanilla-extract/dynamic": "2.1.5",
     "lucide-solid": "0.541.0",
     "solid-flip": "0.5.2",
-    "solid-js": "1.9.9"
+    "solid-js": "1.9.11"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "2.2.0",

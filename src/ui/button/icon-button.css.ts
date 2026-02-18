@@ -17,16 +17,16 @@ export const iconButtonStyle = style({
   transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
 
   selectors: {
-    '&:hover': {
+    '&:not(:disabled):hover': {
       backgroundColor: 'oklch(14.5% 0 0 / 0.2)',
       transform: 'scale(1.2)',
     },
     '&:disabled': {
-      opacity: 0.5,
+      opacity: 0.2,
       cursor: 'default',
       backgroundColor: 'transparent !important',
     },
-    '&:active': {
+    '&:not(:disabled):active': {
       transform: 'scale(0.9)',
     },
     '&[data-active="true"]': {

@@ -12,6 +12,7 @@ import {
   imageWrapperStyle,
   indexStyle,
   rankingStyle,
+  rankingTextStyle,
   textContainerStyle,
   titleStyle,
 } from './play-info.css';
@@ -65,10 +66,15 @@ export const PlayInfo = (props: PlayInfoProps) => {
               [rankingStyle['in100']]: ranking() > 10,
             }}
           >
-            {rankingTypeToText(props.rankingType ?? null)} #{props.ranking}
+            <div>
+              #{props.ranking}
+            </div>
+            <div class={rankingTextStyle}>
+              {rankingTypeToText(props.rankingType ?? null)}
+            </div>
           </div>
         )}
-      </Show>
-    </div>
+      </Show >
+    </div >
   );
 };

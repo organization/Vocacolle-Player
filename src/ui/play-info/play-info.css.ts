@@ -66,10 +66,16 @@ export const rankingStyle = styleVariants({
     },
   ],
 });
+export const rankingTextStyle = style({
+  fontSize: '6px',
+  marginBottom: '2px',
+});
 
 export const textContainerStyle = style({
   display: 'flex',
   flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'flex-start',
   gap: '0',
   overflow: 'hidden',
 });
@@ -146,6 +152,7 @@ export const titleStyle = style({
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
   overflow: 'hidden',
+  textAlign: 'left',
 });
 
 export const artistStyle = style({

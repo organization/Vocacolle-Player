@@ -1,4 +1,4 @@
-import { createReaction, createSignal, Show } from 'solid-js';
+import { createEffect, createReaction, createSignal, Show } from 'solid-js';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import {
   ExternalLink,
@@ -33,6 +33,8 @@ export type PlayerBarProps = {
   progress: number;
   state: 'playing' | 'paused';
   playlistIndex: number;
+  canPrevious: boolean;
+  canNext: boolean;
 
   onPrevious: () => void;
   onPlayPause: () => void;
@@ -142,9 +144,9 @@ export const PlayerBar = (props: PlayerBarProps) => {
           })}
         />
         <div class={containerStyle}>
-          <IconButton fill={'currentColor'} icon={SkipBack} onClick={props.onPrevious} />
+          <IconButton disabled={!props.canPrevious} fill={'currentColor'} icon={SkipBack} onClick={props.onPrevious} />
           <IconButton fill={'currentColor'} icon={props.state === 'playing' ? Pause : Play} onClick={props.onPlayPause} />
-          <IconButton fill={'currentColor'} icon={SkipForward} onClick={props.onNext} />
+          <IconButton disabled={!props.canNext} fill={'currentColor'} icon={SkipForward} onClick={props.onNext} />
           <Show when={props.nowPlaying?.video}>
             {(video) => (
               <>
@@ -160,17 +162,17 @@ export const PlayerBar = (props: PlayerBarProps) => {
           </Show>
         </div>
         <div class={centerContainerStyle}>
-          <Show when={props.nowPlaying}>
+          <Show when={props.nowPlaying} keyed>
             {(videoData) => (
               <>
                 <div class={playerBarInfoStyle}>
                   <PlayInfo
-                    rankingType={videoData().type}
-                    ranking={videoData().ranking}
+                    rankingType={videoData.type}
+                    ranking={videoData.ranking}
                     index={props.playlistIndex + 1}
-                    title={videoData().video.title}
-                    artist={videoData().video.owner.name}
-                    album={videoData().video.thumbnail.url}
+                    title={videoData.video.title}
+                    artist={videoData.video.owner.name}
+                    album={videoData.video.thumbnail.url}
                     onAlbumClick={props.onAlbumClick}
                   />
                 </div>

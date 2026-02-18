@@ -7,8 +7,8 @@ import { RankingType } from '@/shared/types';
 
 import { App } from './app';
 import { getOldType } from './api/ranking';
-import { addPlaylist, setRankingPlaylist } from './store/playlist';
-import { broadcastVideoClick } from './hook/use-video-data';
+// import { setRankingPlaylist } from './store/playlist';
+import { broadcastVideoData } from './hook/use-video-data';
 
 const init = () => {
   const type = getOldType();
@@ -83,8 +83,7 @@ const init = () => {
               rankingType = 'exhibition';
 
             if (!rankingType) return;
-
-            setRankingPlaylist(rankingType);
+            broadcastVideoData({ type: rankingType });
           });
 
           playAllContainer.append(button);
@@ -103,14 +102,7 @@ const init = () => {
                   event.preventDefault();
                   event.stopPropagation();
 
-                  broadcastVideoClick(anchor.href);
-                  // addPlaylist(anchor.href).then((result) => {
-                  //   if (result) {
-                  //     addToast({
-                  //       message: `"${result.video.title}"(이)가 재생목록에 추가되었습니다.`,
-                  //     });
-                  //   }
-                  // });
+                  broadcastVideoData({ url: anchor.href });
                 },
                 { capture: true }
               );
