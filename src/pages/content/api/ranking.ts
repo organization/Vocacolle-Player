@@ -41,13 +41,13 @@ const buildURL = (type: RankingType, frontendId = 1) => {
   const oldType = getOldType();
   const buildId = getBuildId();
 
+  const suffix = type === 'exhibition' ? '/exhibition.json' : `/ranking/${type}.json?id=${type}`;
+
   if (oldType && buildId) {
-    return `https://vocaloid-collection.jp/${oldType}/_next/data/${buildId}/ranking/${type}.json?id=${type}`;
+    return `https://vocaloid-collection.jp/${oldType}/_next/data/${buildId}${suffix}`;
   }
 
-  if (type === 'exhibition')
-    return `https://vocaloid-collection.jp/_next/data/${buildId}/exhibition.json`;
-  return `https://vocaloid-collection.jp/_next/data/${buildId}/ranking/${type}.json?id=${type}`;
+  return `https://vocaloid-collection.jp/_next/data/${buildId}${suffix}`;
   // return `https://nvapi.nicovideo.jp/v1/ranking/nicotop/${getRankingNumber(
   //   type
   // )}?_frontendId=${frontendId}`;
@@ -115,6 +115,7 @@ export const fetchRanking = (async (type) => {
 
     const responses = await Promise.all(
       types.map(async (type) => {
+        console.log(`랭킹 데이터 (${type}) 를 불러오는 중...`, buildURL(type));
         const response = await fetchPartialRanking(buildURL(type));
         if (!response) return null;
 
