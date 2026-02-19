@@ -1,21 +1,17 @@
-import { createEffect, createReaction, createSignal, Show } from 'solid-js';
+import { Show } from 'solid-js';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import {
   ExternalLink,
   ListMusic,
-  Pause,
-  Play,
-  SkipBack,
-  SkipForward,
   X,
 } from 'lucide-solid';
 
-import { PlayInfo } from '@/ui/play-info';
-import { useLiquidSurface } from '@/ui/glass';
 import { IconButton } from '@/ui/button';
-import { formatTime } from '@/utils';
+import { useLiquidSurface } from '@/ui/glass';
+import { PlayInfo } from '@/ui/play-info';
 
-import { VideoData } from '@/shared/types';
+import { useProgressDrag } from './use-progress-drag';
+import { PlayerController, PlayerControllerProps } from './player-controls';
 
 import {
   centerContainerStyle,
@@ -24,21 +20,12 @@ import {
   playerBarInfoStyle,
   progressStyle,
   progressVar,
-  timeStyle,
   wrapperStyle,
 } from './player-bar.css';
 
-export type PlayerBarProps = {
-  nowPlaying: VideoData | null;
-  progress: number;
-  state: 'playing' | 'paused';
+export type PlayerBarProps = PlayerControllerProps & {
   playlistIndex: number;
-  canPrevious: boolean;
-  canNext: boolean;
 
-  onPrevious: () => void;
-  onPlayPause: () => void;
-  onNext: () => void;
   onOpen: () => void;
   onPlaylist: () => void;
   onClose: () => void;
@@ -46,74 +33,10 @@ export type PlayerBarProps = {
   onProgressChange: (progress: number) => void;
 };
 export const PlayerBar = (props: PlayerBarProps) => {
-  const [isMoving, setIsMoving] = createSignal(false);
-  const [progress, setProgress] = createSignal<number | null>(null);
-  const [slider, setSlider] = createSignal<HTMLDivElement | null>(null);
-  const [rect, setRect] = createSignal<DOMRect | null>(null);
-
-  // drag
-  const maxWidth = () => (rect()?.width ?? 16) - 16;
-
-  const onMoveStart = (event: PointerEvent) => {
-    const element = slider();
-    if (!element) return;
-
-    const last = event.composedPath()[0];
-    if (!(last instanceof HTMLElement)) return;
-    if (element !== last) return;
-
-    setIsMoving(true);
-    setProgress(props.progress);
-    setRect(element.getBoundingClientRect());
-    onMove(event);
-
-    const onEnd = (event: PointerEvent) => {
-      onMove(event, true);
-
-      const track = createReaction(() => props.progress);
-      track(() => {
-        requestAnimationFrame(() => {
-          setIsMoving(false);
-          setProgress(null);
-        });
-      });
-
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onEnd);
-      window.removeEventListener('pointercancel', cleanUp);
-    };
-    const cleanUp = (event: PointerEvent) => {
-      onMove(event, false);
-
-      setIsMoving(false);
-      setProgress(null);
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onEnd);
-      window.removeEventListener('pointercancel', cleanUp);
-    };
-
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onEnd);
-    window.addEventListener('pointercancel', cleanUp);
-  };
-  const onMove = (event: PointerEvent, isEnd = false) => {
-    const domRect = rect();
-    if (!domRect) return;
-
-    const max = Math.max(1, maxWidth());
-    const now = Math.min(Math.max(0, event.pageX - domRect.left), max);
-
-    const value = now / max;
-    requestAnimationFrame(() => {
-      setIsMoving(true);
-      setProgress(value);
-    });
-
-    if (isEnd) {
-      props.onProgressChange(value);
-    }
-  };
-
+  const { movingProgress, isMoving, props: dragProps } = useProgressDrag({
+    initProgress: props.progress,
+    onProgressChange: props.onProgressChange,
+  });
   const { filterId, Filter, onRegister } = useLiquidSurface(() => ({
     glassThickness: 80,
     bezelWidth: 20,
@@ -122,44 +45,43 @@ export const PlayerBar = (props: PlayerBarProps) => {
     specularOpacity: 0.8,
   }));
 
+  const progress = () => movingProgress() ?? props.progress;
+
   return (
     <>
       <Filter />
       <div
         ref={(el) => {
           onRegister(el);
-          setSlider(el);
+          dragProps.ref(el);
         }}
         class={wrapperStyle}
         style={assignInlineVars({
           [glassFilter]: `url(#${filterId})`,
         })}
-        onPointerDown={onMoveStart}
+        onPointerDown={dragProps.onPointerDown}
+        onPointerMove={dragProps.onPointerMove}
+        onPointerEnter={dragProps.onPointerEnter}
+        onPointerLeave={dragProps.onPointerLeave}
       >
         <div
           class={progressStyle}
           style={assignInlineVars({
-            [progressVar]: `${progress() ?? props.progress}`,
+            [progressVar]: `${progress()}`,
             transition: isMoving() ? 'unset' : undefined,
           })}
         />
         <div class={containerStyle}>
-          <IconButton disabled={!props.canPrevious} fill={'currentColor'} icon={SkipBack} onClick={props.onPrevious} />
-          <IconButton fill={'currentColor'} icon={props.state === 'playing' ? Pause : Play} onClick={props.onPlayPause} />
-          <IconButton disabled={!props.canNext} fill={'currentColor'} icon={SkipForward} onClick={props.onNext} />
-          <Show when={props.nowPlaying?.video}>
-            {(video) => (
-              <>
-                <div class={timeStyle}>
-                  {formatTime(
-                    video().duration * (progress() ?? props.progress)
-                  )}
-                </div>
-                <div class={timeStyle}>/</div>
-                <div class={timeStyle}>{formatTime(video().duration)}</div>
-              </>
-            )}
-          </Show>
+          <PlayerController
+            nowPlaying={props.nowPlaying}
+            state={props.state}
+            canPrevious={props.canPrevious}
+            canNext={props.canNext}
+            onPrevious={props.onPrevious}
+            onPlayPause={props.onPlayPause}
+            onNext={props.onNext}
+            progress={progress()}
+          />
         </div>
         <div class={centerContainerStyle}>
           <Show when={props.nowPlaying} keyed>

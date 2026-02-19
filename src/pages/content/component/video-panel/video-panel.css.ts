@@ -109,57 +109,14 @@ export const toolbarStyle = style({
   gap: '0.4rem',
 });
 
-export const progressVar = createVar();
-export const progressStyle = style({
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  zIndex: '-1',
-
-  width: '100%',
-  height: '100%',
-
-  transformOrigin: '0% 50%',
-  pointerEvents: 'none',
-  transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
-  overflow: 'hidden',
-  borderRadius: '1.6rem',
-
-  '::before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background:
-      `linear-gradient(
-        to right,
-        rgba(22, 232, 248, 0.3) 0%,
-        rgba(13, 181, 194, 0.3) 20%,
-        rgba(5, 155, 167, 0.3) 30.7692%,
-        rgba(218, 66, 86, 0.3) 65%,
-        rgba(211, 32, 55, 0.6) 100%
-      )`,
-    /*
-      rgba(22, 232, 248, 0.3) calc(100% - 3.2rem),
-      rgba(13, 181, 194, 0.3) calc(100% - 2.56rem),
-      rgba(5, 155, 167, 0.3) calc(100% - 2.2153856rem),
-      rgba(218, 66, 86, 0.3) calc(100% - 1.12rem),
-      rgba(211, 32, 55, 0.6) 100%
-    */
-    transform: `translateX(calc(-100% + ${progressVar} * 100%))`,
-    transition: 'inherit',
-  },
-});
-
 export const progressWrapperStyle = style({
   position: 'relative',
 
   width: '100%',
-  height: '0.4rem',
-  borderRadius: '0.2rem',
+  height: '0.8rem',
+  borderRadius: '0.4rem',
   margin: '0 0.8rem',
+  cursor: 'pointer',
 
   backgroundColor: 'oklch(100% 0 0 / 0.8)',
   backdropFilter: `saturate(5) brightness(0.98)`,

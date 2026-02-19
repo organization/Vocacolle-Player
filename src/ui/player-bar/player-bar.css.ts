@@ -47,28 +47,41 @@ export const wrapperAnimationStyle = styleVariants({
 });
 
 export const progressVar = createVar();
-export const progressStyle = style({
+const baseProgressStyle = style({
   position: 'absolute',
   bottom: 0,
   left: 0,
-  zIndex: '-1',
 
   width: '100%',
   height: '100%',
 
   transformOrigin: '0% 50%',
   pointerEvents: 'none',
-  transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1)',
+  transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
   overflow: 'hidden',
   borderRadius: '1.6rem',
 
   '::before': {
     content: '""',
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    inset: 0,
+
+    transform: `translateX(calc(-100% + ${progressVar} * 100%))`,
+    transition: 'inherit',
+  },
+});
+
+export const hoverProgressStyle = style([baseProgressStyle, {
+  zIndex: '-2',
+
+  '::before': {
+    background: 'oklch(14.5% 0 0 / 0.2)',
+  },
+}]);
+export const progressStyle = style([baseProgressStyle, {
+  zIndex: '-1',
+
+  '::before': {
     background:
       `linear-gradient(
         to right,
@@ -78,17 +91,15 @@ export const progressStyle = style({
         rgba(218, 66, 86, 0.3) 65%,
         rgba(211, 32, 55, 0.6) 100%
       )`,
-      /*
-        rgba(22, 232, 248, 0.3) calc(100% - 3.2rem),
-        rgba(13, 181, 194, 0.3) calc(100% - 2.56rem),
-        rgba(5, 155, 167, 0.3) calc(100% - 2.2153856rem),
-        rgba(218, 66, 86, 0.3) calc(100% - 1.12rem),
-        rgba(211, 32, 55, 0.6) 100%
-      */
-    transform: `translateX(calc(-100% + ${progressVar} * 100%))`,
-    transition: 'inherit',
+    /*
+      rgba(22, 232, 248, 0.3) calc(100% - 3.2rem),
+      rgba(13, 181, 194, 0.3) calc(100% - 2.56rem),
+      rgba(5, 155, 167, 0.3) calc(100% - 2.2153856rem),
+      rgba(218, 66, 86, 0.3) calc(100% - 1.12rem),
+      rgba(211, 32, 55, 0.6) 100%
+    */
   },
-});
+}]);
 
 export const containerStyle = style({
   display: 'flex',

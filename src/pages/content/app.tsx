@@ -32,6 +32,42 @@ const Content = () => {
   const [showPlayer, setShowPlayer] = createSignal(false);
   const [openExistCheck, setOpenExistCheck] = createSignal(false);
 
+  const onPrevious = () => setPlaylist('currentIndex', (index) => Math.max(index - 1, 0));
+  const onPlayPause = () => setPlayer('state', (state) => (state === 'playing' ? 'paused' : 'playing'));
+  const onNext = () => setPlaylist('currentIndex', (index) => Math.min(index + 1, playlist.playlist.length - 1));
+  const onOpen = () => {
+    const video = playlist.currentVideo;
+    if (!video) return;
+
+    window.open(`https://www.nicovideo.jp/watch/${video.id}`);
+  };
+  const onProgressChange = (progress: number) => sendEvent({ type: Event.progress, progress });
+  const playerProps = {
+    get nowPlaying() {
+      return playlist.current;
+    },
+    get playlistIndex() {
+      return playlist.currentIndex;
+    },
+    get progress() {
+      return player.progress;
+    },
+    get state() {
+      return player.state;
+    },
+    get canPrevious() {
+      return playlist.currentIndex > 0;
+    },
+    get canNext() {
+      return playlist.currentIndex < playlist.playlist.length - 1;
+    },
+    onPrevious,
+    onPlayPause,
+    onNext,
+    onOpen,
+    onProgressChange,
+  };
+
   createEffect(on(() => !!playlist.current, (added) => {
     if (added && !showPlayer()) {
       setShowPlayer(true);
@@ -155,26 +191,9 @@ const Content = () => {
           exit={videoPanelAnimationStyle.exit}
         >
           <VideoPanel
-            nowPlaying={playlist.current}
-            playlistIndex={playlist.currentIndex}
-            progress={player.progress}
-            state={player.state}
+            {...playerProps}
             playlist={playlist.playlist}
-            canPrevious={playlist.currentIndex > 0}
-            canNext={playlist.currentIndex < playlist.playlist.length - 1}
-            onPrevious={() => setPlaylist('currentIndex', (index) => Math.max(index - 1, 0))}
-            onPlayPause={() => setPlayer('state', (state) => (state === 'playing' ? 'paused' : 'playing'))}
-            onNext={() => setPlaylist('currentIndex', (index) => Math.min(index + 1, playlist.playlist.length - 1))}
-            onOpen={() => {
-              const video = playlist.currentVideo;
-              if (!video) return;
-
-              window.open(`https://www.nicovideo.jp/watch/${video.id}`);
-            }}
-            onAlbumClick={() => setShowFullscreen(true)}
-            onPlaylist={() => setShowSidebar((prev) => !prev)}
             onClose={() => setShowFullscreen(false)}
-            onProgressChange={(progress) => sendEvent({ type: Event.progress, progress })}
             onVideo={(_, index) => setPlaylist('currentIndex', index)}
           >
             {videoPlayer}
@@ -189,25 +208,10 @@ const Content = () => {
         }}
       >
         <PlayerBar
-          nowPlaying={playlist.current}
-          playlistIndex={playlist.currentIndex}
-          progress={player.progress}
-          state={player.state}
-          canPrevious={playlist.currentIndex > 0}
-          canNext={playlist.currentIndex < playlist.playlist.length - 1}
-          onPrevious={() => setPlaylist('currentIndex', (index) => Math.max(index - 1, 0))}
-          onPlayPause={() => setPlayer('state', (state) => (state === 'playing' ? 'paused' : 'playing'))}
-          onNext={() => setPlaylist('currentIndex', (index) => Math.min(index + 1, playlist.playlist.length - 1))}
-          onOpen={() => {
-            const video = playlist.currentVideo;
-            if (!video) return;
-
-            window.open(`https://www.nicovideo.jp/watch/${video.id}`);
-          }}
+          {...playerProps}
           onAlbumClick={() => setShowFullscreen(true)}
           onPlaylist={() => setShowSidebar((prev) => !prev)}
           onClose={() => setShowPlayer(false)}
-          onProgressChange={(progress) => sendEvent({ type: Event.progress, progress })}
         />
       </div>
       <div
