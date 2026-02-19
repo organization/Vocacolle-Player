@@ -11,7 +11,7 @@ export const initNext = () => {
 
       const replaceNextLink = () => {
         const items = document.querySelectorAll<HTMLDivElement>(
-          '#__next main > :not(nav) .css-0:has(a)'
+          '#__next main > :not(nav) div:has(a):has([id^="sm"])'
         );
         if (items.length > 0) clearInterval(interval);
         if (count > 100) clearInterval(interval);
