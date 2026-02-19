@@ -9,7 +9,7 @@ export const getRankingNumber = (type: RankingType): number | null => {
   if (type === 'top100') return 301438;
   if (type === 'rookie') return 301439;
   if (type === 'remix') return 301440;
-  if (type === 'exhibition') return 301441;
+  if (type === 'exhibition') return 316544;
 
   return null;
 };
@@ -17,7 +17,7 @@ export const getRankingType = (num: number): RankingType | null => {
   if (num === 301438) return 'top100';
   if (num === 301439) return 'rookie';
   if (num === 301440) return 'remix';
-  if (num === 301441) return 'exhibition';
+  if (num === 316544) return 'exhibition';
 
   return null;
 };
@@ -37,7 +37,7 @@ export const getBuildId = (): string | null => {
   return null;
 };
 
-const buildURL = (type: RankingType, frontendId = 1) => {
+const buildURL = (type: RankingType, frontendId = 146) => {
   const oldType = getOldType();
   const buildId = getBuildId();
 
@@ -47,10 +47,7 @@ const buildURL = (type: RankingType, frontendId = 1) => {
     return `https://vocaloid-collection.jp/${oldType}/_next/data/${buildId}${suffix}`;
   }
 
-  return `https://vocaloid-collection.jp/_next/data/${buildId}${suffix}`;
-  // return `https://nvapi.nicovideo.jp/v1/ranking/nicotop/${getRankingNumber(
-  //   type
-  // )}?_frontendId=${frontendId}`;
+  return `https://nvapi.nicovideo.jp/v1/ranking/nicotop/${getRankingNumber(type)}?_frontendId=${frontendId}`;
 };
 
 const getRankingData = () => {
