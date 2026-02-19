@@ -21,7 +21,7 @@ export const init2025Summer = () => {
         if (count > 100) clearInterval(interval);
 
         const playAllContainer = document.querySelector<HTMLDivElement>(
-          'main > div > div:has(a[href^="https://www.nicovideo.jp/tag"])'
+          'main > div .css-ocdplg:has(a[href^="https://www.nicovideo.jp/tag"])'
         );
 
         if (
@@ -32,9 +32,19 @@ export const init2025Summer = () => {
             <button
               class="css-ush7cn vcp-play-all"
               role="group"
-              style="margin-top: 8px;"
             >
-              <div>모두 재생</div>
+              <div class={'css-wv8svx'}>
+                <div class={'css-1usb4w1'}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-music-icon lucide-music chakra-icon css-dmi4f1"
+                  >
+                    <path d="M9 18V5l12-2v13" />
+                    <circle cx="6" cy="18" r="3" fill="currentColor" />
+                    <circle cx="18" cy="16" r="3" fill="currentColor" />
+                  </svg>
+                </div>
+                <p class={'chakra-text css-10u0d8q'}>すべて再生</p>
+              </div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
