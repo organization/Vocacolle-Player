@@ -68,6 +68,40 @@ const Content = () => {
     onProgressChange,
   };
 
+  const onClose = () => {
+    setShowPlayer(false);
+    setShowSidebar(false);
+    setPlaylist({ playlist: [], currentIndex: 0, type: null });
+  };
+
+  const onAction = (id: string) => {
+    setOpenExistCheck(false);
+
+    const data = videoData();
+    if (!data) {
+      addToast({ message: `선택한 곡을 재생목록에 추가하지 못하였습니다.` });
+      return;
+    }
+
+    const newPlaylist = data.map((d) => d.videoData);
+    if (id === 'confirm') {
+      setPlaylist({
+        playlist: newPlaylist,
+        currentIndex: 0,
+        type: data[0]?.type ?? null,
+      });
+      resetVideoData();
+    } else {
+      setPlaylist('playlist', (prev) => [...prev, ...newPlaylist]);
+    }
+
+    if (newPlaylist.length === 1) {
+      addToast({ message: `"${newPlaylist[0]?.video.title}"(이)가 재생목록에 추가되었습니다.` });
+    } else {
+      addToast({ message: `${newPlaylist.length}개의 곡이 재생목록에 추가되었습니다.` });
+    }
+  };
+
   createEffect(on(() => !!playlist.current, (added) => {
     if (added && !showPlayer()) {
       setShowPlayer(true);
@@ -211,7 +245,7 @@ const Content = () => {
           {...playerProps}
           onAlbumClick={() => setShowFullscreen(true)}
           onPlaylist={() => setShowSidebar((prev) => !prev)}
-          onClose={() => setShowPlayer(false)}
+          onClose={onClose}
         />
       </div>
       <div
@@ -231,46 +265,21 @@ const Content = () => {
             <h2 class={sidebarTitleStyle}>
               {`재생목록 (${playlist.currentIndex + 1} / ${playlist.playlist.length})`}
             </h2>
-            <IconButton icon={ListX} onClick={() => setPlaylist({ playlist: [], currentIndex: 0, type: null })} />
+            <IconButton icon={ListX} onClick={onClose} />
             <IconButton icon={ListMusic} onClick={() => setShowSidebar(false)} />
           </div>
         </PlaylistView>
       </div>
       <Dialog
         title={'재생목록이 이미 존재합니다'}
-        description={'현재 재생목록이 존재합니다. 선택한 곡을 현재 재생목록에 추가하시겠습니까? 혹은 새로 재생목록을 만드시겠습니까?'}
+        description={`현재 재생목록이 존재합니다. 선택한 곡(${videoData()?.length}개)을 현재 재생목록에 추가하시겠습니까? 혹은 새로 재생목록을 만드시겠습니까?`}
         actions={[
           { id: 'add', label: '현재 재생목록에 추가', type: 'default' },
           { id: 'confirm', label: '새로 만들기', type: 'primary' },
         ]}
         open={openExistCheck()}
         onClose={() => setOpenExistCheck(false)}
-        onAction={(id) => {
-          setOpenExistCheck(false);
-
-          const data = videoData()?.[0]?.videoData;
-          if (!data) {
-            addToast({
-              message: `"${videoData()?.[0]?.videoData.video.title}"(을)를 재생목록에 추가하지 못하였습니다.`,
-            });
-            return;
-          }
-
-          if (id === 'confirm') {
-            setPlaylist({
-              playlist: [data],
-              currentIndex: 0,
-              type: videoData()?.[0]?.type ?? null,
-            });
-            resetVideoData();
-          } else {
-            setPlaylist('playlist', (prev) => [...prev, data]);
-          }
-
-          addToast({
-            message: `"${videoData()?.[0]?.videoData.video.title}"(이)가 재생목록에 추가되었습니다.`,
-          });
-        }}
+        onAction={onAction}
       >
       </Dialog>
     </div>
