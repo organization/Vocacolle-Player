@@ -81,24 +81,53 @@ export const hoverProgressStyle = style([
 export const progressStyle = style([
   baseProgressStyle,
   {
-    zIndex: '-1',
+    zIndex: 0,
 
-    '::before': {
-      background: `linear-gradient(
-        to right,
-        rgba(22, 232, 248, 0.3) 0%,
-        rgba(13, 181, 194, 0.3) 20%,
-        rgba(5, 155, 167, 0.3) 30.7692%,
-        rgba(218, 66, 86, 0.3) 65%,
-        rgba(211, 32, 55, 0.6) 100%
-      )`,
-      /*
-      rgba(22, 232, 248, 0.3) calc(100% - 3.2rem),
-      rgba(13, 181, 194, 0.3) calc(100% - 2.56rem),
-      rgba(5, 155, 167, 0.3) calc(100% - 2.2153856rem),
-      rgba(218, 66, 86, 0.3) calc(100% - 1.12rem),
-      rgba(211, 32, 55, 0.6) 100%
-    */
+    selectors: {
+      '&::before': {
+        background: `linear-gradient(
+          135deg,
+          rgba(140, 46, 255, 0.3) 0%,
+          rgba(107, 58, 255, 0.3) 35%,
+          rgba(99, 155, 173, 0.3) 60%,
+          rgba(164, 231, 54, 0.3) 85%,
+          rgba(189, 243, 35, 0.3) 100%
+          )`,
+      },
+      '&[data-season="2026-winter"]::before': {
+        background: `linear-gradient(
+          135deg,
+          rgba(22, 232, 248, 0.3) 0%,
+          rgba(13, 181, 194, 0.3) 20%,
+          rgba(5, 155, 167, 0.3) 30.7692%,
+          rgba(218, 66, 86, 0.3) 65%,
+          rgba(211, 32, 55, 0.6) 100%
+          )`,
+      },
+      '&[data-season="2025-summer"]::before': {
+        background: `linear-gradient(
+          135deg,
+          rgba(251, 119, 90, 0.3) 0%,
+          rgba(241, 173, 41, 0.3) 33.5%,
+          rgba(104, 183, 239, 0.3) 60.5%,
+          rgba(0, 129, 223, 0.3) 87.5%
+          )`,
+      },
+      '&[data-season="2025-winter"]::before': {
+        background: `linear-gradient(
+          180deg,
+          rgba(241, 106, 3, 0.3) 0%,
+          rgba(255, 181, 125, 0.3) 100%
+          )`,
+      },
+      '&[data-season="2024-winter"]::before': {
+        background: `linear-gradient(
+          180deg,
+          rgba(55, 79, 255, 0.3) 0%,
+          rgba(126, 149, 255, 0.3) 40.1042%,
+          rgba(255, 184, 179, 0.3) 100%
+          )`,
+      },
     },
   },
 ]);
@@ -107,6 +136,7 @@ export const containerStyle = style({
   display: 'flex',
   gap: '0.4rem',
   flexShrink: 0,
+  zIndex: 1,
 });
 
 export const centerContainerStyle = style([
