@@ -5,8 +5,6 @@ export const runOnPage = async (fn: () => Removable) => {
   const cleanUpFn = await fn();
   if (cleanUpFn) cleanUp = cleanUpFn;
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
   window.navigation.addEventListener('navigate', async () => {
     cleanUp?.();
     const cleanUpFn = await fn();
@@ -36,8 +34,6 @@ export const runOnReactPage = (fn: () => Removable) => {
     runner();
   });
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
   window.navigation.addEventListener('navigate', runner);
   observer.observe(document.body, { childList: true, subtree: true });
 

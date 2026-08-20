@@ -8,32 +8,32 @@
   "scripts": {
     "dev": "vite build -w",
     "build": "vite build",
-    "lint": "eslint . --fix -c .eslintrc --ext js,ts --ignore-pattern='!.*'",
-    "dev:nodemon": "nodemon",
-    "build:noemit": "tsc --noEmit && vite build",
-    "test": "jest"
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "build:noemit": "tsc --noEmit && vite build"
   },
   "type": "module",
   "dependencies": {
-    "@vanilla-extract/css": "1.17.4",
+    "@vanilla-extract/css": "1.21.2",
     "@vanilla-extract/dynamic": "2.1.5",
-    "lucide-solid": "0.541.0",
+    "lucide-solid": "1.32.0",
     "solid-flip": "0.5.2",
-    "solid-js": "1.9.11"
+    "solid-js": "1.9.15"
   },
   "devDependencies": {
-    "@crxjs/vite-plugin": "2.2.0",
-    "@types/chrome": "0.1.4",
+    "@crxjs/vite-plugin": "2.7.1",
+    "@types/chrome": "0.2.6",
     "@types/node": "24.3.0",
-    "@vanilla-extract/vite-plugin": "5.1.1",
-    "babel-preset-solid": "1.9.9",
-    "fs-extra": "11.3.1",
-    "nodemon": "2.0.22",
-    "prettier": "3.6.2",
-    "tsx": "4.20.4",
-    "typescript": "5.9.2",
-    "vite": "6.3.5",
-    "vite-plugin-solid": "2.11.8",
+    "@vanilla-extract/vite-plugin": "5.2.6",
+    "babel-preset-solid": "1.9.15",
+    "fs-extra": "11.4.0",
+    "oxfmt": "0.64.0",
+    "oxlint": "1.79.0",
+    "typescript": "7.0.2",
+    "vite": "8.2.1",
+    "vite-plugin-solid": "2.11.14",
     "vite-plugin-solid-svg": "0.8.1"
   }
 }

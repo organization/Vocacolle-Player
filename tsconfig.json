@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "noEmit": true,
-    "baseUrl": ".",
     "allowJs": false,
     "strict": true,
     "target": "esnext",
@@ -11,7 +11,6 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node",
     "types": [
       "vite/client",
       "node"
@@ -26,7 +25,7 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ],
     }
   },

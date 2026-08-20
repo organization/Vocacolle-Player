@@ -1,2 +1,5 @@
 allowBuilds:
   esbuild: true
+minimumReleaseAgeExclude:
+  - lucide-solid@1.33.0
+  - vite@8.2.2

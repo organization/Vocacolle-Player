@@ -5,11 +5,11 @@ import solidPlugin from 'vite-plugin-solid';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import solidSvg from 'vite-plugin-solid-svg';
 
-import manifest from './src/manifest';
+import manifest from './src/manifest.ts';
 
-const root = resolve(__dirname, 'src');
-const outDir = resolve(__dirname, 'dist');
-const publicDir = resolve(__dirname, 'public');
+const root = resolve(import.meta.dirname, 'src');
+const outDir = resolve(import.meta.dirname, 'dist');
+const publicDir = resolve(import.meta.dirname, 'public');
 
 const isDev = process.env.__DEV__ === 'true';
 
