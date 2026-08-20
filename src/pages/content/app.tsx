@@ -38,6 +38,9 @@ import {
   videoPanelAnimationStyle,
   videoWrapperAnimationStyle,
 } from './app.css';
+import { useInjectData } from './hook/use-inject-data';
+import { RankingType } from '@/shared/types';
+import { HistoryDialog } from './component/history-dialog';
 
 const EventList = Object.values(Event);
 const Content = () => {
@@ -49,6 +52,9 @@ const Content = () => {
   const [showSidebar, setShowSidebar] = createSignal(false);
   const [showPlayer, setShowPlayer] = createSignal(false);
   const [openExistCheck, setOpenExistCheck] = createSignal(false);
+  const [openHistory, setOpenHistory] = createSignal(false);
+  const [historyType, setHistoryType] = createSignal<RankingType | null>(null);
+  const [historySeason, setHistorySeason] = createSignal<string | null>(null);
 
   const onPrevious = () =>
     setPlaylist('currentIndex', (index) => Math.max(index - 1, 0));
@@ -129,6 +135,16 @@ const Content = () => {
       });
     }
   };
+  
+  useInjectData((event) => {
+    if (event?.type === 'showHistory') {
+      const { rankingType, seasonType } = event as { type: string; rankingType: RankingType; seasonType: string };
+
+      setHistoryType(rankingType);
+      setHistorySeason(seasonType);
+      setOpenHistory(true);
+    }
+  });
 
   createEffect(
     on(
@@ -201,7 +217,7 @@ const Content = () => {
     on(videoData, (data) => {
       if (!data || data.length <= 0) return;
 
-      const isPlaylistExist = playlist.playlist.length > 0;
+      const isPlaylistExist = data.some(({ videoData }) => playlist.playlist.find((p) => p.video.id === videoData.video.id));
       if (isPlaylistExist) {
         setOpenExistCheck(true);
       } else {
@@ -325,7 +341,17 @@ const Content = () => {
         open={openExistCheck()}
         onClose={() => setOpenExistCheck(false)}
         onAction={onAction}
-      ></Dialog>
+      >
+      </Dialog>
+      <HistoryDialog
+        type={historyType() ?? undefined}
+        season={historySeason() ?? undefined}
+        open={openHistory()}
+        onClose={() => setOpenHistory(false)}
+        onTime={(time) => {
+
+        }}
+      />
     </div>
   );
 };

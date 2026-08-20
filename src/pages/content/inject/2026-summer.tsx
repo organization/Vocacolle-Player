@@ -3,6 +3,7 @@ import { RankingType } from '@/shared/types';
 
 import { initNext } from './next';
 import { broadcastVideoData } from '../hook/use-video-data';
+import { broadcastInjectData } from '../hook/use-inject-data';
 
 export const init2026Summer = () => {
   initNext();
@@ -28,7 +29,7 @@ export const init2026Summer = () => {
           playAllContainer &&
           !playAllContainer.querySelector('.vcp-play-all')
         ) {
-          const button = (
+          const playAllButton = (
             <button class="css-1n4iigd group vcp-play-all" role="group">
               <div class={'css-1286qlj'}>
                 <div class={'css-1n35dp9'}>
@@ -74,7 +75,7 @@ export const init2026Summer = () => {
               </svg>
             </button>
           ) as HTMLButtonElement;
-          button.addEventListener('click', () => {
+          playAllButton.addEventListener('click', () => {
             let rankingType: RankingType | null = null;
 
             if (location.pathname.includes('top100')) rankingType = 'top100';
@@ -88,7 +89,64 @@ export const init2026Summer = () => {
             broadcastVideoData({ type: rankingType });
           });
 
-          playAllContainer.append(button);
+          const showHistoryButton = (
+            <button class="css-1n4iigd group vcp-play-all" role="group">
+              <div class={'css-1286qlj'}>
+                <div class={'css-1n35dp9'}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-history-icon lucide-history chakra-icon css-dmi4f1"
+                  >
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                    <path d="M12 7v5l4 2" />
+                  </svg>
+                </div>
+                <p class={'css-1sd22w5'}>時間別ランキングを見る</p>
+              </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="32"
+                viewBox="-8 -8 40 40"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-eye-icon lucide-eye chakra-icon css-1dcw3tv"
+              >
+                <circle
+                  cx="12"
+                  cy="12.1912"
+                  r="20"
+                  fill="#F0530F"
+                  stroke="none"
+                ></circle>
+                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          ) as HTMLButtonElement;
+          showHistoryButton.addEventListener('click', () => {
+            let rankingType: RankingType | null = null;
+
+            if (location.pathname.includes('top100')) rankingType = 'top100';
+            else if (location.pathname.includes('rookie'))
+              rankingType = 'rookie';
+            else if (location.pathname.includes('remix')) rankingType = 'remix';
+            else if (location.pathname.includes('exhibition'))
+              rankingType = 'exhibition';
+
+            if (!rankingType) return;
+            broadcastInjectData({
+              type: 'showHistory',
+              rankingType,
+              seasonType: '2026-summer',
+            });
+          });
+
+          playAllContainer.append(playAllButton);
+          playAllContainer.append(showHistoryButton);
         }
       };
 

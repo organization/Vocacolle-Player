@@ -37,6 +37,7 @@ export const backdropAnimation = styleVariants({
 
 export const wrapperStyle = style({
   width: '30rem',
+  maxHeight: '80vh',
 
   border: '2px solid #252525',
   backgroundColor: '#fff',
@@ -78,6 +79,7 @@ export const titleStyle = style({
   fontSize: '1.25rem',
   fontWeight: 'bold',
   color: Colors.gray[900],
+  flexShrink: 0,
 });
 
 export const descriptionStyle = style({
@@ -102,20 +104,24 @@ const baseActionStyle = style({
   fontWeight: 'bold',
   cursor: 'pointer',
   flex: 1,
+  flexShrink: 0,
+  flexBasis: 'fit-content',
 });
 export const actionStyle = styleVariants({
-  default: [
-    baseActionStyle,
-    {
-      backgroundColor: 'oklch(14.5% 0 0 / 0.1)',
-      color: Colors.gray[900],
+  default: [baseActionStyle, {
+    backgroundColor: 'oklch(14.5% 0 0 / 0.1)',
+    color: Colors.gray[900],
+
+    ':hover': {
+      backgroundColor: 'oklch(14.5% 0 0 / 0.2)',
     },
-  ],
-  primary: [
-    baseActionStyle,
-    {
-      backgroundColor: 'oklch(50% 0.4 0.5 / 0.7)',
-      color: Colors.gray[50],
+  }],
+  primary: [baseActionStyle, {
+    backgroundColor: 'oklch(50% 0.4 0.5 / 0.7)',
+    color: Colors.gray[50],
+
+    ':hover': {
+      backgroundColor: 'oklch(50% 0.4 0.5 / 0.8)',
     },
-  ],
+  }],
 });
