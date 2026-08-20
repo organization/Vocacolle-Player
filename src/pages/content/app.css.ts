@@ -36,23 +36,23 @@ export const playerBarWrapperAnimationStyle = styleVariants({
 
 export const sidebarStyle = style({
   position: 'fixed',
-  top: 0,
-  right: 0,
-  bottom: 0,
+  top: '0.8rem',
+  right: '0.8rem',
+  bottom: 'calc(3.6rem + 0.8rem + 0.8rem)',
 
   width: '20rem',
-  height: '100%',
 
   display: 'flex',
   flexDirection: 'column',
   gap: '1rem',
 
-  backgroundColor: 'oklch(100% 0 0 / 0.8)',
-  backdropFilter: 'blur(2px) saturate(5) brightness(0.98)',
-  boxShadow: '0 4px 12px oklch(0% 0 0 / 0.35)',
+  border: '2px solid #252525',
+  backgroundColor: '#fff',
+  boxShadow: '0px 3px 0px 0px #252525',
 
   zIndex: 1000,
   pointerEvents: 'none',
+  borderRadius: '0.8rem',
 });
 export const sidebarTitleStyle = style({
   fontSize: '1.25rem',
@@ -72,7 +72,7 @@ export const sidebarAnimationStyle = styleVariants({
     transition: 'transform 0.3s ease-in-out',
   },
   hide: {
-    transform: 'translateX(100%)',
+    transform: 'translateX(calc(100% + 0.8rem + 0.8rem))',
     transition: 'transform 0.3s ease-in-out',
   },
 });

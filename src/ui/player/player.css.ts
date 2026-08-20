@@ -5,15 +5,18 @@ import { Colors } from '@/theme';
 export const iframeStyle = style({
   width: '100%',
   height: '100%',
+  borderRadius: 'calc(0.8rem - 4px)',
+  overflow: 'hidden',
 });
 
 export const videoStyle = style({
   position: 'relative',
 
   width: '100%',
-  aspectRatio: '16 / 9',
-  boxShadow: '0 2px 12px rgba(0, 0, 0, 0.5)',
+  aspectRatio: '1920 / 1080',
+  boxShadow: '0 0 0 4px #252525 inset, 0 2px 12px rgba(0, 0, 0, 0.5)',
   color: Colors.gray[50],
+  padding: 4,
 
   borderRadius: '0.8rem',
   pointerEvents: 'all',
@@ -34,7 +37,7 @@ export const pipStyle = style({
     '&::before': {
       content: '',
       position: 'absolute',
-      inset: 10,
+      inset: 4,
 
       zIndex: 101,
       cursor: 'all-scroll',
@@ -48,6 +51,7 @@ export const pipStyle = style({
       backgroundColor: 'oklch(14% 0 0 / 0.4)',
       backdropFilter: 'blur(4px)',
       opacity: 0,
+      borderRadius: '0.8rem',
 
       transition: 'opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
     },
@@ -91,6 +95,15 @@ export const moveIconStyle = style({
 export const scalingIconStyle = style({
   selectors: {
     [`${pipStyle}:hover[data-edge] &`]: {
+      opacity: 1,
+    },
+  },
+});
+export const iconShowStyle = style({
+  opacity: 1,
+
+  selectors: {
+    '&::after': {
       opacity: 1,
     },
   },

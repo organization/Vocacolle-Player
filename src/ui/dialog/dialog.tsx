@@ -8,16 +8,12 @@ import {
   Show,
 } from 'solid-js';
 import { Portal } from 'solid-js/web';
-import { assignInlineVars } from '@vanilla-extract/dynamic';
-
-import { useLiquidSurface } from '../glass';
 
 import {
   backdropStyle,
   backdropAnimation,
   wrapperStyle,
   wrapperAnimation,
-  glassFilter,
   titleStyle,
   descriptionStyle,
   actionStyle,
@@ -91,10 +87,6 @@ export const Dialog = (props: DialogProps) => {
     )
   );
 
-  const { filterId, Filter, onRegister } = useLiquidSurface(() => ({
-    blur: 2,
-  }));
-
   return (
     <Show when={open()}>
       <Portal>
@@ -124,17 +116,12 @@ export const Dialog = (props: DialogProps) => {
             backdropClickFlag = false;
           }}
         >
-          <Filter />
           <div
-            ref={onRegister}
             classList={{
               [wrapperStyle]: true,
               [wrapperAnimation.enter]: enter(),
               [wrapperAnimation.exit]: exit(),
             }}
-            style={assignInlineVars({
-              [glassFilter]: `url(#${filterId})`,
-            })}
           >
             <Show when={props.title}>
               <h2 class={titleStyle}>{props.title}</h2>

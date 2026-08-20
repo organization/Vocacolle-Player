@@ -1,8 +1,11 @@
 import { Event } from '@/shared/event';
+import { injectStyle } from './style';
 
 const EventList = Object.values(Event);
 export const initEmbed = () => {
   console.log('[Vocacolle Player] Embed script loaded.');
+
+  injectStyle();
 
   window.addEventListener('message', (event) => {
     if (!event.data) return;
@@ -71,6 +74,14 @@ export const initEmbed = () => {
         if ('webkitRequestFullscreen' in video) {
           (video.webkitRequestFullscreen as typeof video.requestFullscreen)();
         }
+        return;
+      }
+      case Event.enableControl: {
+        document.body.classList.add('enable-control');
+        return;
+      }
+      case Event.disableControl: {
+        document.body.classList.remove('enable-control');
         return;
       }
     }

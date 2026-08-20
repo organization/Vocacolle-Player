@@ -1,16 +1,15 @@
 import { createVar, style, styleVariants } from '@vanilla-extract/css';
 import { Colors } from '@/theme';
 
-export const glassFilter = createVar();
 export const wrapperStyle = style({
   position: 'relative',
 
   width: '100%',
   height: '3.6rem',
 
-  backgroundColor: 'oklch(100% 0 0 / 0.8)',
-  backdropFilter: `${glassFilter} saturate(5) brightness(0.98)`,
-  boxShadow: '0 4px 12px oklch(0% 0 0 / 0.35)',
+  border: '2px solid #252525',
+  backgroundColor: '#fff',
+  boxShadow: '0px 3px 0px 0px #252525',
   color: Colors.gray[900],
 
   display: 'flex',

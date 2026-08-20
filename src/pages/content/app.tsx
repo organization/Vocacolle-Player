@@ -185,6 +185,17 @@ const Content = () => {
     )
   );
 
+  // fullscreen
+  createEffect(
+    on(showFullscreen, (state) => {
+      if (state) {
+        sendEvent({ type: Event.enableControl });
+      } else {
+        sendEvent({ type: Event.disableControl });
+      }
+    })
+  );
+
   // video clicked
   createEffect(
     on(videoData, (data) => {

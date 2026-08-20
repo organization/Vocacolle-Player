@@ -3,6 +3,7 @@ import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { Move, Scaling } from 'lucide-solid';
 
 import {
+  iconShowStyle,
   iconStyle,
   iframeStyle,
   moveIconStyle,
@@ -15,7 +16,7 @@ import {
 } from './player.css';
 import { cx } from '@/utils';
 
-const BEZEL_WIDTH = 16;
+const BEZEL_WIDTH = 4;
 
 export type PlayerProps = {
   videoId?: string;
@@ -127,6 +128,7 @@ export const Player = (props: PlayerProps) => {
       classList={{
         [videoStyle]: true,
         [pipStyle]: props.pip,
+        [iconShowStyle]: isMovingMode(),
       }}
       style={assignInlineVars({
         [pipX]: coord().x + 'px',
@@ -147,12 +149,20 @@ export const Player = (props: PlayerProps) => {
       />
       <Show when={props.pip}>
         <Move
-          class={cx(iconStyle, moveIconStyle)}
+          class={cx(
+            iconStyle,
+            moveIconStyle,
+            isMovingMode() && !edge() && iconShowStyle
+          )}
           width={'25%'}
           height={'25%'}
         />
         <Scaling
-          class={cx(iconStyle, scalingIconStyle)}
+          class={cx(
+            iconStyle,
+            scalingIconStyle,
+            isMovingMode() && !!edge() && iconShowStyle
+          )}
           width={'25%'}
           height={'25%'}
         />

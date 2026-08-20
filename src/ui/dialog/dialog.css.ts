@@ -1,10 +1,5 @@
 import { Colors } from '@/theme';
-import {
-  createVar,
-  keyframes,
-  style,
-  styleVariants,
-} from '@vanilla-extract/css';
+import { keyframes, style, styleVariants } from '@vanilla-extract/css';
 
 export const backdropStyle = style({
   position: 'fixed',
@@ -40,13 +35,12 @@ export const backdropAnimation = styleVariants({
   },
 });
 
-export const glassFilter = createVar();
 export const wrapperStyle = style({
   width: '30rem',
 
-  backgroundColor: 'oklch(100% 0 0 / 0.8)',
-  backdropFilter: `${glassFilter} saturate(5) brightness(0.98)`,
-  boxShadow: '0 4px 12px oklch(0% 0 0 / 0.35)',
+  border: '2px solid #252525',
+  backgroundColor: '#fff',
+  boxShadow: '0px 3px 0px 0px #252525',
 
   padding: '1.2rem',
   borderRadius: '2.0rem',

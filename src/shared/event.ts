@@ -4,4 +4,6 @@ export const Event = {
   volume: 'vcp:volume',
   progress: 'vcp:progress',
   fullscreen: 'vcp:fullscreen',
+  enableControl: 'vcp:enable-control',
+  disableControl: 'vcp:disable-control',
 };

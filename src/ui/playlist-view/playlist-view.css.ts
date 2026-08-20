@@ -57,7 +57,7 @@ export const itemContainerStyle = style({
   padding: '0.4rem',
   marginTop: '-3.2rem',
   paddingTop: '3.6rem',
-  mask: 'linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.5) 3.0rem, black 4.0rem, black calc(100% - 0.8rem), transparent)',
+  mask: 'linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.5) 3.2rem, black 4.0rem, black calc(100% - 0.8rem), transparent)',
 
   overflow: 'auto',
   overflowX: 'hidden',

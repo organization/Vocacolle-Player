@@ -1,4 +1,4 @@
-import { createVar, style, styleVariants } from '@vanilla-extract/css';
+import { style, styleVariants } from '@vanilla-extract/css';
 
 import { Colors } from '@/theme';
 
@@ -18,14 +18,13 @@ export const toastContainerStyle = style({
   pointerEvents: 'none',
 });
 
-export const glassFilter = createVar();
 export const toastStyle = style({
   width: 'fit-content',
   minWidth: '240px',
 
-  backgroundColor: 'oklch(100% 0 0 / 0.8)',
-  backdropFilter: `${glassFilter} saturate(5) brightness(0.98)`,
-  boxShadow: '0 4px 12px oklch(0% 0 0 / 0.35)',
+  border: '2px solid #252525',
+  backgroundColor: '#fff',
+  boxShadow: '0px 3px 0px 0px #252525',
   color: Colors.gray[900],
 
   display: 'flex',
@@ -34,7 +33,7 @@ export const toastStyle = style({
 
   fontSize: '14px',
 
-  borderRadius: '12px',
+  borderRadius: '1.2rem',
   padding: '12px 16px',
   pointerEvents: 'all',
   animationFillMode: 'both',
