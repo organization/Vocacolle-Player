@@ -7,6 +7,7 @@ import { initVue } from './inject/vue';
 import { initNext } from './inject/next';
 import { init2025Summer } from './inject/2025-summer';
 import { init2026Winter } from './inject/2026-winter';
+import { init2026Summer } from './inject/2026-summer';
 
 const init = () => {
   const type = getOldType();
@@ -15,6 +16,7 @@ const init = () => {
     const year = Number(type.split('-')[0]);
     const season = type.split('-')[1];
 
+    if (year === 2026 && season === 'summer') init2026Summer();
     if (year === 2026 && season === 'winter') init2026Winter();
     if (year === 2025 && season === 'summer') init2025Summer();
     else {
@@ -27,7 +29,7 @@ const init = () => {
       return;
     }
   } else {
-    init2026Winter();
+    init2026Summer();
   }
 
   render(App, document.body!);

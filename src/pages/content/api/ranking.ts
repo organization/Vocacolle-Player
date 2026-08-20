@@ -6,18 +6,18 @@ import {
 } from '@/shared/types';
 
 export const getRankingNumber = (type: RankingType): number | null => {
-  if (type === 'top100') return 316541;
-  if (type === 'rookie') return 316542;
-  if (type === 'remix') return 316543;
-  if (type === 'exhibition') return 316544;
+  if (type === 'top100') return 329892;
+  if (type === 'rookie') return 329893;
+  if (type === 'remix') return 329894;
+  if (type === 'exhibition') return 329895;
 
   return null;
 };
 export const getRankingType = (num: number): RankingType | null => {
-  if (num === 316541) return 'top100';
-  if (num === 316542) return 'rookie';
-  if (num === 316543) return 'remix';
-  if (num === 316544) return 'exhibition';
+  if (num === 329892) return 'top100';
+  if (num === 329893) return 'rookie';
+  if (num === 329894) return 'remix';
+  if (num === 329895) return 'exhibition';
 
   return null;
 };
