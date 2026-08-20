@@ -35,7 +35,7 @@ import {
 } from './video-panel.css';
 
 const availableBackgroundList = [
-  '/images/bg/bg_detail_pc.png',
+  'images/bg/bg_detail_pc.png',
   '2025-summer/images/bg/bg_detail_pc.png',
   '2025-winter/images/bg/bg_detail_pc.png',
   '2024-winter/images/bg/bg_detail_pc.png',
