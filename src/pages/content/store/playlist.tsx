@@ -50,7 +50,8 @@ export const PlaylistProvider = (props: PlaylistProviderProps) => {
 };
 export const usePlaylist = () => {
   const context = useContext(PlaylistContext);
-  if (!context) throw new Error('usePlaylist must be used within a PlaylistProvider');
+  if (!context)
+    throw new Error('usePlaylist must be used within a PlaylistProvider');
 
   const setRankingPlaylist = async (type: RankingType) => {
     const ranking = await fetchRanking(type);
@@ -92,7 +93,6 @@ export const usePlaylist = () => {
 
     return videoData;
   };
-
 
   return {
     playlist: context.playlist,

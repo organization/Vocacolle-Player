@@ -33,10 +33,7 @@ export default defineConfig({
     sourcemap: isDev,
     rollupOptions: {
       input: {
-        content: resolve(root, 'pages', 'content', 'index.tsx'),
-        embed: resolve(root, 'pages', 'embed', 'index.ts'),
         progress: resolve(root, 'pages', 'embed', 'progress.ts'),
-        background: resolve(root, 'background', 'index.ts'),
       },
       // input: {
       //   devtools: resolve(pagesDir, "devtools", "index.html"),

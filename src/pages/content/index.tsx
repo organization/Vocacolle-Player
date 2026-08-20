@@ -30,9 +30,6 @@ const init = () => {
     init2026Winter();
   }
 
-  render(
-    App,
-    document.body!
-  );
+  render(App, document.body!);
 };
 init();

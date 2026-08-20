@@ -1,4 +1,11 @@
-import { createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js';
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  on,
+  onCleanup,
+  onMount,
+} from 'solid-js';
 import { Show } from 'solid-js/web';
 import { Flip, FlipProvider } from 'solid-flip';
 import { ListMusic, ListX } from 'lucide-solid';
@@ -19,7 +26,18 @@ import { resetVideoData, useVideoData } from './hook/use-video-data';
 
 import { VideoPanel } from './component/video-panel';
 
-import { fixedStyle, playerBarWrapperAnimationStyle, playerBarWrapperStyle, sidebarAnimationStyle, sidebarHeaderStyle, sidebarStyle, sidebarTitleStyle, videoContainerStyle, videoPanelAnimationStyle, videoWrapperAnimationStyle } from './app.css';
+import {
+  fixedStyle,
+  playerBarWrapperAnimationStyle,
+  playerBarWrapperStyle,
+  sidebarAnimationStyle,
+  sidebarHeaderStyle,
+  sidebarStyle,
+  sidebarTitleStyle,
+  videoContainerStyle,
+  videoPanelAnimationStyle,
+  videoWrapperAnimationStyle,
+} from './app.css';
 
 const EventList = Object.values(Event);
 const Content = () => {
@@ -32,16 +50,22 @@ const Content = () => {
   const [showPlayer, setShowPlayer] = createSignal(false);
   const [openExistCheck, setOpenExistCheck] = createSignal(false);
 
-  const onPrevious = () => setPlaylist('currentIndex', (index) => Math.max(index - 1, 0));
-  const onPlayPause = () => setPlayer('state', (state) => (state === 'playing' ? 'paused' : 'playing'));
-  const onNext = () => setPlaylist('currentIndex', (index) => Math.min(index + 1, playlist.playlist.length - 1));
+  const onPrevious = () =>
+    setPlaylist('currentIndex', (index) => Math.max(index - 1, 0));
+  const onPlayPause = () =>
+    setPlayer('state', (state) => (state === 'playing' ? 'paused' : 'playing'));
+  const onNext = () =>
+    setPlaylist('currentIndex', (index) =>
+      Math.min(index + 1, playlist.playlist.length - 1)
+    );
   const onOpen = () => {
     const video = playlist.currentVideo;
     if (!video) return;
 
     window.open(`https://www.nicovideo.jp/watch/${video.id}`);
   };
-  const onProgressChange = (progress: number) => sendEvent({ type: Event.progress, progress });
+  const onProgressChange = (progress: number) =>
+    sendEvent({ type: Event.progress, progress });
   const playerProps = {
     get nowPlaying() {
       return playlist.current;
@@ -96,17 +120,26 @@ const Content = () => {
     }
 
     if (newPlaylist.length === 1) {
-      addToast({ message: `"${newPlaylist[0]?.video.title}"(이)가 재생목록에 추가되었습니다.` });
+      addToast({
+        message: `"${newPlaylist[0]?.video.title}"(이)가 재생목록에 추가되었습니다.`,
+      });
     } else {
-      addToast({ message: `${newPlaylist.length}개의 곡이 재생목록에 추가되었습니다.` });
+      addToast({
+        message: `${newPlaylist.length}개의 곡이 재생목록에 추가되었습니다.`,
+      });
     }
   };
 
-  createEffect(on(() => !!playlist.current, (added) => {
-    if (added && !showPlayer()) {
-      setShowPlayer(true);
-    }
-  }));
+  createEffect(
+    on(
+      () => !!playlist.current,
+      (added) => {
+        if (added && !showPlayer()) {
+          setShowPlayer(true);
+        }
+      }
+    )
+  );
 
   // auto play
   const currentVideoId = createMemo(() => playlist.currentVideo?.id);
@@ -161,7 +194,10 @@ const Content = () => {
       if (isPlaylistExist) {
         setOpenExistCheck(true);
       } else {
-        setPlaylist('playlist', (prev) => [...prev, ...data.map((d) => d.videoData)]);
+        setPlaylist('playlist', (prev) => [
+          ...prev,
+          ...data.map((d) => d.videoData),
+        ]);
         if (data.length === 1) {
           addToast({
             message: `"${data[0].videoData.video.title}"(이)가 재생목록에 추가되었습니다.`,
@@ -174,7 +210,7 @@ const Content = () => {
 
         resetVideoData();
       }
-    }),
+    })
   );
 
   onMount(() => {
@@ -196,13 +232,10 @@ const Content = () => {
 
     window.addEventListener('message', listener);
     onCleanup(() => window.removeEventListener('message', listener));
-  })
+  });
 
   const videoPlayer = (
-    <Player
-      videoId={playlist.current?.video.id}
-      pip={!showFullscreen()}
-    />
+    <Player videoId={playlist.current?.video.id} pip={!showFullscreen()} />
   );
 
   return (
@@ -214,9 +247,7 @@ const Content = () => {
           [videoWrapperAnimationStyle.exit]: !showPlayer(),
         }}
       >
-        <Show when={playlist.current && !showFullscreen()}>
-          {videoPlayer}
-        </Show>
+        <Show when={playlist.current && !showFullscreen()}>{videoPlayer}</Show>
       </div>
       <Show when={showFullscreen()} keyed>
         <Flip
@@ -266,7 +297,10 @@ const Content = () => {
               {`재생목록 (${playlist.currentIndex + 1} / ${playlist.playlist.length})`}
             </h2>
             <IconButton icon={ListX} onClick={onClose} />
-            <IconButton icon={ListMusic} onClick={() => setShowSidebar(false)} />
+            <IconButton
+              icon={ListMusic}
+              onClick={() => setShowSidebar(false)}
+            />
           </div>
         </PlaylistView>
       </div>
@@ -280,8 +314,7 @@ const Content = () => {
         open={openExistCheck()}
         onClose={() => setOpenExistCheck(false)}
         onAction={onAction}
-      >
-      </Dialog>
+      ></Dialog>
     </div>
   );
 };

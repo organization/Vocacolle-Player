@@ -29,13 +29,19 @@ export const init2026Winter = () => {
           !playAllContainer.querySelector('.vcp-play-all')
         ) {
           const button = (
-            <button
-              class="css-17csabp group vcp-play-all"
-              role="group"
-            >
+            <button class="css-17csabp group vcp-play-all" role="group">
               <div class={'css-1286qlj'}>
                 <div class={'css-1n35dp9'}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                     class="lucide lucide-music-icon lucide-music chakra-icon css-dmi4f1"
                   >
                     <path d="M9 18V5l12-2v13" />

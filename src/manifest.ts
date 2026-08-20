@@ -28,10 +28,12 @@ const manifest = defineManifest(async () => ({
       matches: [
         'http://vocaloid-collection.jp/*',
         'https://vocaloid-collection.jp/*',
-        'http://embed.nicovideo.jp/*',
-        'https://embed.nicovideo.jp/*',
       ],
-      js: ['src/pages/content/index.tsx', 'src/pages/embed/index.ts'],
+      js: ['src/pages/content/index.tsx'],
+    },
+    {
+      matches: ['http://embed.nicovideo.jp/*', 'https://embed.nicovideo.jp/*'],
+      js: ['src/pages/embed/index.ts'],
       all_frames: true,
     },
   ],

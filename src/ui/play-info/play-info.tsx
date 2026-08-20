@@ -45,11 +45,7 @@ export const PlayInfo = (props: PlayInfoProps) => {
         <Show when={!!props.onAlbumClick}>
           <MoveDiagonal class={albumIconStyle} />
         </Show>
-        <img
-          class={imageStyle}
-          src={props.album}
-          alt="album"
-        />
+        <img class={imageStyle} src={props.album} alt="album" />
       </div>
       <div class={textContainerStyle}>
         <div class={titleStyle}>{props.title}</div>
@@ -66,15 +62,13 @@ export const PlayInfo = (props: PlayInfoProps) => {
               [rankingStyle['in100']]: ranking() > 10,
             }}
           >
-            <div>
-              #{props.ranking}
-            </div>
+            <div>#{props.ranking}</div>
             <div class={rankingTextStyle}>
               {rankingTypeToText(props.rankingType ?? null)}
             </div>
           </div>
         )}
-      </Show >
-    </div >
+      </Show>
+    </div>
   );
 };

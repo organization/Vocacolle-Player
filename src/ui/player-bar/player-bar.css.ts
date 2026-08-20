@@ -1,8 +1,4 @@
-import {
-  createVar,
-  style,
-  styleVariants,
-} from '@vanilla-extract/css';
+import { createVar, style, styleVariants } from '@vanilla-extract/css';
 import { Colors } from '@/theme';
 
 export const glassFilter = createVar();
@@ -33,7 +29,8 @@ export const wrapperAnimationStyle = styleVariants({
     opacity: 1,
     transform: 'translateY(0)',
     scale: 1,
-    transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1), scale 0.3s cubic-bezier(0.37, 0, 0.63, 1)',
+    transition:
+      'all 0.3s cubic-bezier(0.65, 0, 0.35, 1), scale 0.3s cubic-bezier(0.37, 0, 0.63, 1)',
     // animation: `${showAnimation} 0.3s cubic-bezier(0.65, 0, 0.35, 1)`,
   },
   exit: {
@@ -41,7 +38,8 @@ export const wrapperAnimationStyle = styleVariants({
     opacity: 0,
     transform: 'translateY(100%)',
     // scale: 0.75,
-    transition: 'all 0.3s cubic-bezier(0.65, 0, 0.35, 1), scale 0.3s cubic-bezier(0.37, 0, 0.63, 1)',
+    transition:
+      'all 0.3s cubic-bezier(0.65, 0, 0.35, 1), scale 0.3s cubic-bezier(0.37, 0, 0.63, 1)',
     // animation: `${hideAnimation} 0.3s cubic-bezier(0.65, 0, 0.35, 1)`,
   },
 });
@@ -71,19 +69,23 @@ const baseProgressStyle = style({
   },
 });
 
-export const hoverProgressStyle = style([baseProgressStyle, {
-  zIndex: '-2',
+export const hoverProgressStyle = style([
+  baseProgressStyle,
+  {
+    zIndex: '-2',
 
-  '::before': {
-    background: 'oklch(14.5% 0 0 / 0.2)',
+    '::before': {
+      background: 'oklch(14.5% 0 0 / 0.2)',
+    },
   },
-}]);
-export const progressStyle = style([baseProgressStyle, {
-  zIndex: '-1',
+]);
+export const progressStyle = style([
+  baseProgressStyle,
+  {
+    zIndex: '-1',
 
-  '::before': {
-    background:
-      `linear-gradient(
+    '::before': {
+      background: `linear-gradient(
         to right,
         rgba(22, 232, 248, 0.3) 0%,
         rgba(13, 181, 194, 0.3) 20%,
@@ -91,15 +93,16 @@ export const progressStyle = style([baseProgressStyle, {
         rgba(218, 66, 86, 0.3) 65%,
         rgba(211, 32, 55, 0.6) 100%
       )`,
-    /*
+      /*
       rgba(22, 232, 248, 0.3) calc(100% - 3.2rem),
       rgba(13, 181, 194, 0.3) calc(100% - 2.56rem),
       rgba(5, 155, 167, 0.3) calc(100% - 2.2153856rem),
       rgba(218, 66, 86, 0.3) calc(100% - 1.12rem),
       rgba(211, 32, 55, 0.6) 100%
     */
+    },
   },
-}]);
+]);
 
 export const containerStyle = style({
   display: 'flex',

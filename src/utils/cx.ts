@@ -48,5 +48,7 @@ export const sx = <Element extends HTMLElement>(
     }
   });
 
-  return result.map((it) => it[it.length - 1] === ';' ? it.trim() : `${it.trim()};`).join('\n');
+  return result
+    .map((it) => (it[it.length - 1] === ';' ? it.trim() : `${it.trim()};`))
+    .join('\n');
 };

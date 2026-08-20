@@ -31,12 +31,12 @@ export const iconButtonStyle = style({
     },
     '&[data-active="true"]': {
       backgroundColor: 'rgba(241, 106, 3, 0.1)',
-      color: 'rgba(241, 106, 3, 1)'
+      color: 'rgba(241, 106, 3, 1)',
     },
     '&[data-active="true"]:hover': {
       backgroundColor: 'rgba(241, 106, 3, 0.2)',
-    }
-  }
+    },
+  },
 });
 
 export const iconStyle = style({

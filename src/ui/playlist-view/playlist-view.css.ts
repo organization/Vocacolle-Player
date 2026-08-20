@@ -14,7 +14,7 @@ export const containerStyle = style({
   color: Colors.gray[900],
 });
 
-export const headerStyle = style({  
+export const headerStyle = style({
   position: 'sticky',
   top: '0',
   left: '0',

@@ -1,5 +1,10 @@
 import { Colors } from '@/theme';
-import { createVar, keyframes, style, styleVariants } from '@vanilla-extract/css';
+import {
+  createVar,
+  keyframes,
+  style,
+  styleVariants,
+} from '@vanilla-extract/css';
 
 export const backdropStyle = style({
   position: 'fixed',
@@ -105,12 +110,18 @@ const baseActionStyle = style({
   flex: 1,
 });
 export const actionStyle = styleVariants({
-  default: [baseActionStyle, {
-    backgroundColor: 'oklch(14.5% 0 0 / 0.1)',
-    color: Colors.gray[900],
-  }],
-  primary: [baseActionStyle, {
-    backgroundColor: 'oklch(50% 0.4 0.5 / 0.7)',
-    color: Colors.gray[50],
-  }],
+  default: [
+    baseActionStyle,
+    {
+      backgroundColor: 'oklch(14.5% 0 0 / 0.1)',
+      color: Colors.gray[900],
+    },
+  ],
+  primary: [
+    baseActionStyle,
+    {
+      backgroundColor: 'oklch(50% 0.4 0.5 / 0.7)',
+      color: Colors.gray[50],
+    },
+  ],
 });

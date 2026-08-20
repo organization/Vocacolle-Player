@@ -2,6 +2,8 @@ import { Event } from '@/shared/event';
 
 const EventList = Object.values(Event);
 export const initEmbed = () => {
+  console.log('[Vocacolle Player] Embed script loaded.');
+
   window.addEventListener('message', (event) => {
     if (!event.data) return;
     if (typeof event.data !== 'object') return;

@@ -1,7 +1,18 @@
 // This effect is based on https://kube.io/blog/liquid-glass-css-svg/
 // This component is based on https://creatorem.com/docs/ui/motion/liquid-glass
 
-import { Accessor, batch, createEffect, createMemo, createRenderEffect, createSignal, createUniqueId, JSX, mergeProps, on } from 'solid-js';
+import {
+  Accessor,
+  batch,
+  createEffect,
+  createMemo,
+  createRenderEffect,
+  createSignal,
+  createUniqueId,
+  JSX,
+  mergeProps,
+  on,
+} from 'solid-js';
 import { LiquidFilter, LiquidFilterProps } from './filter';
 import { clx, cx, sx } from '../../utils';
 
@@ -25,7 +36,11 @@ const getBorderRadius = (element: HTMLElement, rect: DOMRect): number => {
   }
 
   // Handle scientific notation (e.g., '1.67772e+07px' from rounded-full) or very large values
-  if (parsedRadius > 9999 || rawRadius.includes('e+') || rawRadius.includes('E+')) {
+  if (
+    parsedRadius > 9999 ||
+    rawRadius.includes('e+') ||
+    rawRadius.includes('E+')
+  ) {
     // For very large values (like rounded-full), return half of smallest dimension
     return Math.min(rect.width, rect.height) / 2;
   }
@@ -80,49 +95,53 @@ const useMotionSizeObservers = <T extends HTMLElement = HTMLDivElement>(
   };
 
   // Observe size changes
-  createRenderEffect(on(
-    () => [disabled(), containerRef()] as const,
-    ([disabled, container]) => {
-      if (!container || disabled) return;
+  createRenderEffect(
+    on(
+      () => [disabled(), containerRef()] as const,
+      ([disabled, container]) => {
+        if (!container || disabled) return;
 
-      const resizeObserver = new ResizeObserver(() => {
-        requestAnimationFrame(updateDimensions);
-      });
+        const resizeObserver = new ResizeObserver(() => {
+          requestAnimationFrame(updateDimensions);
+        });
 
-      resizeObserver.observe(container);
+        resizeObserver.observe(container);
 
-      // Initial measurement
-      updateDimensions();
+        // Initial measurement
+        updateDimensions();
 
-      return () => {
-        resizeObserver.disconnect();
-      };
-    },
-  ));
+        return () => {
+          resizeObserver.disconnect();
+        };
+      }
+    )
+  );
 
   // Watch for border radius changes through MutationObserver
-  createEffect(on(
-    () => [disabled(), containerRef()] as const,
-    ([disabled, container]) => {
-      if (!container || disabled) return;
+  createEffect(
+    on(
+      () => [disabled(), containerRef()] as const,
+      ([disabled, container]) => {
+        if (!container || disabled) return;
 
-      let timeoutId: NodeJS.Timeout;
-      const mutationObserver = new MutationObserver(() => {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(updateDimensions, 100); // Debounce mutations
-      });
+        let timeoutId: NodeJS.Timeout;
+        const mutationObserver = new MutationObserver(() => {
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(updateDimensions, 100); // Debounce mutations
+        });
 
-      mutationObserver.observe(container, {
-        attributes: true,
-        attributeFilter: ['style', 'class'],
-      });
+        mutationObserver.observe(container, {
+          attributes: true,
+          attributeFilter: ['style', 'class'],
+        });
 
-      return () => {
-        clearTimeout(timeoutId);
-        mutationObserver.disconnect();
-      };
-    },
-  ));
+        return () => {
+          clearTimeout(timeoutId);
+          mutationObserver.disconnect();
+        };
+      }
+    )
+  );
 
   return {
     width,
@@ -131,30 +150,34 @@ const useMotionSizeObservers = <T extends HTMLElement = HTMLDivElement>(
   };
 };
 
-export interface LiquidGlassProps<T extends HTMLElement = HTMLDivElement>
-  extends Pick<
-    LiquidFilterProps,
-    | 'glassThickness'
-    | 'bezelWidth'
-    | 'blur'
-    | 'bezelHeightFn'
-    | 'refractiveIndex'
-    | 'specularOpacity'
-    | 'specularSaturation'
-    | 'dpr'
-  > {
+export interface LiquidGlassProps<
+  T extends HTMLElement = HTMLDivElement,
+> extends Pick<
+  LiquidFilterProps,
+  | 'glassThickness'
+  | 'bezelWidth'
+  | 'blur'
+  | 'bezelHeightFn'
+  | 'refractiveIndex'
+  | 'specularOpacity'
+  | 'specularSaturation'
+  | 'dpr'
+> {
   targetRef?: T;
   width?: number;
   height?: number;
   borderRadius?: number;
 }
-export const useLiquidSurface = <T extends HTMLElement = HTMLDivElement>(options: Accessor<LiquidGlassProps<T>>) => {
+export const useLiquidSurface = <T extends HTMLElement = HTMLDivElement>(
+  options: Accessor<LiquidGlassProps<T>>
+) => {
   const filterId = `glass-${createUniqueId()}`;
   const [rawRef, setRawRef] = createSignal<HTMLElement | null>(null);
   const ref = () => options().targetRef ?? rawRef();
 
   // Use motion value props if provided, otherwise fall back to size observers
-  const usePropValues = () => !!(options().width && options().height && options().borderRadius);
+  const usePropValues = () =>
+    !!(options().width && options().height && options().borderRadius);
   const {
     width: observedWidth,
     height: observedHeight,
@@ -162,12 +185,21 @@ export const useLiquidSurface = <T extends HTMLElement = HTMLDivElement>(options
   } = useMotionSizeObservers(ref, usePropValues);
 
   // Use the provided motion values or the observed ones
-  const finalWidth = () => usePropValues() ? options().width! : observedWidth();
-  const finalHeight = () => usePropValues() ? options().height! : observedHeight();
-  const finalRadius = () => usePropValues() ? options().borderRadius! : observedRadius();
+  const finalWidth = () =>
+    usePropValues() ? options().width! : observedWidth();
+  const finalHeight = () =>
+    usePropValues() ? options().height! : observedHeight();
+  const finalRadius = () =>
+    usePropValues() ? options().borderRadius! : observedRadius();
 
   const Filter = () => (
-    <LiquidFilter id={filterId} width={finalWidth()} height={finalHeight()} radius={finalRadius()} {...options()} />
+    <LiquidFilter
+      id={filterId}
+      width={finalWidth()}
+      height={finalHeight()}
+      radius={finalRadius()}
+      {...options()}
+    />
   );
 
   const filterStyles = () => ({
@@ -183,31 +215,36 @@ export const useLiquidSurface = <T extends HTMLElement = HTMLDivElement>(options
   };
 };
 
-export const LiquidGlass = (props: LiquidGlassProps & JSX.HTMLAttributes<HTMLDivElement>) => {
+export const LiquidGlass = (
+  props: LiquidGlassProps & JSX.HTMLAttributes<HTMLDivElement>
+) => {
   const local = mergeProps(
     {
       dpr: typeof window !== 'undefined' ? window.devicePixelRatio : 1,
     },
-    props,
+    props
   );
 
-  const { filterStyles, filterId, Filter, onRegister } = useLiquidSurface(() => ({
-    glassThickness: local.glassThickness,
-    bezelWidth: local.bezelWidth,
-    blur: local.blur,
-    bezelHeightFn: local.bezelHeightFn,
-    refractiveIndex: local.refractiveIndex,
-    specularOpacity: local.specularOpacity,
-    specularSaturation: local.specularSaturation,
-    dpr: local.dpr,
-    targetRef: local.targetRef,
-    width: local.width,
-    height: local.height,
-    borderRadius: local.borderRadius,
-  }));
+  const { filterStyles, filterId, Filter, onRegister } = useLiquidSurface(
+    () => ({
+      glassThickness: local.glassThickness,
+      bezelWidth: local.bezelWidth,
+      blur: local.blur,
+      bezelHeightFn: local.bezelHeightFn,
+      refractiveIndex: local.refractiveIndex,
+      specularOpacity: local.specularOpacity,
+      specularSaturation: local.specularSaturation,
+      dpr: local.dpr,
+      targetRef: local.targetRef,
+      width: local.width,
+      height: local.height,
+      borderRadius: local.borderRadius,
+    })
+  );
 
   createEffect(() => {
-    if (local.targetRef) local.targetRef.style.backdropFilter = `url(#${filterId})`;
+    if (local.targetRef)
+      local.targetRef.style.backdropFilter = `url(#${filterId})`;
   });
 
   return (
@@ -229,31 +266,42 @@ export const LiquidGlass = (props: LiquidGlassProps & JSX.HTMLAttributes<HTMLDiv
 
 type LiquidDivProps = { filterId: string } & JSX.HTMLAttributes<HTMLDivElement>;
 const LiquidDiv = (props: LiquidDivProps) => {
-  const isLiquidSupported = createMemo(on(() => navigator.userAgent, () => {
-    const isWebkit = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
-    const isFirefox = /Firefox/.test(navigator.userAgent);
+  const isLiquidSupported = createMemo(
+    on(
+      () => navigator.userAgent,
+      () => {
+        const isWebkit =
+          /Safari/.test(navigator.userAgent) &&
+          !/Chrome/.test(navigator.userAgent);
+        const isFirefox = /Firefox/.test(navigator.userAgent);
 
-    if (isWebkit || isFirefox) {
-      return false;
-    }
+        if (isWebkit || isFirefox) {
+          return false;
+        }
 
-    const div = document.createElement('div');
-    div.style.backdropFilter = `url(#${props.filterId})`;
-    return div.style.backdropFilter !== '';
-  }));
+        const div = document.createElement('div');
+        div.style.backdropFilter = `url(#${props.filterId})`;
+        return div.style.backdropFilter !== '';
+      }
+    )
+  );
 
   return (
     <div
       {...props}
-      class={clx(isLiquidSupported() ? '' : 'border', props.class, props.classList)}
+      class={clx(
+        isLiquidSupported() ? '' : 'border',
+        props.class,
+        props.classList
+      )}
       style={sx(
         isLiquidSupported()
           ? {}
           : {
-            'backdrop-filter': 'blur(4px)',
-            '-webkit-backdrop-filter': 'blur(4px)',
-          },
-        props.style,
+              'backdrop-filter': 'blur(4px)',
+              '-webkit-backdrop-filter': 'blur(4px)',
+            },
+        props.style
       )}
     >
       {props.children}

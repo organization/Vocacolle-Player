@@ -6,7 +6,11 @@ import { Flip } from 'solid-flip';
 import { Toast, ToastProps } from './toast';
 import { useLiquidSurface } from '../glass';
 
-import { glassFilter, toastAnimationStyle, toastContainerStyle } from './toast.css';
+import {
+  glassFilter,
+  toastAnimationStyle,
+  toastContainerStyle,
+} from './toast.css';
 
 type ToastData = ToastProps & { id: number };
 

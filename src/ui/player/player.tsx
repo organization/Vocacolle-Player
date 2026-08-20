@@ -2,7 +2,17 @@ import { createSignal, Show } from 'solid-js';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { Move, Scaling } from 'lucide-solid';
 
-import { iconStyle, iframeStyle, moveIconStyle, pipScale, pipStyle, pipX, pipY, scalingIconStyle, videoStyle } from './player.css';
+import {
+  iconStyle,
+  iframeStyle,
+  moveIconStyle,
+  pipScale,
+  pipStyle,
+  pipX,
+  pipY,
+  scalingIconStyle,
+  videoStyle,
+} from './player.css';
 import { cx } from '@/utils';
 
 const BEZEL_WIDTH = 16;
@@ -14,7 +24,7 @@ export type PlayerProps = {
 export const Player = (props: PlayerProps) => {
   const [iframe, setIframe] = createSignal<HTMLIFrameElement | null>(null);
   const [coord, setCoord] = createSignal({ x: 0, y: 0 });
-  const [scale, setScale] = createSignal(300 / document.body.clientWidth * 2);
+  const [scale, setScale] = createSignal((300 / document.body.clientWidth) * 2);
   const [isMovingMode, setIsMovingMode] = createSignal(false);
   const [edge, setEdge] = createSignal<'ne' | 'nw' | 'se' | 'sw' | null>(null);
 
@@ -61,8 +71,12 @@ export const Player = (props: PlayerProps) => {
       const isLeft = offsetX < BEZEL_WIDTH;
 
       onMove = (event: PointerEvent) => {
-        const width = isLeft ? rect.right - event.clientX : event.clientX - rect.left;
-        const height = isTop ? rect.bottom - event.clientY : event.clientY - rect.top;
+        const width = isLeft
+          ? rect.right - event.clientX
+          : event.clientX - rect.left;
+        const height = isTop
+          ? rect.bottom - event.clientY
+          : event.clientY - rect.top;
         const scaleX = (width / rect.width) * nowScale;
         const scaleY = (height / rect.height) * nowScale;
         const newScale = Math.min(Math.max(0.1, scaleX, scaleY), 2);
@@ -132,8 +146,16 @@ export const Player = (props: PlayerProps) => {
         class={iframeStyle}
       />
       <Show when={props.pip}>
-        <Move class={cx(iconStyle, moveIconStyle)} width={'25%'} height={'25%'} />
-        <Scaling class={cx(iconStyle, scalingIconStyle)} width={'25%'} height={'25%'} />
+        <Move
+          class={cx(iconStyle, moveIconStyle)}
+          width={'25%'}
+          height={'25%'}
+        />
+        <Scaling
+          class={cx(iconStyle, scalingIconStyle)}
+          width={'25%'}
+          height={'25%'}
+        />
       </Show>
     </div>
   );

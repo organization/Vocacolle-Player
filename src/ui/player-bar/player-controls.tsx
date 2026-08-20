@@ -20,9 +20,23 @@ export type PlayerControllerProps = {
 };
 export const PlayerController = (props: PlayerControllerProps) => (
   <>
-    <IconButton disabled={!props.canPrevious} fill={'currentColor'} icon={SkipBack} onClick={props.onPrevious} />
-    <IconButton fill={'currentColor'} icon={props.state === 'playing' ? Pause : Play} onClick={props.onPlayPause} />
-    <IconButton disabled={!props.canNext} fill={'currentColor'} icon={SkipForward} onClick={props.onNext} />
+    <IconButton
+      disabled={!props.canPrevious}
+      fill={'currentColor'}
+      icon={SkipBack}
+      onClick={props.onPrevious}
+    />
+    <IconButton
+      fill={'currentColor'}
+      icon={props.state === 'playing' ? Pause : Play}
+      onClick={props.onPlayPause}
+    />
+    <IconButton
+      disabled={!props.canNext}
+      fill={'currentColor'}
+      icon={SkipForward}
+      onClick={props.onNext}
+    />
     <Show when={props.nowPlaying?.video}>
       {(video) => (
         <>

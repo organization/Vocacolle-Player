@@ -17,7 +17,9 @@ type ProgressDragResult = {
     ref: (element: HTMLDivElement | null) => void;
   };
 };
-export const useProgressDrag = (options: ProgressDragOptions): ProgressDragResult => {
+export const useProgressDrag = (
+  options: ProgressDragOptions
+): ProgressDragResult => {
   const [isMoving, setIsMoving] = createSignal(false);
   const [progress, setProgress] = createSignal<number | null>(null);
   const [hoverProgress, setHoverProgress] = createSignal<number | null>(null);

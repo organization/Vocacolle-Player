@@ -25,7 +25,7 @@ export const getRankingType = (num: number): RankingType | null => {
 export const getOldType = (): string | null => {
   const [, oldType] =
     location.pathname.match(
-      /^\/(20[0-9]{2}\-(?:winter|summer|spring|autumn))/
+      /^\/(20[0-9]{2}-(?:winter|summer|spring|autumn))/
     ) ?? [];
 
   return oldType;
@@ -41,7 +41,10 @@ const buildURL = (type: RankingType, frontendId = 146) => {
   const oldType = getOldType();
   const buildId = getBuildId();
 
-  const suffix = type === 'exhibition' ? '/exhibition.json' : `/ranking/${type}.json?id=${type}`;
+  const suffix =
+    type === 'exhibition'
+      ? '/exhibition.json'
+      : `/ranking/${type}.json?id=${type}`;
 
   if (oldType && buildId) {
     return `https://vocaloid-collection.jp/${oldType}/_next/data/${buildId}${suffix}`;
@@ -88,7 +91,9 @@ export const fetchRanking = (async (type) => {
     if (!json) return null;
 
     if ('pageProps' in json) {
-      const id = json.pageProps.localRankingData.data?.mylist?.id ?? json.pageProps.pageId
+      const id =
+        json.pageProps.localRankingData.data?.mylist?.id ??
+        json.pageProps.pageId;
       const videos =
         json.pageProps.localRankingData.data?.mylist?.items.map(
           (item) => item.video

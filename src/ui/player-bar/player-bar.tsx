@@ -1,10 +1,6 @@
 import { Show } from 'solid-js';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
-import {
-  ExternalLink,
-  ListMusic,
-  X,
-} from 'lucide-solid';
+import { ExternalLink, ListMusic, X } from 'lucide-solid';
 
 import { IconButton } from '@/ui/button';
 import { useLiquidSurface } from '@/ui/glass';
@@ -33,7 +29,11 @@ export type PlayerBarProps = PlayerControllerProps & {
   onProgressChange: (progress: number) => void;
 };
 export const PlayerBar = (props: PlayerBarProps) => {
-  const { movingProgress, isMoving, props: dragProps } = useProgressDrag({
+  const {
+    movingProgress,
+    isMoving,
+    props: dragProps,
+  } = useProgressDrag({
     initProgress: props.progress,
     onProgressChange: props.onProgressChange,
   });
@@ -104,14 +104,8 @@ export const PlayerBar = (props: PlayerBarProps) => {
           </Show>
         </div>
         <div class={containerStyle}>
-          <IconButton
-            icon={ListMusic}
-            onClick={props.onPlaylist}
-          />
-          <IconButton
-            icon={X}
-            onClick={props.onClose}
-          />
+          <IconButton icon={ListMusic} onClick={props.onPlaylist} />
+          <IconButton icon={X} onClick={props.onClose} />
         </div>
       </div>
     </>

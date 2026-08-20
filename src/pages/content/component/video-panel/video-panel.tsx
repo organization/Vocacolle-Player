@@ -4,13 +4,34 @@ import { ExternalLink, X } from 'lucide-solid';
 import { JSX } from 'solid-js/jsx-runtime';
 
 import { IconButton } from '@/ui/button';
-import { PlayerController, PlayerControllerProps, useProgressDrag } from '@/ui/player-bar';
+import {
+  PlayerController,
+  PlayerControllerProps,
+  useProgressDrag,
+} from '@/ui/player-bar';
 import { PlaylistView, PlaylistViewProps } from '@/ui/playlist-view';
 
 import { Logo } from '../logo';
 
-import { hoverProgressStyle, progressStyle, progressVar } from '@/ui/player-bar/player-bar.css';
-import { containerStyle, contentStyle, count, headerStyle, imageEffectAnimationStyle, imageEffectStyle, logoStyle, playlistTitleStyle, playlistWrapperStyle, progressWrapperStyle, sectionStyle, toolbarStyle } from './video-panel.css';
+import {
+  hoverProgressStyle,
+  progressStyle,
+  progressVar,
+} from '@/ui/player-bar/player-bar.css';
+import {
+  containerStyle,
+  contentStyle,
+  count,
+  headerStyle,
+  imageEffectAnimationStyle,
+  imageEffectStyle,
+  logoStyle,
+  playlistTitleStyle,
+  playlistWrapperStyle,
+  progressWrapperStyle,
+  sectionStyle,
+  toolbarStyle,
+} from './video-panel.css';
 
 const availableBackgroundList = [
   '/images/bg/bg_detail_pc.png',
@@ -21,13 +42,14 @@ const availableBackgroundList = [
   '2023-spring/_nuxt/img/bg_detail_pc.503fade.png',
 ];
 
-export type VideoPanelProps = PlayerControllerProps & Omit<PlaylistViewProps, 'nowPlayingId'> & {
-  children?: JSX.Element;
-  playlistIndex: number;
-  onOpen: () => void;
-  onClose: () => void;
-  onProgressChange: (progress: number) => void;
-};
+export type VideoPanelProps = PlayerControllerProps &
+  Omit<PlaylistViewProps, 'nowPlayingId'> & {
+    children?: JSX.Element;
+    playlistIndex: number;
+    onOpen: () => void;
+    onClose: () => void;
+    onProgressChange: (progress: number) => void;
+  };
 export const VideoPanel = (props: VideoPanelProps) => {
   const {
     movingProgress,
@@ -39,7 +61,9 @@ export const VideoPanel = (props: VideoPanelProps) => {
     onProgressChange: props.onProgressChange,
   });
 
-  const [effectBackgroundList, setEffectBackgroundList] = createSignal<string[]>(availableBackgroundList);
+  const [effectBackgroundList, setEffectBackgroundList] = createSignal<
+    string[]
+  >(availableBackgroundList);
   const [effectIndex, setEffectIndex] = createSignal(0);
 
   const progress = () => movingProgress() ?? props.progress;
@@ -94,10 +118,7 @@ export const VideoPanel = (props: VideoPanelProps) => {
       <div class={contentStyle}>
         <div class={headerStyle}>
           <Logo class={logoStyle} />
-          <IconButton
-            icon={X}
-            onClick={props.onClose}
-          />
+          <IconButton icon={X} onClick={props.onClose} />
         </div>
         <div class={sectionStyle}>
           {props.children}
@@ -124,10 +145,7 @@ export const VideoPanel = (props: VideoPanelProps) => {
             onNext={props.onNext}
             progress={progress()}
           />
-          <div
-            {...dragProps}
-            class={progressWrapperStyle}
-          >
+          <div {...dragProps} class={progressWrapperStyle}>
             <div
               class={hoverProgressStyle}
               style={assignInlineVars({

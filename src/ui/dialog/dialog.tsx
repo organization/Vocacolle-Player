@@ -12,7 +12,17 @@ import { assignInlineVars } from '@vanilla-extract/dynamic';
 
 import { useLiquidSurface } from '../glass';
 
-import { backdropStyle, backdropAnimation, wrapperStyle, wrapperAnimation, glassFilter, titleStyle, descriptionStyle, actionStyle, actionContainerStyle } from './dialog.css';
+import {
+  backdropStyle,
+  backdropAnimation,
+  wrapperStyle,
+  wrapperAnimation,
+  glassFilter,
+  titleStyle,
+  descriptionStyle,
+  actionStyle,
+  actionContainerStyle,
+} from './dialog.css';
 
 type DialogAction = {
   id: string;
@@ -72,11 +82,13 @@ export const Dialog = (props: DialogProps) => {
 
           requestAnimationFrame(() => {
             overlay.addEventListener('animationend', cleanUp, { once: true });
-            overlay.addEventListener('animationcancel', cleanUp, { once: true });
+            overlay.addEventListener('animationcancel', cleanUp, {
+              once: true,
+            });
           });
         }
-      },
-    ),
+      }
+    )
   );
 
   const { filterId, Filter, onRegister } = useLiquidSurface(() => ({
@@ -97,7 +109,8 @@ export const Dialog = (props: DialogProps) => {
             if (event.target === element()) backdropClickFlag = true;
           }}
           onPointerMove={(event) => {
-            if (backdropClickFlag && event.target !== element()) backdropClickFlag = false;
+            if (backdropClickFlag && event.target !== element())
+              backdropClickFlag = false;
           }}
           onPointerCancel={() => {
             backdropClickFlag = false;
@@ -106,7 +119,8 @@ export const Dialog = (props: DialogProps) => {
             backdropClickFlag = false;
           }}
           onPointerUp={() => {
-            if (backdropClickFlag && (props.closable ?? true)) props.onClose?.();
+            if (backdropClickFlag && (props.closable ?? true))
+              props.onClose?.();
             backdropClickFlag = false;
           }}
         >

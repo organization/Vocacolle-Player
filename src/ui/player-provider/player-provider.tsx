@@ -1,14 +1,4 @@
-import {
-  createContext,
-  createEffect,
-  createMemo,
-  JSX,
-  on,
-  onCleanup,
-  useContext,
-} from 'solid-js';
-
-import { Event } from '@/shared/event';
+import { createContext, JSX, useContext } from 'solid-js';
 
 type PlayerContextType = {
   sendEvent: (event: unknown) => void;
@@ -16,8 +6,6 @@ type PlayerContextType = {
 const PlayerContext = createContext<PlayerContextType | null>(null);
 
 export type PlayerProviderProps = {
-
-
   children: JSX.Element;
 };
 export const PlayerProvider = (props: PlayerProviderProps) => {

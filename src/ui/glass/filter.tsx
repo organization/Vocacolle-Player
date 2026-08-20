@@ -1,5 +1,9 @@
 import { createMemo, mergeProps } from 'solid-js';
-import { calculateRefractionSpecular, CONVEX, getDisplacementData } from './liquid-lib';
+import {
+  calculateRefractionSpecular,
+  CONVEX,
+  getDisplacementData,
+} from './liquid-lib';
 
 // function getBezier (bezelType: "convex_circle" | "convex_squircle" | "concave" | "lip") {
 //   let surfaceFn;
@@ -96,17 +100,19 @@ export const LiquidFilter = (props: LiquidFilterProps) => {
       specularSaturation: 4,
       bezelHeightFn: CONVEX.fn,
     },
-    props,
+    props
   );
 
-  const canvasWidth = () => ~~(local.canvasWidth ? local.canvasWidth : local.width);
-  const canvasHeight = () => ~~(local.canvasHeight ? local.canvasHeight : local.height);
+  const canvasWidth = () =>
+    ~~(local.canvasWidth ? local.canvasWidth : local.width);
+  const canvasHeight = () =>
+    ~~(local.canvasHeight ? local.canvasHeight : local.height);
 
   const displacementData = createMemo(() => {
     const devicePixelRatio = local.dpr ?? 1;
     const clampedBezelWidth = Math.max(
       Math.min(local.bezelWidth, 2 * local.radius - 1),
-      0,
+      0
     );
 
     return getDisplacementData({
@@ -132,13 +138,18 @@ export const LiquidFilter = (props: LiquidFilterProps) => {
       local.radius,
       50,
       undefined,
-      devicePixelRatio,
+      devicePixelRatio
     );
   });
 
-  const displacementMapDataUrl = createMemo(() => imageDataToUrl(displacementData().displacementMap));
-  const specularLayerDataUrl = createMemo(() => imageDataToUrl(specularLayer()));
-  const scale = () => displacementData().maximumDisplacement * (props.scaleRatio ?? 1);
+  const displacementMapDataUrl = createMemo(() =>
+    imageDataToUrl(displacementData().displacementMap)
+  );
+  const specularLayerDataUrl = createMemo(() =>
+    imageDataToUrl(specularLayer())
+  );
+  const scale = () =>
+    displacementData().maximumDisplacement * (props.scaleRatio ?? 1);
 
   const content = (
     <filter id={local.id}>
@@ -193,7 +204,12 @@ export const LiquidFilter = (props: LiquidFilterProps) => {
         <feFuncA type="linear" slope={local.specularOpacity} />
       </feComponentTransfer>
 
-      <feBlend in="specular_saturated" in2="displaced" mode="normal" result="withSaturation" />
+      <feBlend
+        in="specular_saturated"
+        in2="displaced"
+        mode="normal"
+        result="withSaturation"
+      />
       <feBlend in="specular_faded" in2="withSaturation" mode="normal" />
     </filter>
   );

@@ -8,5 +8,5 @@ export const formatTime = (time: number, showHours = false) => {
   const ss = seconds.toString().padStart(2, '0');
 
   if (hours > 0 || showHours) return `${hh}:${mm}:${ss}`;
-  return `${mm}:${ss}`
+  return `${mm}:${ss}`;
 };

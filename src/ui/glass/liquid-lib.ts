@@ -41,7 +41,10 @@ function calculateRefractionProfile(
       return null;
     }
     const kSqrt = Math.sqrt(k);
-    return [-(eta * dot + kSqrt) * normalX, eta - (eta * dot + kSqrt) * normalY];
+    return [
+      -(eta * dot + kSqrt) * normalX,
+      eta - (eta * dot + kSqrt) * normalY,
+    ];
   }
 
   return Array.from({ length: samples }, (_, i) => {
@@ -79,7 +82,8 @@ function generateDisplacementImageData(
   refractionProfile: number[] = [],
   dpr?: number
 ) {
-  const devicePixelRatio = dpr ?? (typeof window !== 'undefined' ? (window.devicePixelRatio ?? 1) : 1);
+  const devicePixelRatio =
+    dpr ?? (typeof window !== 'undefined' ? (window.devicePixelRatio ?? 1) : 1);
   const bufferWidth = canvasWidth * devicePixelRatio;
   const bufferHeight = canvasHeight * devicePixelRatio;
   // console.log( {bufferWidth, bufferHeight} )
@@ -113,9 +117,17 @@ function generateDisplacementImageData(
       const isOnTopSide = y1 < radius_;
       const isOnBottomSide = y1 >= objectHeight_ - radius_;
 
-      const x = isOnLeftSide ? x1 - radius_ : isOnRightSide ? x1 - radius_ - widthBetweenRadiuses : 0;
+      const x = isOnLeftSide
+        ? x1 - radius_
+        : isOnRightSide
+          ? x1 - radius_ - widthBetweenRadiuses
+          : 0;
 
-      const y = isOnTopSide ? y1 - radius_ : isOnBottomSide ? y1 - radius_ - heightBetweenRadiuses : 0;
+      const y = isOnTopSide
+        ? y1 - radius_
+        : isOnBottomSide
+          ? y1 - radius_ - heightBetweenRadiuses
+          : 0;
 
       const distanceToCenterSquared = x * x + y * y;
 
@@ -129,8 +141,8 @@ function generateDisplacementImageData(
           distanceToCenterSquared < radiusSquared
             ? 1
             : 1 -
-            (Math.sqrt(distanceToCenterSquared) - Math.sqrt(radiusSquared)) /
-            (Math.sqrt(radiusPlusOneSquared) - Math.sqrt(radiusSquared));
+              (Math.sqrt(distanceToCenterSquared) - Math.sqrt(radiusSquared)) /
+                (Math.sqrt(radiusPlusOneSquared) - Math.sqrt(radiusSquared));
 
         const distanceFromCenter = Math.sqrt(distanceToCenterSquared);
         const distanceFromSide = radius_ - distanceFromCenter;
@@ -139,7 +151,8 @@ function generateDisplacementImageData(
         const cos = x / distanceFromCenter;
         const sin = y / distanceFromCenter;
 
-        const bezelIndex = ((distanceFromSide / bezel) * refractionProfile.length) | 0;
+        const bezelIndex =
+          ((distanceFromSide / bezel) * refractionProfile.length) | 0;
         const distance = refractionProfile[bezelIndex] ?? 0;
 
         const dX = (-cos * distance) / maximumDisplacement;
@@ -188,7 +201,9 @@ export const getDisplacementData = ({
     samples
   );
 
-  const maximumDisplacement = Math.max(...refractionProfile.map((v) => Math.abs(v)));
+  const maximumDisplacement = Math.max(
+    ...refractionProfile.map((v) => Math.abs(v))
+  );
 
   const displacementMap = generateDisplacementImageData(
     canvasWidth,
@@ -216,7 +231,8 @@ export function calculateRefractionSpecular(
   specularAngle = Math.PI / 3,
   dpr?: number
 ) {
-  const devicePixelRatio = dpr ?? (typeof window !== 'undefined' ? (window.devicePixelRatio ?? 1) : 1);
+  const devicePixelRatio =
+    dpr ?? (typeof window !== 'undefined' ? (window.devicePixelRatio ?? 1) : 1);
   const bufferWidth = objectWidth * devicePixelRatio;
   const bufferHeight = objectHeight * devicePixelRatio;
   const imageData = createImageData(bufferWidth, bufferHeight);
@@ -247,9 +263,17 @@ export function calculateRefractionSpecular(
       const isOnTopSide = y1 < radius_;
       const isOnBottomSide = y1 >= bufferHeight - radius_;
 
-      const x = isOnLeftSide ? x1 - radius_ : isOnRightSide ? x1 - radius_ - widthBetweenRadiuses : 0;
+      const x = isOnLeftSide
+        ? x1 - radius_
+        : isOnRightSide
+          ? x1 - radius_ - widthBetweenRadiuses
+          : 0;
 
-      const y = isOnTopSide ? y1 - radius_ : isOnBottomSide ? y1 - radius_ - heightBetweenRadiuses : 0;
+      const y = isOnTopSide
+        ? y1 - radius_
+        : isOnBottomSide
+          ? y1 - radius_ - heightBetweenRadiuses
+          : 0;
 
       const distanceToCenterSquared = x * x + y * y;
 
@@ -266,18 +290,21 @@ export function calculateRefractionSpecular(
           distanceToCenterSquared < radiusSquared
             ? 1
             : 1 -
-            (distanceFromCenter - Math.sqrt(radiusSquared)) /
-            (Math.sqrt(radiusPlusOneSquared) - Math.sqrt(radiusSquared));
+              (distanceFromCenter - Math.sqrt(radiusSquared)) /
+                (Math.sqrt(radiusPlusOneSquared) - Math.sqrt(radiusSquared));
 
         // Viewed from top
         const cos = x / distanceFromCenter;
         const sin = -y / distanceFromCenter;
 
         // Dot product of orientation
-        const dotProduct = Math.abs(cos * specular_vector[0]! + sin * specular_vector[1]!);
+        const dotProduct = Math.abs(
+          cos * specular_vector[0]! + sin * specular_vector[1]!
+        );
 
         const coefficient =
-          dotProduct * Math.sqrt(1 - (1 - distanceFromSide / (1 * devicePixelRatio)) ** 2);
+          dotProduct *
+          Math.sqrt(1 - (1 - distanceFromSide / (1 * devicePixelRatio)) ** 2);
 
         const color = 255 * coefficient;
         const finalOpacity = color * coefficient * opacity;
@@ -341,7 +368,8 @@ export const STEPPED: SurfaceFnDef = {
     const stepIndex = Math.floor(x / stepSize);
     const stepProgress = (x % stepSize) / stepSize;
     const stepHeight = stepIndex / (steps - 1);
-    const smoothing = Math.pow(stepProgress, 3) * (stepProgress * (stepProgress * 6 - 15) + 10);
+    const smoothing =
+      Math.pow(stepProgress, 3) * (stepProgress * (stepProgress * 6 - 15) + 10);
     return stepHeight + smoothing * (1 / (steps - 1));
   },
 };
@@ -371,4 +399,13 @@ export const BUBBLE: SurfaceFnDef = {
   },
 };
 
-export const fns: SurfaceFnDef[] = [CONVEX_CIRCLE, CONVEX, CONCAVE, LIP, WAVE, STEPPED, ELASTIC, BUBBLE];
+export const fns: SurfaceFnDef[] = [
+  CONVEX_CIRCLE,
+  CONVEX,
+  CONCAVE,
+  LIP,
+  WAVE,
+  STEPPED,
+  ELASTIC,
+  BUBBLE,
+];

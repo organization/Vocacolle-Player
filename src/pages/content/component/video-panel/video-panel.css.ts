@@ -1,4 +1,9 @@
-import { createVar, keyframes, style, styleVariants } from '@vanilla-extract/css';
+import {
+  createVar,
+  keyframes,
+  style,
+  styleVariants,
+} from '@vanilla-extract/css';
 
 export const containerStyle = style({
   position: 'fixed',

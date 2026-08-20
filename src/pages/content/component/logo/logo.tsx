@@ -22,7 +22,5 @@ export const Logo = (props: LogoProps) => {
     return LogoMapper[type] ?? LatestLogo;
   };
 
-  return (
-    <Dynamic component={component()} {...props} />
-  );
+  return <Dynamic component={component()} {...props} />;
 };

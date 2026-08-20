@@ -8,11 +8,17 @@ import { splitProps } from 'solid-js';
 
 type IconButtonProps = LucideProps & {
   disabled?: boolean;
-  icon: typeof icons[keyof typeof icons];
+  icon: (typeof icons)[keyof typeof icons];
   onClick?: () => void;
 };
 export const IconButton = (props: IconButtonProps) => {
-  const [local, rest] = splitProps(props, ['disabled', 'icon', 'onClick', 'class', 'classList']);
+  const [local, rest] = splitProps(props, [
+    'disabled',
+    'icon',
+    'onClick',
+    'class',
+    'classList',
+  ]);
 
   return (
     <button
