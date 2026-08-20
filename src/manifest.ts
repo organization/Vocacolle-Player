@@ -14,10 +14,15 @@ const manifest = defineManifest(async () => ({
   name: packageJson.displayName ?? packageJson.name,
   version: `${major}.${minor}.${patch}.${label}`,
   description: packageJson.description,
+  action: {},
   background: { service_worker: 'src/background/index.ts' },
   icons: {
     '128': 'icons/128x128.png',
   },
+  host_permissions: [
+    'http://vocaloid-collection.jp/*',
+    'https://vocaloid-collection.jp/*',
+  ],
   content_scripts: [
     {
       matches: [

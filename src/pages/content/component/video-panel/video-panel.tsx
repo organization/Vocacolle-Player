@@ -7,12 +7,13 @@ import { IconButton } from '@/ui/button';
 import { PlayerController, PlayerControllerProps, useProgressDrag } from '@/ui/player-bar';
 import { PlaylistView, PlaylistViewProps } from '@/ui/playlist-view';
 
-import { Logo2026Winter } from '../logo';
+import { Logo } from '../logo';
 
 import { hoverProgressStyle, progressStyle, progressVar } from '@/ui/player-bar/player-bar.css';
 import { containerStyle, contentStyle, count, headerStyle, imageEffectAnimationStyle, imageEffectStyle, logoStyle, playlistTitleStyle, playlistWrapperStyle, progressWrapperStyle, sectionStyle, toolbarStyle } from './video-panel.css';
 
 const availableBackgroundList = [
+  '/images/bg/bg_detail_pc.png',
   '2025-summer/images/bg/bg_detail_pc.png',
   '2025-winter/images/bg/bg_detail_pc.png',
   '2024-winter/images/bg/bg_detail_pc.png',
@@ -92,7 +93,7 @@ export const VideoPanel = (props: VideoPanelProps) => {
       </For>
       <div class={contentStyle}>
         <div class={headerStyle}>
-          <Logo2026Winter class={logoStyle} />
+          <Logo class={logoStyle} />
           <IconButton
             icon={X}
             onClick={props.onClose}

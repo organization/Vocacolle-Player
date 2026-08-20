@@ -1,8 +1,8 @@
 import type { LogoProps } from './logo';
 
-export const Logo2026Winter = (props: LogoProps) => {
+export const Logo2026Summer = (props: LogoProps) => {
   return (
-    <svg viewBox="0 0 327 70" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <svg {...props} viewBox="0 0 327 70" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M57.5451 30.3451L41.3176 20.7118L41.3592 20.7546C38.8211 19.256 35.6172 21.1399 35.6172 24.1798V45.6301L7.73925 29.0607V26.3419L21.595 18.1857C25.0069 16.1734 25.0069 11.0784 21.595 9.06607L7.44799 0.674336C5.90846 -0.224779 4.03606 -0.224779 2.49653 0.674336C0.957004 1.57345 0.0416114 3.24324 0.0416114 5.08428L0 4.99865V64.5586H0.0416114C0.0416114 66.3568 0.998613 68.0694 2.49653 68.9685C4.03606 69.8676 5.90846 69.8676 7.44799 68.9685L21.1914 60.1914L35.9085 68.9257C37.448 69.8248 39.3204 69.8248 40.8599 68.9257C42.3994 68.0266 43.3148 66.3568 43.3148 64.5158L43.2732 47.6467L57.5451 39.1693C59.0846 38.2702 60 36.6004 60 34.7593C60 32.9183 59.043 31.2485 57.5451 30.3494V30.3451ZM7.72261 9.9395L13.9639 13.8399L7.72261 17.7404V9.94378V9.9395ZM35.534 59.5449L29.3759 55.8629L21.7198 51.3245L7.69764 43.0184V38.1374L14.0222 41.9052L21.6782 46.4436L35.534 54.664V59.5449ZM43.3814 39.2421V31.4455L49.6227 35.3459L43.3814 39.2464V39.2421Z" fill="url(#paint0_linear_481_58949)"></path>
       <g clip-path="url(#clip0_481_58949)">
         <path d="M140.763 10L133.222 26.9338H141.782L149.323 10H140.763Z" fill="#252525"></path>
@@ -16,12 +16,12 @@ export const Logo2026Winter = (props: LogoProps) => {
         <path d="M137.58 10L130.039 26.9338H121.479L129.019 10H137.58Z" fill="#252525"></path>
       </g>
       <defs>
-        <linearGradient id="paint0_linear_481_58949" x1="0" y1="0" x2="59.9658" y2="69.8385" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#16E8F8"></stop>
-          <stop offset="0.2" stop-color="#0DB5C2"></stop>
-          <stop offset="0.307692" stop-color="#059BA7"></stop>
-          <stop offset="0.65" stop-color="#DA4256"></stop>
-          <stop offset="1" stop-color="#D32037"></stop>
+        <linearGradient id="paint0_linear_481_58949" x1="11.0498" y1="-1.71781e-07" x2="48.9502" y2="69.6429" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#8C2EFF"></stop>
+          <stop offset="0.35" stop-color="#6B3AFF"></stop>
+          <stop offset="0.6" stop-color="#639BAD"></stop>
+          <stop offset="0.85" stop-color="#A4E736"></stop>
+          <stop offset="1" stop-color="#BDF323"></stop>
         </linearGradient>
         <clipPath id="clip0_481_58949">
           <rect width="250.436" height="60" fill="white" transform="translate(76 10)"></rect>
@@ -29,4 +29,4 @@ export const Logo2026Winter = (props: LogoProps) => {
       </defs>
     </svg>
   );
-};
+}
