@@ -7,6 +7,7 @@ import { PlayInfo } from '@/ui/play-info';
 
 import { useProgressDrag } from './use-progress-drag';
 import { PlayerController, PlayerControllerProps } from './player-controls';
+import { getOldType } from '@/pages/content/api/ranking';
 
 import {
   centerContainerStyle,
@@ -36,6 +37,7 @@ export const PlayerBar = (props: PlayerBarProps) => {
     onProgressChange: props.onProgressChange,
   });
   const progress = () => movingProgress() ?? props.progress;
+  const season = () => getOldType();
 
   return (
     <div
@@ -52,6 +54,7 @@ export const PlayerBar = (props: PlayerBarProps) => {
           [progressVar]: `${progress()}`,
           transition: isMoving() ? 'unset' : undefined,
         })}
+        data-season={season()}
       />
       <div class={containerStyle}>
         <PlayerController

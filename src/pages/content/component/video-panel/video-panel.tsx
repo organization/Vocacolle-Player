@@ -12,6 +12,7 @@ import {
 import { PlaylistView, PlaylistViewProps } from '@/ui/playlist-view';
 
 import { Logo } from '../logo';
+import { getOldType } from '../../api/ranking';
 
 import {
   hoverProgressStyle,
@@ -67,6 +68,7 @@ export const VideoPanel = (props: VideoPanelProps) => {
   const [effectIndex, setEffectIndex] = createSignal(0);
 
   const progress = () => movingProgress() ?? props.progress;
+  const season = () => getOldType();
 
   onMount(() => {
     const getShuffled = () => {
@@ -158,6 +160,7 @@ export const VideoPanel = (props: VideoPanelProps) => {
                 [progressVar]: `${progress()}`,
                 transition: isMoving() ? 'unset' : undefined,
               })}
+              data-season={season()}
             />
           </div>
           <IconButton icon={ExternalLink} onClick={props.onOpen} />
