@@ -26,6 +26,7 @@ import { PlaylistView } from '@/ui/playlist-view';
 import { Event } from '@/shared/event';
 import { suisPixelTheme } from '@/theme/suis-theme';
 
+import { fetchSongleChorusInterval, SongleChorusInterval } from './api/songle';
 import { player, setPlayer } from './store/player';
 import { PlaylistProvider, usePlaylist } from './store/playlist';
 import { resetVideoData, useVideoData } from './hook/use-video-data';
@@ -49,6 +50,7 @@ import { RankingType } from '@/shared/types';
 import { RankingPanel } from './component/ranking-panel';
 
 const EventList = Object.values(Event);
+const PlayerEvent = { playing: Event.play, paused: Event.pause };
 const Content = () => {
   const { sendEvent } = usePlayer();
   const { playlist, setPlaylist } = usePlaylist();
@@ -61,11 +63,48 @@ const Content = () => {
   const [openHistory, setOpenHistory] = createSignal(false);
   const [historyType, setHistoryType] = createSignal<RankingType | null>(null);
   const [historySeason, setHistorySeason] = createSignal<string | null>(null);
+  const [sabi, setSabi] = createSignal(false);
+  const [progressReport, reportProgress] = createSignal(0, { equals: false });
+  const [medleyTrack, setMedleyTrack] = createSignal<{
+    videoId: string;
+    interval?: SongleChorusInterval;
+    fallback?: boolean;
+    intent?: 'playing' | 'paused';
+    completed?: boolean;
+    resume?: boolean;
+    seeking?: boolean;
+  } | null>(null);
+  let medleyRequestId = 0;
+  let medleyCommandSignal: AbortSignal | undefined;
+  let playerEventSignal: AbortSignal | undefined;
+
+  const setInternalPlayerState = (
+    state: 'playing' | 'paused',
+    signal?: AbortSignal,
+    force = false
+  ) => {
+    if (player.state === state) {
+      if (force) sendEvent({ type: PlayerEvent[state] }, signal);
+      return;
+    }
+    playerEventSignal = signal;
+    setPlayer('state', state);
+  };
 
   const onPrevious = () =>
     setPlaylist('currentIndex', (index) => Math.max(index - 1, 0));
-  const onPlayPause = () =>
+  const onPlayPause = () => {
+    const track = medleyTrack();
+    if (track?.intent) {
+      const intent = track.intent === 'playing' ? 'paused' : 'playing';
+      setMedleyTrack({ ...track, intent });
+      return;
+    }
+
+    if (track?.resume) setMedleyTrack({ ...track, resume: false });
+    playerEventSignal = undefined;
     setPlayer('state', (state) => (state === 'playing' ? 'paused' : 'playing'));
+  };
   const onNext = () =>
     setPlaylist('currentIndex', (index) =>
       Math.min(index + 1, playlist.playlist.length - 1)
@@ -89,7 +128,7 @@ const Content = () => {
       return player.progress;
     },
     get state() {
-      return player.state;
+      return medleyTrack()?.intent ?? player.state;
     },
     get canPrevious() {
       return playlist.currentIndex > 0;
@@ -97,9 +136,22 @@ const Content = () => {
     get canNext() {
       return playlist.currentIndex < playlist.playlist.length - 1;
     },
+    get sabi() {
+      return sabi();
+    },
+    get sabiRange() {
+      const track = medleyTrack();
+      const video = playlist.currentVideo;
+      if (!sabi()) return;
+      if (!track?.interval || !video || track.videoId !== video.id) return;
+      const durationMs = video.duration * 1000;
+      const { startMs, endMs } = track.interval;
+      return [startMs / durationMs, (endMs - startMs) / durationMs] as const;
+    },
     onPrevious,
     onPlayPause,
     onNext,
+    onSabi: () => setSabi((enabled) => !enabled),
     onOpen,
     onProgressChange,
   };
@@ -171,23 +223,137 @@ const Content = () => {
   const currentVideoId = createMemo(() => playlist.currentVideo?.id);
   createEffect(
     on(currentVideoId, (video) => {
-      if (!video) return;
+      if (!video || sabi()) return;
 
       const dom = document.querySelector<HTMLIFrameElement>('#vcp-iframe');
       if (!dom) return;
 
       setPlayer('state', 'paused');
       requestAnimationFrame(() => {
+        if (sabi()) return;
         setPlayer('state', 'playing');
       });
     })
   );
 
+  createEffect(
+    on(
+      () => [currentVideoId(), sabi(), playlist.currentIndex] as const,
+      ([videoId, enabled], previous) => {
+        const requestId = ++medleyRequestId;
+        const controller = new AbortController();
+        medleyCommandSignal = controller.signal;
+        onCleanup(() => controller.abort());
+        if (!enabled || !videoId) {
+          const track = medleyTrack();
+          setMedleyTrack(null);
+          if (!enabled && videoId && previous?.[1]) {
+            const intent =
+              track?.intent ?? (track?.resume ? 'playing' : player.state);
+            setInternalPlayerState(intent, controller.signal, true);
+            if (Math.abs(1 - player.progress) <= 0.0005) onNext();
+          }
+          return;
+        }
+
+        const intent =
+          previous?.[0] === videoId
+            ? (medleyTrack()?.intent ?? player.state)
+            : 'playing';
+        setMedleyTrack({ videoId, intent });
+        setInternalPlayerState('paused', controller.signal, true);
+        void (async () => {
+          const interval = await fetchSongleChorusInterval(
+            videoId,
+            controller.signal
+          ).catch(() => null);
+
+          if (
+            controller.signal.aborted ||
+            requestId !== medleyRequestId ||
+            !sabi() ||
+            currentVideoId() !== videoId
+          )
+            return;
+
+          const durationMs = (playlist.currentVideo?.duration ?? 0) * 1000;
+          const endMs = interval ? Math.min(interval.endMs, durationMs) : 0;
+          if (
+            !interval ||
+            interval.startMs >= durationMs ||
+            endMs <= interval.startMs
+          ) {
+            const intent = medleyTrack()?.intent;
+            setMedleyTrack({ videoId, fallback: true });
+            addToast({ message: '사비가 없어 전체 곡을 재생합니다.' });
+            if (intent) setInternalPlayerState(intent, controller.signal, true);
+            if (Math.abs(1 - player.progress) <= 0.0005) onNext();
+            return;
+          }
+
+          const intent = medleyTrack()?.intent;
+          setMedleyTrack({
+            videoId,
+            interval: { startMs: interval.startMs, endMs },
+            seeking: true,
+          });
+          sendEvent(
+            {
+              type: Event.progress,
+              progress: interval.startMs / durationMs,
+            },
+            controller.signal
+          );
+          if (intent) setInternalPlayerState(intent, controller.signal, true);
+        })();
+      }
+    )
+  );
+
   // onNext
   createEffect(
     on(
-      () => player.progress,
+      () => progressReport(),
       (progress) => {
+        if (sabi()) {
+          const track = medleyTrack();
+          if (!track || track.videoId !== currentVideoId()) return;
+
+          if (!track.fallback) {
+            if (!track.interval) return;
+            if (track.completed) return;
+
+            const durationMs = (playlist.currentVideo?.duration ?? 0) * 1000;
+            const startProgress = track.interval.startMs / durationMs;
+            const endProgress = track.interval.endMs / durationMs;
+            const seekMargin = 3000 / durationMs;
+            if (track.seeking) {
+              if (
+                progress >= startProgress - seekMargin &&
+                progress <= endProgress + seekMargin
+              ) {
+                setMedleyTrack({ ...track, seeking: false });
+              } else {
+                sendEvent(
+                  { type: Event.progress, progress: startProgress },
+                  medleyCommandSignal
+                );
+              }
+              return;
+            }
+            if (progress < endProgress - 0.0005) return;
+
+            if (playlist.currentIndex >= playlist.playlist.length - 1) {
+              setMedleyTrack({ ...track, completed: true, resume: true });
+              setInternalPlayerState('paused', medleyCommandSignal, true);
+            } else {
+              setMedleyTrack({ videoId: track.videoId });
+              setPlaylist('currentIndex', (index) => index + 1);
+            }
+            return;
+          }
+        }
+
         if (Math.abs(1 - progress) > 0.0005) return;
         setPlaylist('currentIndex', (index) =>
           Math.min(index + 1, playlist.playlist.length - 1)
@@ -201,12 +367,9 @@ const Content = () => {
     on(
       () => player.state,
       (state) => {
-        if (state === 'playing') {
-          sendEvent({ type: Event.play });
-        }
-        if (state === 'paused') {
-          sendEvent({ type: Event.pause });
-        }
+        const signal = playerEventSignal;
+        playerEventSignal = undefined;
+        sendEvent({ type: PlayerEvent[state] }, signal);
       }
     )
   );
@@ -262,6 +425,7 @@ const Content = () => {
       switch (event.data.type) {
         case Event.progress: {
           setPlayer('progress', event.data.percentage);
+          reportProgress(event.data.percentage);
           break;
         }
         default:

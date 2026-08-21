@@ -8,6 +8,7 @@ import { splitProps } from 'solid-js';
 
 type IconButtonProps = LucideProps & {
   disabled?: boolean;
+  active?: boolean;
   icon: (typeof icons)[keyof typeof icons];
   onClick?: () => void;
 };
@@ -16,6 +17,7 @@ export const IconButton = (props: IconButtonProps) => {
     'disabled',
     'icon',
     'onClick',
+    'active',
     'class',
     'classList',
   ]);
@@ -25,6 +27,7 @@ export const IconButton = (props: IconButtonProps) => {
       disabled={local.disabled}
       class={iconButtonStyle}
       onClick={local.onClick}
+      data-active={local.active}
     >
       <Dynamic
         {...rest}

@@ -15,11 +15,13 @@ import {
   playerBarInfoStyle,
   progressStyle,
   progressVar,
+  sabiRangeStyle,
   wrapperStyle,
 } from './player-bar.css';
 
 export type PlayerBarProps = PlayerControllerProps & {
   playlistIndex: number;
+  sabiRange?: readonly [left: number, width: number];
 
   onOpen: () => void;
   onPlaylist: () => void;
@@ -56,15 +58,25 @@ export const PlayerBar = (props: PlayerBarProps) => {
         })}
         data-season={season()}
       />
+      <Show when={props.sabiRange} keyed>
+        {(range) => (
+          <div
+            class={sabiRangeStyle}
+            style={{ left: `${range[0] * 100}%`, width: `${range[1] * 100}%` }}
+          />
+        )}
+      </Show>
       <div class={containerStyle}>
         <PlayerController
           nowPlaying={props.nowPlaying}
           state={props.state}
           canPrevious={props.canPrevious}
           canNext={props.canNext}
+          sabi={props.sabi}
           onPrevious={props.onPrevious}
           onPlayPause={props.onPlayPause}
           onNext={props.onNext}
+          onSabi={props.onSabi}
           progress={progress()}
         />
       </div>

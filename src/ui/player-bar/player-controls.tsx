@@ -1,5 +1,5 @@
 import { Show } from 'solid-js';
-import { Pause, Play, SkipBack, SkipForward } from 'lucide-solid';
+import { Music2, Pause, Play, SkipBack, SkipForward } from 'lucide-solid';
 
 import { IconButton } from '@/ui/button';
 import { formatTime } from '@/utils';
@@ -13,10 +13,12 @@ export type PlayerControllerProps = {
   state: 'playing' | 'paused';
   canPrevious: boolean;
   canNext: boolean;
+  sabi: boolean;
 
   onPrevious: () => void;
   onPlayPause: () => void;
   onNext: () => void;
+  onSabi: () => void;
 };
 export const PlayerController = (props: PlayerControllerProps) => (
   <>
@@ -36,6 +38,11 @@ export const PlayerController = (props: PlayerControllerProps) => (
       fill={'currentColor'}
       icon={SkipForward}
       onClick={props.onNext}
+    />
+    <IconButton
+      icon={Music2}
+      active={props.sabi}
+      onClick={props.onSabi}
     />
     <Show when={props.nowPlaying?.video}>
       {(video) => (

@@ -17,6 +17,7 @@ import {
   hoverProgressStyle,
   progressStyle,
   progressVar,
+  sabiRangeStyle,
 } from '@/ui/player-bar/player-bar.css';
 import {
   playlistTitleStyle,
@@ -30,6 +31,7 @@ export type VideoPanelProps = PlayerControllerProps &
   Omit<PlaylistViewProps, 'nowPlayingId'> & {
     children?: JSX.Element;
     playlistIndex: number;
+    sabiRange?: readonly [left: number, width: number];
     onOpen: () => void;
     onClose: () => void;
     onProgressChange: (progress: number) => void;
@@ -70,9 +72,11 @@ export const VideoPanel = (props: VideoPanelProps) => {
           state={props.state}
           canPrevious={props.canPrevious}
           canNext={props.canNext}
+          sabi={props.sabi}
           onPrevious={props.onPrevious}
           onPlayPause={props.onPlayPause}
           onNext={props.onNext}
+          onSabi={props.onSabi}
           progress={progress()}
         />
         <div {...dragProps} class={progressWrapperStyle}>
@@ -89,6 +93,14 @@ export const VideoPanel = (props: VideoPanelProps) => {
               transition: isMoving() ? 'unset' : undefined,
             })}
             data-season={season()}
+          />
+          <div
+            class={sabiRangeStyle}
+            style={{
+              display: props.sabiRange ? 'block' : 'none',
+              left: `${(props.sabiRange?.[0] ?? 0) * 100}%`,
+              width: `${(props.sabiRange?.[1] ?? 0) * 100}%`,
+            }}
           />
         </div>
         <IconButton icon={ExternalLink} onClick={props.onOpen} />

@@ -1,7 +1,7 @@
 import { createContext, JSX, useContext } from 'solid-js';
 
 type PlayerContextType = {
-  sendEvent: (event: unknown) => void;
+  sendEvent: (event: unknown, signal?: AbortSignal) => void;
 };
 const PlayerContext = createContext<PlayerContextType | null>(null);
 
@@ -9,21 +9,21 @@ export type PlayerProviderProps = {
   children: JSX.Element;
 };
 export const PlayerProvider = (props: PlayerProviderProps) => {
-  const sendEvent = (event: unknown) => {
+  const sendEvent = (event: unknown, signal?: AbortSignal) => {
+    if (signal?.aborted) return;
+
     let timestamp = Date.now();
 
     const iframe = document.querySelector<HTMLIFrameElement>('#vcp-iframe');
-    iframe?.addEventListener(
-      'load',
-      () => {
-        if (Date.now() - timestamp > 5000) return;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    const onLoad = () => {
+      if (Date.now() - timestamp > 5000 || signal?.aborted) return;
 
-        setTimeout(() => {
-          iframe?.contentWindow?.postMessage(event, '*');
-        }, 100);
-      },
-      { once: true }
-    );
+      timeout = setTimeout(() => {
+        if (!signal?.aborted) iframe?.contentWindow?.postMessage(event, '*');
+      }, 100);
+    };
+    iframe?.addEventListener('load', onLoad, { once: true });
 
     let count = 0;
     const trySend = setInterval(() => {
@@ -33,6 +33,15 @@ export const PlayerProvider = (props: PlayerProviderProps) => {
       iframe?.contentWindow?.postMessage(event, '*');
       clearInterval(trySend);
     }, 100);
+    signal?.addEventListener(
+      'abort',
+      () => {
+        iframe?.removeEventListener('load', onLoad);
+        clearTimeout(timeout);
+        clearInterval(trySend);
+      },
+      { once: true }
+    );
   };
 
   return (

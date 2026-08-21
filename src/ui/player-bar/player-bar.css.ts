@@ -20,6 +20,7 @@ export const wrapperStyle = style({
   padding: '0 12px',
   pointerEvents: 'all',
   animationFillMode: 'both',
+  overflow: 'hidden',
 });
 
 export const wrapperAnimationStyle = styleVariants({
@@ -131,6 +132,16 @@ export const progressStyle = style([
     },
   },
 ]);
+
+export const sabiRangeStyle = style({
+  position: 'absolute',
+  inset: '0 auto 0 0',
+  zIndex: 0,
+  pointerEvents: 'none',
+  backgroundColor: 'rgba(241, 106, 3, 0.2)',
+  boxShadow:
+    'inset 1px 0 rgba(241, 106, 3, 0.7), inset -1px 0 rgba(241, 106, 3, 0.7)',
+});
 
 export const containerStyle = style({
   display: 'flex',
