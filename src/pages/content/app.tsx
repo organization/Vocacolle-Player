@@ -328,10 +328,7 @@ const Content = () => {
             const endProgress = track.interval.endMs / durationMs;
             const seekMargin = 3000 / durationMs;
             if (track.seeking) {
-              if (
-                progress >= startProgress - seekMargin &&
-                progress <= endProgress + seekMargin
-              ) {
+              if (Math.abs(progress - startProgress) <= seekMargin) {
                 setMedleyTrack({ ...track, seeking: false });
               } else {
                 sendEvent(
@@ -340,6 +337,12 @@ const Content = () => {
                 );
               }
               return;
+            }
+            if (Math.abs(progress - startProgress) > seekMargin) {
+              sendEvent(
+                { type: Event.progress, progress: startProgress },
+                medleyCommandSignal
+              );
             }
             if (progress < endProgress - 0.0005) return;
 
