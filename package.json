@@ -16,6 +16,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@suis-ui/kit": "0.6.0",
     "@vanilla-extract/css": "1.21.2",
     "@vanilla-extract/dynamic": "2.1.5",
     "lucide-solid": "1.32.0",

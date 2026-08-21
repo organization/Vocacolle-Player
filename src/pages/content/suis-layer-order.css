@@ -1,0 +1,6 @@
+/*
+ * Lock the host page's named reset layer below SUIS before either stylesheet
+ * can establish a different cascade order. Keep the SUIS 0.6.0 layer order
+ * intact so component contracts override both resets.
+ */
+@layer reset, layer_resetLayer__khsmtf0, layer_l0Layer__khsmtf1, layer_l1Layer__khsmtf2, layer_l2Layer__khsmtf3;

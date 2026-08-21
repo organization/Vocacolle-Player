@@ -24,6 +24,7 @@ type DialogAction = {
   id: string;
   type?: keyof typeof actionStyle;
   label: string;
+  autoFocus?: boolean;
 };
 export type DialogProps = {
   open?: boolean;
@@ -36,6 +37,7 @@ export type DialogProps = {
 
   children?: JSX.Element;
   closable?: boolean;
+  zIndex?: number;
 };
 export const Dialog = (props: DialogProps) => {
   const [open, setOpen] = createSignal(props.open ?? false);
@@ -97,6 +99,9 @@ export const Dialog = (props: DialogProps) => {
             [backdropAnimation.enter]: enter(),
             [backdropAnimation.exit]: exit(),
           }}
+          style={
+            props.zIndex === undefined ? undefined : { 'z-index': props.zIndex }
+          }
           onPointerDown={(event) => {
             if (event.target === element()) backdropClickFlag = true;
           }}
@@ -115,6 +120,12 @@ export const Dialog = (props: DialogProps) => {
               props.onClose?.();
             backdropClickFlag = false;
           }}
+          onKeyDown={(event) => {
+            if (event.key !== 'Escape' || !(props.closable ?? true)) return;
+            event.preventDefault();
+            event.stopPropagation();
+            props.onClose?.();
+          }}
         >
           <div
             classList={{
@@ -122,6 +133,8 @@ export const Dialog = (props: DialogProps) => {
               [wrapperAnimation.enter]: enter(),
               [wrapperAnimation.exit]: exit(),
             }}
+            role="dialog"
+            aria-modal="true"
           >
             <Show when={props.title}>
               <h2 class={titleStyle}>{props.title}</h2>
@@ -136,6 +149,10 @@ export const Dialog = (props: DialogProps) => {
                   {(action) => (
                     <button
                       class={actionStyle[action.type ?? 'default']}
+                      ref={(element) => {
+                        if (action.autoFocus)
+                          queueMicrotask(() => element.focus());
+                      }}
                       onClick={() => props.onAction?.(action.id)}
                     >
                       {action.label}

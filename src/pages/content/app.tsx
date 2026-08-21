@@ -1,3 +1,8 @@
+import './suis-layer-order.css';
+import '@suis-ui/kit/style.css';
+import './reset.css';
+
+import { ThemeProvider, useTheme } from '@suis-ui/kit';
 import {
   createEffect,
   createMemo,
@@ -19,6 +24,7 @@ import { PlayerProvider, usePlayer } from '@/ui/player-provider';
 import { PlaylistView } from '@/ui/playlist-view';
 
 import { Event } from '@/shared/event';
+import { suisPixelTheme } from '@/theme/suis-theme';
 
 import { player, setPlayer } from './store/player';
 import { PlaylistProvider, usePlaylist } from './store/playlist';
@@ -40,7 +46,7 @@ import {
 } from './app.css';
 import { useInjectData } from './hook/use-inject-data';
 import { RankingType } from '@/shared/types';
-import { HistoryDialog } from './component/history-dialog';
+import { RankingPanel } from './component/ranking-panel';
 
 const EventList = Object.values(Event);
 const Content = () => {
@@ -135,10 +141,14 @@ const Content = () => {
       });
     }
   };
-  
+
   useInjectData((event) => {
     if (event?.type === 'showHistory') {
-      const { rankingType, seasonType } = event as { type: string; rankingType: RankingType; seasonType: string };
+      const { rankingType, seasonType } = event as {
+        type: string;
+        rankingType: RankingType;
+        seasonType: string;
+      };
 
       setHistoryType(rankingType);
       setHistorySeason(seasonType);
@@ -217,7 +227,9 @@ const Content = () => {
     on(videoData, (data) => {
       if (!data || data.length <= 0) return;
 
-      const isPlaylistExist = data.some(({ videoData }) => playlist.playlist.find((p) => p.video.id === videoData.video.id));
+      const isPlaylistExist = data.some(({ videoData }) =>
+        playlist.playlist.find((p) => p.video.id === videoData.video.id)
+      );
       if (isPlaylistExist) {
         setOpenExistCheck(true);
       } else {
@@ -341,29 +353,41 @@ const Content = () => {
         open={openExistCheck()}
         onClose={() => setOpenExistCheck(false)}
         onAction={onAction}
-      >
-      </Dialog>
-      <HistoryDialog
-        type={historyType() ?? undefined}
-        season={historySeason() ?? undefined}
-        open={openHistory()}
-        onClose={() => setOpenHistory(false)}
-        onTime={(time) => {
-
-        }}
-      />
+      ></Dialog>
+      <Show when={openHistory()} keyed>
+        <Flip
+          id={'ranking-panel'}
+          enter={videoPanelAnimationStyle.enter}
+          exit={videoPanelAnimationStyle.exit}
+        >
+          <RankingPanel
+            rankingType={historyType()}
+            seasonType={historySeason()}
+            onClose={() => setOpenHistory(false)}
+          />
+        </Flip>
+      </Show>
     </div>
   );
 };
 
+const ApplySuisPixelTheme = () => {
+  const [, setTheme] = useTheme();
+  createEffect(() => setTheme(suisPixelTheme));
+  return null;
+};
+
 export const App = () => (
-  <PlaylistProvider>
-    <FlipProvider>
-      <ToastProvider>
-        <PlayerProvider>
-          <Content />
-        </PlayerProvider>
-      </ToastProvider>
-    </FlipProvider>
-  </PlaylistProvider>
+  <ThemeProvider>
+    <ApplySuisPixelTheme />
+    <PlaylistProvider>
+      <FlipProvider>
+        <ToastProvider>
+          <PlayerProvider>
+            <Content />
+          </PlayerProvider>
+        </ToastProvider>
+      </FlipProvider>
+    </PlaylistProvider>
+  </ThemeProvider>
 );
