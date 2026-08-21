@@ -9,6 +9,7 @@ export const containerStyle = style({
   gap: '0.4rem',
 
   userSelect: 'none',
+  flexShrink: 0,
 });
 
 export const indexStyle = style({

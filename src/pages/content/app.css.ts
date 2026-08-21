@@ -1,6 +1,8 @@
 import { style, styleVariants } from '@vanilla-extract/css';
+import { vars } from '@suis-ui/kit/css';
 
 export const fixedStyle = style({
+  fontSize: vars.font.body.fontSize,
   position: 'fixed',
   bottom: 0,
   left: 0,

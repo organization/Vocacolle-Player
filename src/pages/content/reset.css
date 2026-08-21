@@ -1,0 +1,39 @@
+/* @suis-ui/kit@0.6.0 places all of its reset rules in this layer.
+ * Reverting from inside that same layer preserves the host page styles while
+ * leaving SUIS component layers intact. */
+@layer layer_resetLayer__khsmtf0 {
+  *:where(
+    :not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)
+  ),
+  *,
+  *::before,
+  *::after,
+  a,
+  button,
+  ol,
+  ul,
+  menu,
+  summary,
+  img,
+  table,
+  input,
+  textarea,
+  meter,
+  :where(pre),
+  ::placeholder,
+  :where([hidden]),
+  :where([contenteditable]:not([contenteditable='false'])),
+  :where([draggable='true']),
+  :where(dialog:modal),
+  ::-webkit-details-marker,
+  :where(*) {
+    all: revert-layer;
+  }
+
+  html,
+  body,
+  #root,
+  #app {
+    all: revert-layer;
+  }
+}
