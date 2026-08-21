@@ -6,6 +6,7 @@ import { formatTime } from '@/utils';
 import { VideoData } from '@/shared/types';
 
 import { timeStyle } from './player-bar.css';
+import { Tooltip } from '@suis-ui/kit';
 
 export type PlayerControllerProps = {
   nowPlaying: VideoData | null;
@@ -39,11 +40,17 @@ export const PlayerController = (props: PlayerControllerProps) => (
       icon={SkipForward}
       onClick={props.onNext}
     />
-    <IconButton
-      icon={Music2}
-      active={props.sabi}
-      onClick={props.onSabi}
-    />
+    <Tooltip
+      withArrow
+      offset={12}
+      content={'사비 메들리 활성화'}
+    >
+      <IconButton
+        icon={Music2}
+        active={props.sabi}
+        onClick={props.onSabi}
+      />
+    </Tooltip>
     <Show when={props.nowPlaying?.video}>
       {(video) => (
         <>

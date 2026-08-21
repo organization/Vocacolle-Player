@@ -67,6 +67,9 @@ export const suisPixelTheme = createTheme({
         full: '100%',
       },
     },
+    zIndex: {
+      tooltip: '1200',
+    }
   },
   component: {
     checkbox: {

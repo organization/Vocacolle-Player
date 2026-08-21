@@ -338,11 +338,15 @@ const Content = () => {
               }
               return;
             }
-            if (Math.abs(progress - startProgress) > seekMargin) {
+            if (
+              progress < startProgress - seekMargin ||
+              progress > endProgress + seekMargin
+            ) {
               sendEvent(
                 { type: Event.progress, progress: startProgress },
                 medleyCommandSignal
               );
+              return;
             }
             if (progress < endProgress - 0.0005) return;
 
