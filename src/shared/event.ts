@@ -6,4 +6,5 @@ export const Event = {
   fullscreen: 'vcp:fullscreen',
   enableControl: 'vcp:enable-control',
   disableControl: 'vcp:disable-control',
+  ack: 'vcp:ack',
 };

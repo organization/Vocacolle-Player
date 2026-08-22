@@ -49,8 +49,8 @@ import { useInjectData } from './hook/use-inject-data';
 import { RankingType } from '@/shared/types';
 import { RankingPanel } from './component/ranking-panel';
 
-const EventList = Object.values(Event);
-const PlayerEvent = { playing: Event.play, paused: Event.pause };
+const EMBED_ORIGIN = 'https://embed.nicovideo.jp';
+const PlayerEvent = { playing: Event.play, paused: Event.pause } as const;
 const Content = () => {
   const { sendEvent } = usePlayer();
   const { playlist, setPlaylist } = usePlaylist();
@@ -77,6 +77,9 @@ const Content = () => {
   let medleyRequestId = 0;
   let medleyCommandSignal: AbortSignal | undefined;
   let playerEventSignal: AbortSignal | undefined;
+  let progressCompleted = false;
+
+  const currentVideoId = createMemo(() => playlist.currentVideo?.id);
 
   const setInternalPlayerState = (
     state: 'playing' | 'paused',
@@ -220,10 +223,12 @@ const Content = () => {
   );
 
   // auto play
-  const currentVideoId = createMemo(() => playlist.currentVideo?.id);
   createEffect(
     on(currentVideoId, (video) => {
-      if (!video || sabi()) return;
+      if (!video) return;
+      setPlayer('progress', 0);
+      progressCompleted = false;
+      if (sabi()) return;
 
       const dom = document.querySelector<HTMLIFrameElement>('#vcp-iframe');
       if (!dom) return;
@@ -326,7 +331,7 @@ const Content = () => {
             const durationMs = (playlist.currentVideo?.duration ?? 0) * 1000;
             const startProgress = track.interval.startMs / durationMs;
             const endProgress = track.interval.endMs / durationMs;
-            const seekMargin = 3000 / durationMs;
+            const seekMargin = 5000 / durationMs;
             if (track.seeking) {
               if (Math.abs(progress - startProgress) <= seekMargin) {
                 setMedleyTrack({ ...track, seeking: false });
@@ -361,10 +366,13 @@ const Content = () => {
           }
         }
 
-        if (Math.abs(1 - progress) > 0.0005) return;
-        setPlaylist('currentIndex', (index) =>
-          Math.min(index + 1, playlist.playlist.length - 1)
-        );
+        if (Math.abs(1 - progress) > 0.0005) {
+          progressCompleted = false;
+          return;
+        }
+        if (progressCompleted) return;
+        progressCompleted = true;
+        onNext();
       }
     )
   );
@@ -383,13 +391,16 @@ const Content = () => {
 
   // fullscreen
   createEffect(
-    on(showFullscreen, (state) => {
-      if (state) {
-        sendEvent({ type: Event.enableControl });
-      } else {
-        sendEvent({ type: Event.disableControl });
+    on(
+      () => [showFullscreen(), currentVideoId()] as const,
+      ([state]) => {
+        if (state) {
+          sendEvent({ type: Event.enableControl });
+        } else {
+          sendEvent({ type: Event.disableControl });
+        }
       }
-    })
+    )
   );
 
   // video clicked
@@ -424,20 +435,21 @@ const Content = () => {
 
   onMount(() => {
     const listener = (event: MessageEvent) => {
-      if (!event.data) return;
-      if (typeof event.data !== 'object') return;
-      if (!('type' in event.data && EventList.includes(event.data.type)))
-        return;
+      if (event.origin !== EMBED_ORIGIN) return;
 
-      switch (event.data.type) {
-        case Event.progress: {
-          setPlayer('progress', event.data.percentage);
-          reportProgress(event.data.percentage);
-          break;
-        }
-        default:
-          break;
-      }
+      const iframe = document.querySelector<HTMLIFrameElement>('#vcp-iframe');
+      if (!iframe || event.source !== iframe.contentWindow) return;
+
+      const data = event.data;
+      if (!data || data.type !== Event.progress) return;
+      if (typeof data.videoId !== 'string') return;
+      if (typeof data.percentage !== 'number') return;
+      if (!Number.isFinite(data.percentage)) return;
+      if (data.videoId !== currentVideoId()) return;
+
+      const percentage = Math.min(Math.max(data.percentage, 0), 1);
+      setPlayer('progress', percentage);
+      reportProgress(percentage);
     };
 
     window.addEventListener('message', listener);
